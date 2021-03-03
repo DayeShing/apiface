@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "com.daysh.apiface.serializer";
+option java_outer_classname = "ParamMarkSerializer";
+
+message ParamMark {
+	string name = 1;
+	string type = 2;
+}

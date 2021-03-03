@@ -1,0 +1,313 @@
+/* 按钮样式 */
+.self-btn-color(@normal, @hover, @active) {
+  background-color: @normal;
+  border-color: @normal;
+
+  &:hover,
+  &:focus {
+    background-color: @hover;
+    border-color: @hover;
+  }
+
+  &:active {
+    background-color: @active;
+    border-color: @active;
+  }
+}
+
+.self-common(@type) {
+  .self-btn-color(@type, @type + #111, @type - #111);
+
+  &.self-is-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  &.self-is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    .self-btn-color(@type, @type, @type);
+  }
+
+  &.self-is-text {
+    border: none;
+    background: none !important;
+    color: #286efa;
+    padding: 0 10px;
+    min-width: auto;
+
+    &:hover,
+    &:focus {
+      color: @type + #111;
+    }
+
+    &:active {
+      color: @type - #111;
+    }
+  }
+
+  &.self-is-plain {
+    border-color: #c4c4c4;
+    background: #f2f2f2 !important;
+    color: #1f2d3d;
+
+    &:hover,
+    &:focus {
+      border-color: @type;
+      color: @type;
+    }
+
+    &:active {
+      border-color: @type - #111;
+      color: @type - #111;
+    }
+  }
+
+  &.self-button--medium {
+    padding: 0 10px;
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+
+    .self-icon-left {
+      font-size: 16px;
+      margin-right: 5px;
+    }
+
+    .self-icon-right {
+      font-size: 16px;
+      margin-left: 5px;
+    }
+  }
+
+  &.self-button--mini {
+    height: 26px;
+    line-height: 24px;
+
+    .self-icon-left {
+      font-size: 12px;
+    }
+
+    .self-icon-right {
+      font-size: 12px;
+    }
+  }
+
+  .self-icon-left {
+    font-size: 12px;
+    margin-right: -1px;
+    vertical-align: baseline;
+  }
+
+  .self-icon-right {
+    font-size: 12px;
+    margin-left: -1px;
+    vertical-align: baseline;
+  }
+}
+
+button {
+
+  &:hover,
+  &:focus,
+  &:active {
+    outline: none;
+  }
+}
+
+.self-button {
+  min-width: 60px;
+  height: 26px;
+  font-size: 12px;
+  display: inline-block;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  color: #f2f2f2;
+  // min-width:100px;
+  .self-common(#1177e2);
+
+}
+
+.self-theme-light {
+  /* 颜色值 */
+  @submit: #1177e2; // 提交、保存、确定、确认
+  @primary: #FAFAFA;
+  @cancle: #959595; // 取消
+  @success: #13CE66; // 成功
+  @failure: #FF5511; // 失败
+  @warning: #F7BA2A; // 警告
+  @error: #FF4949; // 错误
+  @info: #1177e2; // 信息
+  @build: #1177e2; // 新建
+  @edit: #1177e2; // 修改
+  @delete: #de1111; // 删除
+  @query: #1177e2; // 查询
+  @login: #1177e2; // 登录 
+  @upload: #1177e2; // 上传
+  @download: #1177e2; // 下载 
+  @set: #1177e2; // 设置 
+
+  .self-is-text {
+    color: #1177e2 !important;
+  }
+
+  .self-btn-submit {
+    .self-common(@submit);
+  }
+
+  .self-btn-primary {
+    border-color: #cbcbcb !important;
+    color: #333333;
+    .self-common(@primary);
+  }
+
+  .self-btn-cancle {
+    .self-common(@cancle);
+  }
+
+  .self-btn-success {
+    .self-common(@success);
+  }
+
+  .self-btn-failure {
+    .self-common(@failure);
+  }
+
+  .self-btn-warning {
+    .self-common(@warning);
+  }
+
+  .self-btn-error {
+    .self-common(@error);
+  }
+
+  .self-btn-info {
+    .self-common(@info);
+  }
+
+  .self-btn-build {
+    .self-common(@build);
+  }
+
+  .self-btn-edit {
+    .self-common(@edit);
+  }
+
+  .self-btn-delete {
+    .self-common(@delete);
+  }
+
+  .self-btn-query {
+    .self-common(@query);
+  }
+
+  .self-btn-login {
+    .self-common(@login);
+  }
+
+  .self-btn-upload {
+    .self-common(@upload);
+  }
+
+  .self-btn-download {
+    .self-common(@download);
+  }
+
+  .self-btn-set {
+    .self-common(@set);
+  }
+}
+
+.self-theme-dark {
+  /* 颜色值 */
+  @submit: #204484; // 提交、保存、确定、确认
+  @primary: #1D202B;
+  @cancle: #4d4d4d; // 取消
+  @success: #030303; // 成功
+  @failure: #000000; // 失败
+  @warning: #000000; // 警告
+  @error: #000000; // 错误
+  @info: #204484; // 信息
+  @build: #204484; // 新建
+  @edit: #204484; // 修改
+  @delete: #de1111; // 删除
+  @query: #204484; // 查询
+  @login: #204484; // 登录 
+  @upload: #204484; // 上传
+  @download: #204484; // 下载 
+  @set: #204484; // 设置
+
+  .self-is-text {
+    color: #2870FF !important;
+  }
+
+  .self-btn-submit {
+    .self-common(@submit);
+  }
+
+  .self-btn-primary {
+    border-color: #414141 !important;
+    .self-common(@primary);
+  }
+
+  .self-btn-cancle {
+    .self-common(@cancle);
+  }
+
+  .self-btn-success {
+    .self-common(@success);
+  }
+
+  .self-btn-failure {
+    .self-common(@failure);
+  }
+
+  .self-btn-warning {
+    .self-common(@warning);
+  }
+
+  .self-btn-error {
+    .self-common(@error);
+  }
+
+  .self-btn-info {
+    .self-common(@info);
+  }
+
+  .self-btn-build {
+    .self-common(@build);
+  }
+
+  .self-btn-edit {
+    .self-common(@edit);
+  }
+
+  .self-btn-delete {
+    .self-common(@delete);
+  }
+
+  .self-btn-query {
+    .self-common(@query);
+  }
+
+  .self-btn-login {
+    .self-common(@login);
+  }
+
+  .self-btn-upload {
+    .self-common(@upload);
+  }
+
+  .self-btn-download {
+    .self-common(@download);
+  }
+
+  .self-btn-set {
+    .self-common(@set);
+  }
+}

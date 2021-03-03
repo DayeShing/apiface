@@ -1,0 +1,64 @@
+
+
+转换标签转换的描述：
+all:
+@author 标明开发该类模块的作者
+
+// 纯文本作者
+@author Rod Johnson
+// 纯文本作者，邮件
+@author Igor Hersht | igorh@ca.ibm.com
+@since 标明该类模块的版本 ( 指定版本)
+
+class:
+@action groupName1,name2,name3
+@path /app/youpath
+ 用于指定是否是一个接口处理类
+@model groupName
+    用于指定是否一个模型类
+
+method:
+
+@param 参数名称
+ == 参数名称|''|''|false
+@param 描述
+ == 描述|''|false
+@param 描述|默认值字符串|是否需要true/false|描述
+ == |默认|false
+{name:"","desc":"","required":false,"default":""},
+@return com.youkina.core.vo.TicketVo | 描述
+  用于指定返回值模糊的方法
+
+@valid 校验分组1，校验分组2    配合@validata
+@exclude 参数名，参数名，      配合 传入包装类型
+@ignore
+
+field:
+
+    @required 是否需要
+    @ignore
+
+    api class:
+        clazz: 类全名,
+        tags:[group],
+        desc:描述，
+
+        deprecated(是否过期)
+        method:[],
+            params:{},
+            valid:[],
+            exclude:[],
+            author:[],
+            version:'',
+            return:{},
+            name:
+    model class:
+        clazz: 类全名,
+        desc:描述，
+        tag:''
+        fields:
+            name:'',
+            example:"",
+            required:
+            default:
+            format:''

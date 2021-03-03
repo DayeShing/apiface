@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "com.daysh.apiface.serializer";
+option java_outer_classname = "MarkSerializer";
+import "ClassMark.proto";
+
+message Mark {
+	repeated ClassMark marks = 1;
+}

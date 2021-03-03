@@ -1,0 +1,12 @@
+syntax = "proto3";
+option java_package = "com.daysh.apiface.serializer";
+option java_outer_classname = "FieldMarkSerializer";
+import "GeneralTag.proto";
+
+message FieldMark {
+    string type = 1;
+	string name = 2;
+	string desc = 3;
+	string example = 4;
+	repeated GeneralTag docTags = 5;
+}

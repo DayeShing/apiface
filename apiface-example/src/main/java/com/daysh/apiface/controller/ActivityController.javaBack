@@ -1,0 +1,95 @@
+
+@RestController
+@RequestMapping("activities")
+@Api(value = "活动",tags = {"活动"})
+public class ActivityController {
+
+    @RequestMapping(value = "save")
+    @ApiOperation(value = "保存活动", httpMethod = "POST", notes = "保存活动", response = ActivityLottery.class)
+    public Object save(@RequestBody @Validated ActivityLottery activities) {
+        return null;
+    }
+
+    @RequestMapping("delete")
+    @ApiOperation(value = "删除活动", httpMethod = "POST", notes = "删除活动", response = Integer.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuids", value = "活动ids-数组", required = true, dataType = "arr", paramType = "form")
+    })
+    public Object delete(@RequestParam(value = "uuids") List<String> uuids) {
+        return null;
+    }
+
+    @RequestMapping("start")
+    @ApiOperation(value = "开始活动-机器触发", httpMethod = "GET", notes = "开始活动-机器触发")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form")
+    })
+    public Object start(@RequestParam String uuid){
+        return null;
+    }
+
+    @RequestMapping("finish")
+    @ApiOperation(value = "结束活动-机器触发", httpMethod = "GET", notes = "结束活动-机器触发")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form")
+    })
+    public Object finish(@RequestParam String uuid){
+        return null;
+    }
+
+    @RequestMapping("auth/list")
+    @ApiOperation(value = "获取活动列表", httpMethod = "GET", notes = "获取活动列表,切记滚动加载和分页加载返回的数据不一样", response = ActivityLottery.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "搜索", dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "roll", value = "分页是否滚动加载",defaultValue = "false", dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "page", value = "当前页",defaultValue = "1", dataType = "int", paramType = "form"),
+            @ApiImplicitParam(name = "rows", value = "一次分页加载记录条数",defaultValue = "10", dataType = "int", paramType = "form")
+    })
+    public Object list(String keyword, Page page){
+        return null;
+    }
+
+    @RequestMapping("auth/partner")
+    @ApiOperation(value = "获取用户-参与用户列表", httpMethod = "GET", notes = "获取用户-参与用户列表,切记滚动加载和分页加载返回的数据不一样", response = TicketVo.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "roll", value = "分页是否滚动加载",defaultValue = "false", dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "page", value = "当前页",defaultValue = "1", dataType = "int", paramType = "form"),
+            @ApiImplicitParam(name = "rows", value = "一次分页加载记录条数",defaultValue = "10", dataType = "int", paramType = "form")
+    })
+    public Object partner(@RequestParam String uuid, Page page){
+        return null;
+    }
+
+    @RequestMapping("auth/userTicketDetails")
+    @ApiOperation(value = "获取用户详情", httpMethod = "GET", notes = "获取用户详情,切记滚动加载和分页加载返回的数据不一样", response = ActivityParticipate.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "roll", value = "分页是否滚动加载",defaultValue = "false", dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "page", value = "当前页",defaultValue = "1", dataType = "int", paramType = "form"),
+            @ApiImplicitParam(name = "rows", value = "一次分页加载记录条数",defaultValue = "10", dataType = "int", paramType = "form")
+    })
+    public Object userTicketDetails(@RequestParam String uuid, Page page){
+        return null;
+    }
+
+    @RequestMapping("auth/userTicket")
+    @ApiOperation(value = "获取用户统计信息", httpMethod = "GET", notes = "获取用户统计信息", response = TicketVo.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form")
+    })
+    public Object userTicket(@RequestParam String uuid){
+        return null;
+    }
+
+    @RequestMapping("auth/saveTicket")
+    @ApiOperation(value = "添加用户", httpMethod = "GET", notes = "添加用户", response = Integer.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uuid", value = "活动id", required = true, dataType = "String", paramType = "form")
+    })
+    public Object saveTicket(@RequestParam String uuid){
+        return null;
+    }
+
+
+}
