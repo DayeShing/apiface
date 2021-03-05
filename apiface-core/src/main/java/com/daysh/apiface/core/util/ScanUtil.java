@@ -7,8 +7,6 @@
  */
 package com.daysh.apiface.core.util;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +89,7 @@ public class ScanUtil {
                         continue;
                     }
                     for (String suffix : suffixs) {
-                        if (StringUtils.endsWith(f.getName(), suffix)) {
+                        if (f.getName().endsWith(suffix)) {
                             ret.add(f);
                             break;
                         }
@@ -118,16 +116,16 @@ public class ScanUtil {
      */
     public static boolean rule(File file, String rule, String top) {
         String dot = ".";
-        String resource = StringUtils.replace(file.getAbsolutePath(), top, "");
+        String resource = file.getAbsolutePath().replace(top, "");
         int i = resource.indexOf(dot);
         if (i > -1) {
             resource = resource.substring(0, i);
         }
-        resource = StringUtils.replace(resource, File.separator, dot);
+        resource = resource.replace(File.separator, dot);
         if (resource.startsWith(dot)) {
             resource = resource.substring(1);
         }
-        if (StringUtils.isEmpty(rule)) {
+        if (ObjectUtil.isEmpty(rule)) {
             return true;
         }
         return Pattern.matches(rule, resource);

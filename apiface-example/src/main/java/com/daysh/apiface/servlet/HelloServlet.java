@@ -51,6 +51,7 @@ public class HelloServlet extends HttpServlet {
      * @uri hello
      * @return java.lang.String|id和名称
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     public String sayHello(String id,String name){

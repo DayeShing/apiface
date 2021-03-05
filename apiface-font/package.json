@@ -1,7 +1,7 @@
 {
   "name": "apiface",
   "version": "1.0.0",
-  "description": "前后端文档交互的一个交互方案",
+  "description": "前后端接口文档的一个交互方案",
   "author": "Daye Shing",
   "private": true,
   "scripts": {

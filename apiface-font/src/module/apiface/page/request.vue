@@ -211,7 +211,6 @@ export default {
   },
   computed: {
     pathcalc: function() {
-      console.log(this.doc);
       return this.doc.path;
     }
   },

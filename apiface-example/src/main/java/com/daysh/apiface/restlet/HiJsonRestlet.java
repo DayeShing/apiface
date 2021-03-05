@@ -10,21 +10,15 @@ package com.daysh.apiface.restlet;
 import com.alibaba.fastjson.JSON;
 import com.daysh.apiface.model.Hi;
 import com.daysh.apiface.util.BodyUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * HelloRestlet的接口类描述(我们这样做不是因为我们想改变你，而是我们可以这么做)
@@ -36,8 +30,7 @@ import java.io.IOException;
  */
 @Component("hiJson")
 @Scope("prototype")
-@Slf4j
-public class HiJsonRestlet extends ServerResource {
+public class HiJsonRestlet extends AbstractServerResource {
 
     /**
      * post请求(我们这样做不是因为我们想改变你，而是我们可以这么做)
@@ -65,6 +58,7 @@ public class HiJsonRestlet extends ServerResource {
      * @method post
      * @return com.daysh.apiface.model.Hi|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 16:36
      */

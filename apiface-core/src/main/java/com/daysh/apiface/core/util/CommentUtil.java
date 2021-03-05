@@ -7,8 +7,6 @@
  */
 package com.daysh.apiface.core.util;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -77,12 +75,12 @@ public class CommentUtil {
         for (; index < array.length; index++) {
             String c = array[index].trim();
 
-            if (StringUtils.isBlank(c)) {
+            if (ObjectUtil.isEmpty(c)) {
                 continue;
             }
 
             String tagType = CommentUtil.getTagType(c);
-            if (StringUtils.isBlank(tagType)) {
+            if (ObjectUtil.isEmpty(tagType)) {
                 sb.append(c);
                 sb.append("\n");
             } else {
@@ -97,7 +95,7 @@ public class CommentUtil {
 
         for (int i = index; i < array.length; i++) {
             String c = array[i].trim();
-            if (StringUtils.isNotBlank(c)) {
+            if (ObjectUtil.isNotEmpty(c)) {
                 comments.add(c);
             }
         }

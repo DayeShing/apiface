@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 14:03
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
@@ -12,7 +5,6 @@ import com.daysh.apiface.core.api.meta.*;
 import com.daysh.apiface.core.api.resolver.ApiTransform;
 import com.daysh.apiface.core.enums.VariableEnum;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
@@ -141,7 +133,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
             // 继承包装类与卸载包装类
             String pack = child.getPack();
             String topPack = top.getPack();
-            if(StringUtils.isNotEmpty(pack) && StringUtils.isEmpty(topPack)){
+            if(ObjectUtil.isNotEmpty(pack) && ObjectUtil.isEmpty(topPack)){
                 top.setPack(pack);
             }
             as.addAll(getChildActions(top, child));
@@ -175,8 +167,10 @@ public class Swagger2 implements ApiTransform, JsonApi {
         } else {
             path.setTags(group.getTags());
         }
+        path.setDate(action.getDate());
+        path.setError(action.getError());
         path.setAuther(action.getAuther() == null ? group.getAuther() : action.getAuther());
-        path.setVersion(StringUtils.isEmpty(action.getVersion()) ? group.getVersion() : action.getVersion());
+        path.setVersion(ObjectUtil.isEmpty(action.getVersion()) ? group.getVersion() : action.getVersion());
         path.setMethods(ObjectUtil.isEmpty(action.getMethods()) ? group.getMethods() : action.getMethods());
         path.setConsumes(ObjectUtil.isEmpty(action.getConsumes()) ? group.getConsumes() : action.getConsumes());
         path.setProduces(ObjectUtil.isEmpty(action.getProduces()) ? group.getProduces() : action.getProduces());
@@ -195,7 +189,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if (ret.isBase()) {
             // 基本类型
             response.setType(ret.getType());
-        } else if (StringUtils.equals(ret.getName(), ret.getRef())) {
+        } else if (ObjectUtil.equals(ret.getName(), ret.getRef())) {
             //复杂类型非泛型
             if (fields.containsKey(ret.getRef())) {
                 //存在该文档
@@ -229,7 +223,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if (param.isBase()) {
             // 基本类型
             parameter.setType(param.getType());
-        } else if (StringUtils.equals(param.getType(), param.getRef())) {
+        } else if (ObjectUtil.equals(param.getType(), param.getRef())) {
             //复杂类型非泛型
 
             if (fields.containsKey(param.getRef())) {
@@ -248,13 +242,13 @@ public class Swagger2 implements ApiTransform, JsonApi {
 
     protected String uri(String prefix, String suffix) {
         StringBuilder url = new StringBuilder();
-        if (StringUtils.isNotEmpty(prefix)) {
+        if (ObjectUtil.isNotEmpty(prefix)) {
             if (!prefix.startsWith("/")) {
                 url.append("/");
             }
             url.append(prefix);
         }
-        if (StringUtils.isNotEmpty(suffix)) {
+        if (ObjectUtil.isNotEmpty(suffix)) {
             if (!suffix.startsWith("/")) {
                 url.append("/");
             }

@@ -22,6 +22,7 @@ public class ActivityController extends BaseController {
      * @summary 保存活动
      * @return com.daysh.apiface.controller.Activity|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @PostMapping(value = "save")
@@ -36,6 +37,7 @@ public class ActivityController extends BaseController {
      * @method post,get
      * @return int|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("delete")
@@ -55,6 +57,7 @@ public class ActivityController extends BaseController {
      * @summary 开始活动-机器触发
      * @return void|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("start")
@@ -68,6 +71,7 @@ public class ActivityController extends BaseController {
      * @summary 结束活动-机器触发
      * @return void|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("finish")
@@ -84,6 +88,7 @@ public class ActivityController extends BaseController {
      * @summary 获取活动列表
      * @return com.daysh.apiface.controller.Activity|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("auth/list")
@@ -100,6 +105,7 @@ public class ActivityController extends BaseController {
      * @summary 获取参与用户列表
      * @return com.daysh.apiface.controller.Activity|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("auth/partner")
@@ -116,6 +122,7 @@ public class ActivityController extends BaseController {
      * @summary 获取用户详情
      * @return com.daysh.apiface.controller.TicketVo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("auth/userTicketDetails")
@@ -129,6 +136,7 @@ public class ActivityController extends BaseController {
      * @summary 获取参与用户统计信息
      * @return com.daysh.apiface.controller.TicketVo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("auth/userTicket")
@@ -142,6 +150,7 @@ public class ActivityController extends BaseController {
      * @summary 添加用户票
      * @return com.daysh.apiface.controller.TicketVo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("auth/saveTicket")

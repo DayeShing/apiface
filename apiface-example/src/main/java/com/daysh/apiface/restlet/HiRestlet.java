@@ -8,14 +8,11 @@
 package com.daysh.apiface.restlet;
 
 import com.daysh.apiface.model.Hi;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -33,8 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component("hi")
 @Scope("prototype")
-@Slf4j
-public class HiRestlet extends ServerResource {
+public class HiRestlet extends AbstractServerResource {
 
     /**
      * get请求
@@ -79,10 +75,11 @@ public class HiRestlet extends ServerResource {
      * @uri hi
      * @return java.lang.String|id和名称
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     public String sayHello(Hi hi){
-        if(StringUtils.isEmpty(hi.getName())){
+        if(hi.getName() == null || hi.getName().length() ==0){
             hi.setName("aa");
         }
         return String.format("%s->id=%s&name=%s",getClass().getName(),hi.getId(),hi.getName());

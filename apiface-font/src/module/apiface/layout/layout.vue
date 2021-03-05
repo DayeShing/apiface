@@ -93,11 +93,18 @@ export default {
     blank: resolve => require(["../page/blank.vue"], resolve)
   },
   mounted() {
-    setTimeout(() => {
-      this.init();
-    }, 1000);
+    this.getConf();
   },
   methods: {
+    getConf() {
+      if (this.mode) {
+        this.$fetch("static/conf.json", "get")
+          .then(res => {
+            this.init(res);
+          })
+          .catch(err => {});
+      }
+    },
     commit(heads, auth) {
       this.auth = auth;
       this.heads = heads;
@@ -169,7 +176,6 @@ export default {
     },
     clickBox(value) {
       if (value == "linkedin") {
-        console.log(this.data);
         this.$refs.infoDialog.openDialog(this.data);
         return;
       }
@@ -316,7 +322,7 @@ export default {
       return data;
     },
     submit(meta, data) {
-      console.log(meta, "request meta info");
+      // console.log(meta, "request meta info");
       this._fetch(meta.url, meta.method, meta.heads, data, meta.ret);
     },
     toggleLeft() {
@@ -470,23 +476,23 @@ export default {
           this.calcMenu(undefined);
         });
     },
-    init() {
+    init(conf) {
       // 直接访问
-      if (this.mode && window.CONF) {
-        var single = window.CONF.mode == "single";
+      if (conf) {
+        var single = conf.mode == "single";
         var addr = "";
         var options = [];
-        var proxy = window.CONF.proxy;
-        if (single && window.CONF.docs && window.CONF.docs.length > 0) {
-          addr = window.CONF.docs[0].options[0].addr;
-          options = window.CONF.docs;
+        var proxy = conf.proxy;
+        if (single && conf.docs && conf.docs.length > 0) {
+          addr = conf.docs[0].options[0].addr;
+          options = conf.docs;
         } else {
           addr = window.location.href;
           var index = addr.indexOf("/apiface.html#/");
           if (index != -1) {
             addr = addr.substring(0, index);
           }
-          addr = addr + window.CONF.api;
+          addr = addr + conf.api;
           options = [
             {
               group: "集成环境",

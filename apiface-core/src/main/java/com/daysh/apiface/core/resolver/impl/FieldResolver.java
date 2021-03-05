@@ -8,8 +8,6 @@
 package com.daysh.apiface.core.resolver.impl;
 
 import com.daysh.apiface.core.comment.impl.FieldMark;
-import com.daysh.apiface.core.comment.impl.MethodMark;
-import com.daysh.apiface.core.comment.tag.GeneralTag;
 import com.daysh.apiface.core.enums.MarkEnum;
 import com.daysh.apiface.core.resolver.Resolver;
 import com.daysh.apiface.core.rule.Rule;
@@ -18,15 +16,11 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @Description: <p> 方法解析 </p>

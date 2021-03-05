@@ -19,6 +19,7 @@ public class UserInfoController extends BaseController {
      * @summary 登录用户信息
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping("userInfo")
@@ -32,6 +33,7 @@ public class UserInfoController extends BaseController {
      * @summary 签发token证书
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @PostMapping("issue")
@@ -45,6 +47,7 @@ public class UserInfoController extends BaseController {
      * @summary 保存用户基本信息
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @PostMapping(value = "updateUser")
@@ -57,6 +60,7 @@ public class UserInfoController extends BaseController {
      * @summary 获取我关注用户信息
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping(value = "getFocus")
@@ -70,6 +74,7 @@ public class UserInfoController extends BaseController {
      * @summary 关注用户
      * @return com.daysh.apiface.controller.FocusUser|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @PostMapping(value = "focus")
@@ -83,6 +88,7 @@ public class UserInfoController extends BaseController {
      * @summary 取消关注用户
      * @return com.daysh.apiface.controller.FocusUser|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @PostMapping(value = "ignore")
@@ -100,6 +106,7 @@ public class UserInfoController extends BaseController {
      * @summary 获取被关注用户列表
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping(value = "listToFocusUser")
@@ -117,6 +124,7 @@ public class UserInfoController extends BaseController {
      * @summary 获取用户列表
      * @return com.daysh.apiface.controller.UserInfo|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     @RequestMapping(value = "listUser")

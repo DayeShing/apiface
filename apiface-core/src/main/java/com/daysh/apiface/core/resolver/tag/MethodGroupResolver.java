@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.comment.tag.serial
- * @Author： Daye Shing
- * @CreateTime： 2021-02-26 01:44
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.resolver.tag;
 
 import com.daysh.apiface.core.enums.RequestMethod;

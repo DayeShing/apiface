@@ -8,7 +8,6 @@
 package com.daysh.apiface.core.util;
 
 import com.github.javaparser.ast.ImportDeclaration;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +26,7 @@ public class ImportUtil {
         Set<String> target = new HashSet<>();
         String[] replace = type.replace("<", ",").replace(">",",").split(",");
         for (String s : replace) {
-            if(StringUtils.isNotEmpty(s)){
+            if(ObjectUtil.isNotEmpty(s)){
                 target.add(s.trim());
             }
         }
@@ -35,7 +34,7 @@ public class ImportUtil {
             for (String s : target) {
                 for (ImportDeclaration anImport : imports) {
                     String name = anImport.getName().toString();
-                    if (StringUtils.endsWith(name, s)) {
+                    if (name.endsWith(s)) {
                         type = type.replace(s,name);
                     }
                 }

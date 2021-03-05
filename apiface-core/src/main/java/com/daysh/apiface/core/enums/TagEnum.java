@@ -15,53 +15,108 @@ import java.util.Map;
  */
 public enum TagEnum {
 
-    ACTION("@action", "接口", "group,group1", new GroupResolver()),
-    PARAM("@param", "参数", "", new ParamResoler()),
-    RETURN("@return", "返回值", "", new ReturnResolver()),
-    EXCLUDE("@exclude", "排除参数", "param1,param2", new GroupResolver()),
-    AUTHOR("@author", "作者", "author|contact", new AutherResolver()),
-    SINCE("@since", "版本", "", null),
-    PACK("@pack", "统一包装返回类", "", null),
-    UNPACK("@unpack", "统一包装返回类", "", null),
-    SUMMARY("@summary", "摘要", "", null),
+    /**
+     * 接口
+     *
+     */
+    ACTION("@action", new GroupResolver()),
+    /**
+     * 参数
 
-    URI("@uri", "本地url处理", "/uri", null),
-    CONSUME("@consume", "响应类行 doc,json,xml,...", "doc,json,xml", new GroupResolver()),
-    PRODUCE("@produce", "请求类型 doc,json,xml,...", "doc,json,xml", new GroupResolver()),
-    METHOD("@method", "请求方法 get,post", "get,post", new MethodGroupResolver()),
+     */
+    PARAM("@param", new ParamResoler()),
+    /**
+     * 返回值
+     */
+    RETURN("@return", new ReturnResolver()),
+    /**
+     * 排除参数
+     */
+    EXCLUDE("@exclude", new GroupResolver()),
+    /**
+     * 作者
+     */
+    AUTHOR("@author", new AutherResolver()),
+    /**
+     * 错误描述类
+     */
+    ERROR("@error",null),
+    /**
+     * 时间
+     */
+    DATE("@date",null),
+    /**
+     * 版本
+     */
+    SINCE("@since", null),
+    /**
+     * 统一包装返回类
+     */
+    PACK("@pack", null),
+    /**
+     * 统一包装返回类
+     */
+    UNPACK("@unpack", null),
+    /**
+     * 摘要
+     */
+    SUMMARY("@summary", null),
 
-    MODEL("@model", "模型", "tag", null),
-    REQUIRED("@required", "逻辑", "", null),
-    IGNORE("@ignore", "忽略", "", null),
-    FORMAT("@format", "格式化", "format", null),
-    EXAMPLE("@example", "默认值", "example", null),
-
-    HIDDEN("@hidden", "默认值", "", null),
-    UNDEFINED("@undefined", "未定义", "undefined", null),
+    /**
+     * 本地uri处理
+     */
+    URI("@uri", null),
+    /**
+     * 响应类行 doc,json,xml,...
+     */
+    CONSUME("@consume", new GroupResolver()),
+    /**
+     * 请求类型 doc,json,xml,...
+     */
+    PRODUCE("@produce", new GroupResolver()),
+    /**
+     * 请求方法 get,post
+     */
+    METHOD("@method", new MethodGroupResolver()),
+    /**
+     * 模型
+     */
+    MODEL("@model", null),
+    /**
+     * 要求
+     */
+    REQUIRED("@required", null),
+    /**
+     * 忽略
+     */
+    IGNORE("@ignore", null),
+    /**
+     * 格式化
+     */
+    FORMAT("@format", null),
+    /**
+     * 默认值
+     */
+    EXAMPLE("@example", null),
+    /**
+     * 隐藏
+     */
+    HIDDEN("@hidden", null),
+    UNDEFINED("@undefined", null),
     ;
 
     /**
      * 标记名称
      */
     private String tagName;
-    /**
-     * 名称
-     */
-    private String desc;
-    /**
-     * 格式
-     */
-    private String format;
 
     /**
      * 处理类
      */
     private TagResolver resolver;
 
-    TagEnum(String tagName, String desc, String format, TagResolver resolver) {
+    TagEnum(String tagName, TagResolver resolver) {
         this.tagName = tagName;
-        this.desc = desc;
-        this.format = format;
         this.resolver = resolver;
     }
 
@@ -78,6 +133,7 @@ public enum TagEnum {
         }
         return false;
     }
+
     public static boolean isIgnore(List<String> tags) {
         if (ObjectUtil.isNotEmpty(tags)) {
             for (String tag : tags) {
@@ -156,14 +212,6 @@ public enum TagEnum {
 
     public String getTagName() {
         return tagName;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public String getFormat() {
-        return format;
     }
 
     public TagResolver getResolver() {

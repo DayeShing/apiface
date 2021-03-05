@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.maven
- * @Author： Daye Shing
- * @CreateTime： 2021-02-28 01:39
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.maven;
 
 import com.alibaba.fastjson.JSONObject;
@@ -16,7 +9,6 @@ import com.daysh.apiface.core.resolver.tag.AutherResolver;
 import com.daysh.apiface.core.swagger.v2.Swagger2;
 import com.daysh.apiface.core.util.GZIPUtil;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
 
@@ -42,7 +34,7 @@ import java.util.jar.JarFile;
         requiresDependencyResolution = ResolutionScope.COMPILE,
         threadSafe = true
 )
-@Execute(phase = LifecyclePhase.PACKAGE)
+@Execute(phase = LifecyclePhase.PREPARE_PACKAGE)
 public class ApiMojo extends AbstractFaceMojo {
 
     public static final String MOJO = "api";
@@ -52,6 +44,12 @@ public class ApiMojo extends AbstractFaceMojo {
             defaultValue = ""
     )
     private String artifactId;
+
+//    @Parameter(
+//            property = "artifactId",
+//            defaultValue = ""
+//    )
+//    private String artifactId;
 
     private ApiResolver resolver = null;
 
@@ -160,7 +158,7 @@ public class ApiMojo extends AbstractFaceMojo {
 
     @Override
     protected boolean isExecute() {
-        return StringUtils.equals(artifactId, project.getArtifactId());
+        return ObjectUtil.equals(artifactId, project.getArtifactId());
     }
 
     @Override

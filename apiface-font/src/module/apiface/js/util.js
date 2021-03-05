@@ -5,8 +5,8 @@ util.install = function (Vue, options) {
   //================ 工具类操作 - 开始 ================
   /**
    * 格式化时间输出
-   * @param {*} date 
-   * @param {*} fmt 
+   * @param {*} date
+   * @param {*} fmt
    */
   Vue.prototype.datetimeFormat = function (date, fmt) {
     var date = new Date(date);
@@ -30,9 +30,9 @@ util.install = function (Vue, options) {
     return fmt;
   }
   /**
-   * 
-   * @param {*} time1 
-   * @param {*} time2 
+   *
+   * @param {*} time1
+   * @param {*} time2
    */
   Vue.prototype.diffTime = function (time1, time2) {
     let date1 = new Date(time1); //开始时间
@@ -105,9 +105,9 @@ util.install = function (Vue, options) {
   //================ 网络类操作 - 开始 ================
   /**
    * 设置cookie
-   * @param {*} name 
-   * @param {*} value 
-   * @param {*} time 
+   * @param {*} name
+   * @param {*} value
+   * @param {*} time
    */
   Vue.prototype.setCookie = function (name, value, time) {
     var strsec = this.getsec(time);
@@ -116,8 +116,8 @@ util.install = function (Vue, options) {
     document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
   }
   /**
-   * 
-   * @param {*} str 
+   *
+   * @param {*} str
    */
   Vue.prototype.getsec = function (str) {
     var str1 = str.substring(1, str.length) * 1;
@@ -137,48 +137,68 @@ util.install = function (Vue, options) {
     else
       return null;
   }
-  Vue.prototype.$req = function (
-    $url,
-    $method,
-    $data,
-    $headers,
-    $auth,
-    show = false
-  ) {
-    var startTime = new Date();
-    return new Promise((resolve, reject) => {
-      axios({
-        url: $url,
-        method: $method.toLowerCase(),
-        data: $data,
-        headers: $headers,
-        timeout: 30000,
-        auth: $auth
-      }).then(res => {
-        var endTime = new Date();
-        var data = {
-          requestTime: this.datetimeFormat(startTime, "yyyy-MM-dd hh:mm:ss"),
-          responseTime: this.datetimeFormat(endTime, "yyyy-MM-dd hh:mm:ss"),
-          diffTime: (endTime.getTime() - startTime.getTime()),
-          result: res.data,
-          show: show,
-          code: res.status,
-          requestHeader: $headers,
-          responseHeader: res.headers,
-        };
-        resolve(data);
-      }).catch((err) => {
-        reject(err);
+  Vue.prototype.$fetch = function (
+      $url,
+      $method,
+      $data,
+      $headers,
+    ) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: $url,
+          method: $method.toLowerCase(),
+          data: $data,
+          headers: $headers,
+          timeout: 30000
+        }).then(res => {
+          resolve(res.data);
+        }).catch((err) => {
+          reject(err);
+        })
+      });
+    },
+    Vue.prototype.$req = function (
+      $url,
+      $method,
+      $data,
+      $headers,
+      $auth,
+      show = false
+    ) {
+      var startTime = new Date();
+      return new Promise((resolve, reject) => {
+        axios({
+          url: $url,
+          method: $method.toLowerCase(),
+          data: $data,
+          headers: $headers,
+          timeout: 30000,
+          auth: $auth
+        }).then(res => {
+          var endTime = new Date();
+          var data = {
+            requestTime: this.datetimeFormat(startTime, "yyyy-MM-dd hh:mm:ss"),
+            responseTime: this.datetimeFormat(endTime, "yyyy-MM-dd hh:mm:ss"),
+            diffTime: (endTime.getTime() - startTime.getTime()),
+            result: res.data,
+            show: show,
+            code: res.status,
+            requestHeader: $headers,
+            responseHeader: res.headers,
+          };
+          resolve(data);
+        }).catch((err) => {
+          reject(err);
+        })
       })
-    })
-  }
+    }
   //================ 网络类操作 - 结束 ================
 
   //================ swagger操作 - 结束 ================
   /**
    * 获取样例数据
-   * @param {*} type 
-   * @param {*} format 
+   * @param {*} type
+   * @param {*} format
    */
   Vue.prototype.exampleValue = function (type, format) {
     if (type == "boolean") {
@@ -199,7 +219,7 @@ util.install = function (Vue, options) {
   }
   /**
    * 获取真值
-   * @param {*} type 
+   * @param {*} type
    * @param {*} format
    */
   Vue.prototype.realValue = function (type, example) {
@@ -308,8 +328,8 @@ util.install = function (Vue, options) {
   }
   /**
    * swagger复杂类型转换成 table 可视数据
-   * @param {*} ref 
-   * @param {*} data 
+   * @param {*} ref
+   * @param {*} data
    */
   Vue.prototype.transf = function (data, ref) {
     var key = ref.replace("#/definitions/", "");

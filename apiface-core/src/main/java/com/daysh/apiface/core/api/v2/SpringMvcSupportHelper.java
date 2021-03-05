@@ -1,13 +1,5 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.api.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-28 17:01
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.api.v2;
 
-import com.alibaba.fastjson.JSON;
 import com.daysh.apiface.core.api.meta.*;
 import com.daysh.apiface.core.bean.Annotation;
 import com.daysh.apiface.core.comment.impl.ClassMark;
@@ -16,11 +8,9 @@ import com.daysh.apiface.core.comment.impl.ParamMark;
 import com.daysh.apiface.core.enums.ParamEnum;
 import com.daysh.apiface.core.support.spring.BaseElement;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,14 +45,14 @@ public class SpringMvcSupportHelper {
         action.setProduces(anno.getProduces());
         action.setConsumes(anno.getConsumes());
         String name = anno.getName();
-        if(StringUtils.isEmpty(name)){
+        if(ObjectUtil.isEmpty(name)){
             if(ObjectUtil.isNotEmpty(anno.getValue())){
                 name = anno.getValue().get(0);
             } else if(ObjectUtil.isNotEmpty(anno.getPath())){
                 name = anno.getPath().get(0);
             }
         }
-        if(StringUtils.isNotEmpty(name)){
+        if(ObjectUtil.isNotEmpty(name)){
             action.setUri(name);
         }
         return action;
@@ -78,7 +68,7 @@ public class SpringMvcSupportHelper {
 
                 for (int j = (actionParams.size() - 1); j > -1; j--) {
                     Param param = actionParams.get(j);
-                    if (StringUtils.equals(param.getName(), paramMark.getName())) {
+                    if (ObjectUtil.equals(param.getName(), paramMark.getName())) {
                         Map<String, Annotation> annos = resolver(parameters[i].getAnnotations());
                         BaseElement body = (BaseElement) annos.get(RequestBody.name());
                         BaseElement p = (BaseElement) annos.get(RequestParam.name());
@@ -92,15 +82,15 @@ public class SpringMvcSupportHelper {
                             param.setForm(ParamEnum.FORM);
                             param.setRequired(p.isRequired());
                             param.setExample(p.getDefaultValue());
-                            String name = StringUtils.isNotEmpty(p.getName()) ? p.getName() : p.getValue();
-                            if (StringUtils.isNotEmpty(name)) {
+                            String name = ObjectUtil.isNotEmpty(p.getName()) ? p.getName() : p.getValue();
+                            if (ObjectUtil.isNotEmpty(name)) {
                                 param.setName(name);
                             }
                         }else if (path != null) {
                             param.setRequired(path.isRequired());
                             param.setForm(ParamEnum.PATH);
-                            String name = StringUtils.isNotEmpty(path.getName()) ? path.getName() : path.getValue();
-                            if (StringUtils.isNotEmpty(name)) {
+                            String name = ObjectUtil.isNotEmpty(path.getName()) ? path.getName() : path.getValue();
+                            if (ObjectUtil.isNotEmpty(name)) {
                                 param.setName(name);
                             }
                         }

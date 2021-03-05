@@ -138,7 +138,7 @@ export default {
       this.$emit(
         "submit",
         {
-          url: "http://self.daysh.top:8102/app/center/auth/discuss/save",
+          url: "http://self.daysh.top:8102/app/auth/discuss/save",
           heads: [{ name: "Content-Type", content: "application/json" }],
           ret: false,
           method: "post"

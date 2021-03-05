@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 19:28
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;

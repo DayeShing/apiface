@@ -48,7 +48,11 @@
           </el-table-column>
           <el-table-column prop="name" label="cookie" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.name" :placeholder="$self('input')"></el-input>
+              <el-input
+                v-model="scope.row.name"
+                :disabled="scope.row.disabled"
+                :placeholder="$self('input')"
+              ></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="content" :label="$self('val')" minWidth="120" align="center">
@@ -119,7 +123,7 @@
 import datagrid from "../compontents/datagrid";
 import selfDialog from "../compontents/dialog/self-dialog";
 import selfButton from "../compontents/button/self-button";
-import Cookie from "js-cookie";
+import $cookie from "js-cookie";
 export default {
   name: "configDialog",
   components: {
@@ -162,7 +166,12 @@ export default {
         return;
       }
       if (this.activeName == "2") {
-        this.data.cookies.push({ enable: true, name: "", content: "" });
+        this.data.cookies.push({
+          enable: true,
+          name: "",
+          content: "",
+          disabled: false
+        });
       }
     },
     remove(index) {
@@ -171,10 +180,20 @@ export default {
         return;
       }
       if (this.activeName == "2") {
+        // 删除cookie
+        if (this.data.cookies[index].disabled) {
+          $cookie.remove(this.data.cookies[index].name);
+        }
         this.data.cookies.splice(index, 1);
       }
     },
     saveData() {
+      for (var i = 0; i < this.data.cookies.length; i++) {
+        if (this.data.cookies[i].enable && this.data.cookies[i].name != "") {
+          this.data.cookies[i].disabled = true;
+          $cookie.set(this.data.cookies[i].name, this.data.cookies[i].content);
+        }
+      }
       var heads = [];
       for (var i = 0; i < this.data.heads.length; i++) {
         if (this.data.heads[i].enable) {

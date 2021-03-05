@@ -18,7 +18,6 @@ import com.daysh.apiface.core.comment.tag.GeneralTag;
 import com.daysh.apiface.core.enums.TagEnum;
 import com.daysh.apiface.core.enums.VariableEnum;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -184,6 +183,16 @@ public class ApiResolverImpl implements ApiResolver {
                         ((Action) action).setUnpack(true);
                     }
                     break;
+                case ERROR:
+                    if (action instanceof Action) {
+                        ((Action) action).setError((String) tag.resolver(value));
+                    }
+                    break;
+                case DATE:
+                    if (action instanceof Action) {
+                        ((Action) action).setDate((String) tag.resolver(value));
+                    }
+                    break;
                 case ACTION:
                     if (action instanceof ActionGroup) {
                         ((ActionGroup) action).setTags((List<String>) tag.resolver(value));
@@ -213,7 +222,7 @@ public class ApiResolverImpl implements ApiResolver {
                     param.setFormat(variable.getFormat());
                     if (variable.isBase()) {
                         param.setType(variable.getType());
-                        if(param.isRequired() && StringUtils.isEmpty(param.getExample())){
+                        if(param.isRequired() && ObjectUtil.isEmpty(param.getExample())){
                             param.setExample(variable.getExample());
                         }
                         param.setBase(true);

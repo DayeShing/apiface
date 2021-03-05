@@ -53,6 +53,7 @@ public class HiJsonServlet extends HttpServlet {
      * @method post
      * @return com.daysh.apiface.model.Hi|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 16:36
      */

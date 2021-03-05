@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.resolver
- * @Author： Daye Shing
- * @CreateTime： 2021-02-28 14:47
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.resolver;
 
 import com.alibaba.fastjson.JSON;

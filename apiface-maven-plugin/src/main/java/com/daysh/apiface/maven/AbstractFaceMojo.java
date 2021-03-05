@@ -8,7 +8,6 @@
 package com.daysh.apiface.maven;
 
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -69,7 +68,7 @@ public abstract class AbstractFaceMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         // 执行重复
-        if(StringUtils.equals("pom",project.getPackaging()) || !isExecute() || MODULE.contains(module())){
+        if(ObjectUtil.equals("pom",project.getPackaging()) || !isExecute() || MODULE.contains(module())){
             return;
         }
         MODULE.add(module());

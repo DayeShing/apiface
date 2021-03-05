@@ -16,7 +16,7 @@
 //import com.daysh.apiface.core.comment.impl.MethodMark;
 //import com.daysh.apiface.core.comment.impl.ParamMark;
 //import com.daysh.apiface.core.enums.ParamEnum;
-//import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.ObjectUtil;
 //import org.springframework.stereotype.Controller;
 //import org.springframework.web.bind.annotation.*;
 //
@@ -44,9 +44,9 @@
 ////
 ////
 ////            if (
-////                    StringUtils.equals( RestController.class.getName(),annotation.annotationType().getName())
+////                    ObjectUtil.equals( RestController.class.getName(),annotation.annotationType().getName())
 ////                    ||
-////                StringUtils.equals(Controller.class.getName(),annotation.annotationType().getName())) {
+////                ObjectUtil.equals(Controller.class.getName(),annotation.annotationType().getName())) {
 ////                return true;
 ////            }
 //        }
@@ -103,7 +103,7 @@
 //                PathVariable path = parameters[i].getAnnotation(PathVariable.class);
 //                for (int j = (actionParams.size() - 1); j > -1; j--) {
 //                    Param param = actionParams.get(j);
-//                    if (StringUtils.equals(param.getName(), paramMark.getName())) {
+//                    if (ObjectUtil.equals(param.getName(), paramMark.getName())) {
 //                        if (body != null) {
 //                            param.setRequired(body.required());
 //                            param.setForm(ParamEnum.BODY);
@@ -114,8 +114,8 @@
 //                            param.setForm(ParamEnum.FORM);
 //                            param.setRequired(p.required());
 //                            param.setExample(p.defaultValue());
-//                            String name = StringUtils.isNotEmpty(p.name()) ? p.name() : p.value();
-//                            if (StringUtils.isNotEmpty(name)) {
+//                            String name = ObjectUtil.isNotEmpty(p.name()) ? p.name() : p.value();
+//                            if (ObjectUtil.isNotEmpty(name)) {
 //                                param.setName(name);
 //                            }
 //                        }

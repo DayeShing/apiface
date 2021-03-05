@@ -1,7 +1,7 @@
 package com.daysh.apiface.filter;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,8 +29,9 @@ import java.util.Enumeration;
  * @Author： Daye Shing
  * @Date： 2020-08-14 07:19
  */
-@Slf4j
 public class AgentServlet extends HttpServlet {
+
+    protected static final Logger log = LoggerFactory.getLogger(AgentServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -70,7 +71,7 @@ public class AgentServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         String url = req.getHeader("Self-Agent-Address");
         log.debug("代理地址:{}",url);
-        if(StringUtils.isNotEmpty(url)){
+        if(url != null && url.length() != 0){
             try {
                 fetch(req, resp, url);
             } catch (Exception e) {

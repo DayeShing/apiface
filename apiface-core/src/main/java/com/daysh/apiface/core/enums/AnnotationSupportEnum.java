@@ -1,13 +1,10 @@
 package com.daysh.apiface.core.enums;
 
-import com.alibaba.fastjson.JSON;
 import com.daysh.apiface.core.bean.Annotation;
 import com.daysh.apiface.core.resolver.AnnotationResolver;
 import com.daysh.apiface.core.support.spring.resolver.*;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,7 +74,7 @@ public enum AnnotationSupportEnum implements AnnotationResolver<Annotation> {
             for (java.lang.annotation.Annotation anno : annos) {
                 for (AnnotationSupportEnum value : values()) {
                     String name = value.name();
-                    if(StringUtils.endsWith(anno.annotationType().getName(),name)){
+                    if(anno.annotationType().getName().endsWith(name)){
                         if(value.associate != null){
                             name = value.associate.name();
                         }

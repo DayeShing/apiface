@@ -1,16 +1,7 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 14:19
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.List;
+import com.daysh.apiface.core.util.ObjectUtil;
 
 /**
  * @Description: <p> TODO </p>
@@ -28,10 +19,6 @@ public class Response implements JsonApi{
      * 类型
      */
     private String type;
-    /**
-     * 状态
-     */
-    private Status status = Status.OK;
 
     private String description;
 
@@ -51,14 +38,6 @@ public class Response implements JsonApi{
         this.type = type;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -71,10 +50,10 @@ public class Response implements JsonApi{
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("description",description);
-        if(StringUtils.isNotEmpty(ref)){
+        if(ObjectUtil.isNotEmpty(ref)){
             json.put("$ref",ref);
         }
-        if(StringUtils.isNotEmpty(type)){
+        if(ObjectUtil.isNotEmpty(type)){
             json.put("type",type);
         }
         return json;

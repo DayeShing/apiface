@@ -1,16 +1,8 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 14:13
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daysh.apiface.core.api.meta.Auther;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
@@ -67,12 +59,15 @@ public class Path implements JsonApi {
 
     private List<Parameter> parameters;
 
+    private String error;
+    private String date;
+
     public Path() {
     }
 
     public Path(String method,String summary, String description) {
         this.summary = method;
-        if(StringUtils.isNotEmpty(summary)){
+        if(ObjectUtil.isNotEmpty(summary)){
             this.summary = String.format("%s(%s)",summary,method);
         }
         this.description = description;
@@ -150,6 +145,14 @@ public class Path implements JsonApi {
         this.parameters = parameters;
     }
 
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,6 +176,7 @@ public class Path implements JsonApi {
             JSONObject path = new JSONObject();
             path.put("tags", tags);
             path.put("summary", summary);
+            path.put("date", date);
             path.put("operationId", UUID.randomUUID().toString());
             path.put("unpack", unpack);
             path.put("body", body);
@@ -190,7 +194,7 @@ public class Path implements JsonApi {
                 user.put("contact",auther.getContact());
                 path.put("auther", user);
             }
-            if (StringUtils.isNotEmpty(version)) {
+            if (ObjectUtil.isNotEmpty(version)) {
                 path.put("version", version);
             }
 
@@ -198,7 +202,9 @@ public class Path implements JsonApi {
             for (Status value : Status.values()) {
                 JSONObject status = new JSONObject();
                 status.put("description", value.getDescription());
-                if (responses != null && value.equals(responses.getStatus())) {
+                if(value.equals(Status.ERROR)){
+                    status.put("error", error);
+                }else if (responses != null) {
                     status.put("schema", responses.toJSON());
                 }
                 res.put(value.getCode(), status);
@@ -271,5 +277,13 @@ public class Path implements JsonApi {
 
     public void setRequiredBody(boolean requiredBody) {
         this.requiredBody = requiredBody;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

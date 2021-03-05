@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 14:10
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import java.util.Objects;

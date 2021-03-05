@@ -7,17 +7,13 @@
  */
 package com.daysh.apiface.restlet;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -33,9 +29,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component("hello")
 @Scope("prototype")
-@Slf4j
 @Deprecated
-public class HelloRestlet extends ServerResource {
+public class HelloRestlet extends AbstractServerResource {
 
     /**
      * get请求(我们这样做不是因为我们想改变你，而是我们可以这么做)
@@ -81,10 +76,11 @@ public class HelloRestlet extends ServerResource {
      * @uri hello
      * @return java.lang.String|id和名称
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     public String sayHello(String id,String name){
-        if(StringUtils.isEmpty(name)){
+        if(name == null || name.length() ==0){
             name = "aa";
         }
         return String.format("%s->id=%s&name=%s",getClass().getName(),id,name);

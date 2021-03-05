@@ -9,7 +9,6 @@ package com.daysh.apiface.core.resolver.impl;
 
 import com.daysh.apiface.core.comment.tag.GeneralTag;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,7 @@ public class CommentResolver {
                 String tmp = s.trim();
                 if (tmp.startsWith("@")) {
                     break;
-                } else if (StringUtils.isNotEmpty(tmp)) {
+                } else if (ObjectUtil.isNotEmpty(tmp)) {
                     index++;
                     desc.append(tmp).append(" ");
                 }
@@ -106,7 +105,7 @@ public class CommentResolver {
                         docTags.add(getTag(buf.toString()));
                     }
                     buf = new StringBuffer(tmp);
-                } else if (buf != null && StringUtils.isNotEmpty(tmp)) {
+                } else if (buf != null && ObjectUtil.isNotEmpty(tmp)) {
                     buf.append(tmp);
                 }
             }

@@ -1,5 +1,9 @@
-# apiface (一套java后端接口工具)
+# apiface (一套由java开发的接口文档工具)
 ###### Tools that run in an operational or development environment
+
+### 演示地址
+* 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface</a>
+
 
 ### 开发环境
 > * nodejs
@@ -15,7 +19,7 @@
  * 2.传统javadoc太老了，不符合现在发展趋势
  * 3.不支持用例测试，给接口对接和测试麻烦
  * 4.写多余的注释和文档，(既要写接口文档还要写代码注释)不能空出太多时间给开发者
- * 5.文档工具对代码入侵性，如swagger
+ * 5.文档工具对代码具有入侵性，如swagger
  * 6.单一前端仅仅能访问单一后端，不能单一前端访问不同后端获取不同后端的接口文档
  * 7.接口文档和实际的接口版本不一致时，还要维护一套接口文档
 正是如此apiface的产生是为了针对上述的诸多问题，如果您对apiface感兴趣，可以深入看下代码，apiface还会继续完善的
@@ -24,16 +28,50 @@
 * ### apiface的特点
 ```markdown
  * 1.基于javadoc，但不会飘离项目本身的依赖
- * 2.基于maven插件不存在任何的代码入侵，不给您的代码带来耦合
+ * 2.基于maven(gradle)插件不会存在任何形式的代码入侵，不给您的代码带来耦合
  * 3.前端只需部署一套就能访问不同的后端接口并展示其文档接口
  * 4.仅仅需要根据实际接口写符合要求的javadoc,不用写任何的其他代码
  * 5.前端获取接口文档不依赖于后端运行环境(接口测试用例需要后端给真实的数据)
  * 6.兼容swagger2接口文档，如果您的项目依赖swagger接口文档，想换一套前端UI，可以使用apiface
- * 7.理论上支持一切框架开发的web
+ * 7.理论上支持一切由java语言开发的web应用
 ```
 
-* ### apiface的模块说明
+* ### apiface与swagger2的比较
+```markdown
+ * 1.运行环境：
+    (1).apiface:即可可以单独部署不占用实际项目本身的资源，又可以和实际项目捆绑部署(需要将生成的api.json和前端编译生成dist下的文件部署到应用服务)
+    (2).swagger2：仅仅能捆绑部署，不能分离部署（占用资源外，在实际生产环境还要重新打包，添加额外的麻烦）
+    (3).结果:apiface 比较好
+ * 2.访问权限：
+    (1).apiface:支持，但比较麻烦。 单独部署时，可以将生成的api.json文件放入应用的授权访问资源中， 集成部署时将生成的文件放入应用的授权访问资源中(api.json和前端编译生成dist下的文件)
+    (2).swagger2：支持，无操作，全在于应用的实际权限
+    (3).结果:swagger2 比较好
+ * 3.代码环境：
+    (1).apiface: 使用项目不依赖apiface的包，仅仅需要写javadoc，对代码没有任何入侵性（即使apiface存在缺陷，也影响不到项目的代码），下一阶段支持泛型
+    (2).swagger2：使用项目依赖swagger2的包，又要写javadoc将必要的注释和想法表达外，还要添加一系列多余的标记类，对代码具有入侵性，不支持泛型
+    (3).结果:apiface 比较好
+ * 4.全面性：
+    (1).apiface: 使用的类加载器：项目编译时编译项目的类加载器，总有一些你想不到的接口文档展示不太友好
+    (2).swagger2：使用的类加载器：项目运行的类加载器，支持全面
+    (3).结果:swagger2 比较好（毕竟swagger2 搞了很多年了）
+ * 5.使用条件：
+    (1).apiface: 必须用maven或gradle(下一阶段支持)编译
+    (2).swagger2：引入相关的包
+    (3).结果:apiface、swagger2各有有优势
+ * 6.界面UI:
+    (1).apiface: 单页面，支持搜索接口，接口展示较合理，操作简单，axios请求
+    (2).swagger2：单页面，不支持搜索接口（接口多的时候抓瞎），接口展示不合理，操作复杂，curl请求
+    (3).结果:apiface 比较好
+ * 7.界面兼容性：
+    (1).apiface: 页面完全兼容swagger2的
+    (2).swagger2：理论上可以用swagger2界面展示apiface的接口，但是一般人不会这么做，除非脑袋被驴踢了
+    (3).结果:apiface 比较好
+ * 8.综上所诉，我认为apiface不对项目本身存在任何形式的代码入侵，难能可贵，但局限于编译的时候，所以用相同编译插件的时候可以考虑apiface，
+    如果您的项目现在使用swagger2,想换一个，也可考虑apiface,因为apiface支持swagger2的页面
+```
 
+
+* ### apiface的模块说明
 > * apiface-core apiface的核心代码
 > * apiface-example apiface的使用范例
 > * apiface-proxy  apiface （文档项目分离）访问后端的代理，解决cookie跨域
@@ -73,6 +111,8 @@ writeApis->e
 |@author|开发者信息标记|@author username丨email|class,method|所有文档注释|标记该类或方法作者信息|
 |@since|版本标记|@since version|class,method|所有文档注释|标明一个类，方法，或其它标识符是在哪个特定版本开始添加进来的|
 |@action|接口类标记|@action group,group1|(abstract)class|无@ignore的文档注释|标记该注释类是一个接口类|
+|@error|错误描述|@error 发送错误时的描述|method|含@action的文档注释|接口的错误描述|
+|@error|时间|@error data-time|method|含@action的文档注释|接口的最后编辑时间|
 |@hidden|隐藏标记|@hidden|class,method|含@action的文档注释|标记该注释中接口类或接口仅仅是一个被继承类引用的文档|
 |@pack|使用统一包装|@pack 类全名<T>|class|含@action的文档注释|通常用于指定返回全局包装格式，其中包装类必须是有且仅有一个泛型|
 |@unpack|不使用统一包装|@unpack|class,method|含@action的文档注释|标记具体接口不使用全局包装|
@@ -96,22 +136,23 @@ writeApis->e
 |@required|是否必须|@required|feild|含@model的文档注释|标记该注释中模型类中属性字段是否必须|
 |@example|隐藏标记|@example 默认值|(get)method,feild|含@model的文档注释|标记该注释中模型类中属性字段默认值|
 ##### <a id="javadocUsing">apiface的javadoc标记实际使用详解</a>
-
-注： 祥看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)文件中用法
+注： 详看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)文件中用法
 
 
 * ### apiface-font的使用方式(apiface前后端接口交互方案(前端界面))
 
-#### 安装&运行&编译
-> * yarn 或者yarn install -- 安装依赖
-> * yarn dev 运行前端环境
-> * yarn build 打包
+#### 安装&运行&打包
+> * yarn                  -- 安装依赖
+> * yarn dev              -- 运行前端环境
+> * yarn build            -- 打包
 
 #### 特点
 > * 1.界面完全兼容swagger2界面
 > * 2.支持多后台接口方案(一套界面搞定若干个系统的API展示)
 > * 3.支持apiface无入侵api接口方案(一个自定义的API接口展示方案)
-> * 4.动态前端配置(不需要再打包conf.json)
+> * 4.支持i18n，国际化
+> * 5.支持生成本地文档 markdown形式
+> * 6.动态前端配置(不需要再打包apiface-font 仅仅需要配置conf.json)
 
 #### 依赖
 > * "axios": "^0.16.2"
@@ -135,7 +176,7 @@ writeApis->e
 |name|接口显示名称|字符串，任意值|跟随options|用于显示接口显示名称|
 |addr|接口地址|字符串，url|跟随options|用于显示接口地址以及获取描述文档的依据|
 
-注： 在[conf.js](./apiface-font/static/conf.js)文件中配置
+注： 在[conf.json](./apiface-font/static/conf.json)文件中配置
 
 #### 演示
 ![avatar](./apiface-font/static/demo/e1.png)
@@ -151,12 +192,11 @@ writeApis->e
 ![avatar](./apiface-font/static/demo/z6.png)
 
 
-
 * ### apiface-proxy使用方式
 ##### 部署步骤
  * 将使用apiface-maven-plugin生成api.json放入[static](./apiface-proxy/src/main/webapp/static)文件夹内
  * 将编译apiface-font生成[dist](./apiface-font/dist)文件夹内的所有文件放入[static](./apiface-proxy/src/main/webapp/static)文件夹内
- * 按需修改apiface-proxy中的[conf.js](./apiface-proxy/src/main/webapp/static/conf.js)
+ * 按需修改apiface-proxy中的[conf.json](./apiface-proxy/src/main/webapp/static/conf.json)
  * 编译打包apiface-proxy成war包
  * 部署war包并访问
  
@@ -168,7 +208,7 @@ writeApis->e
 > * basePath      相当于 HttpServletRequest.getContextPath()，部署项目的实际baseUrl用于用例测试
 > * license       
 > * licenseUrl    
-> * developer    开发团队|开发团队EMAIL ，用于显示开发者信息
+> * developer    开发团队|开发团队联系 ，用于显示开发者信息
 > * url          开发团队主页
 > * description  该接口平台的描述信息
 > * version      该接口平台记录的项目的版本
@@ -263,6 +303,7 @@ apiface-example 的目的仅仅是用户测试用例以及使用演示
 ```
 * 生成接口方法的时候 定义 Abbreviation： /***
 ```java
+// 空一行
 /**
  * 详细描述$params$
  * @uri uri
@@ -270,6 +311,7 @@ apiface-example 的目的仅仅是用户测试用例以及使用演示
  * @method post,get
  * @ignore
  * @exclude 排除参数1,排除参数2
+ * @error 错误描述
  * @return $returns$|描述
  * @author Daye Shing | 896379914@qq.com
  * @since 1.0
@@ -285,7 +327,7 @@ groovyScript("def result=''; def params=\"${_1}\".replaceAll('[\\\\[|\\\\]|\\\\s
 /api 或者 /mod 或者 /**c(回车)
 public class Template{
     public String text(String name){/***(回车)
-    
+        return "";
     }
 }
 ```

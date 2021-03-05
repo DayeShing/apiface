@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.support.spring
- * @Author： Daye Shing
- * @CreateTime： 2021-02-28 14:43
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.support.spring;
 
 import com.daysh.apiface.core.bean.Annotation;

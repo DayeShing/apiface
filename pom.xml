@@ -14,6 +14,7 @@
         <module>apiface-proxy</module>
         <module>apiface-example</module>
         <module>apiface-font</module>
+<!--        <module>apiface-gradle-plugin</module>-->
     </modules>
 
     <properties>
@@ -22,9 +23,6 @@
         <jdk.compiler.version>1.8</jdk.compiler.version>
         <maven.compiler.veriosn>2.3.2</maven.compiler.veriosn>
         <maven.resource.version>2.7</maven.resource.version>
-        <common.lang.version>2.5</common.lang.version>
-        <common.collections.version>3.2.2</common.collections.version>
-        <lombok.version>1.18.6</lombok.version>
     </properties>
 
     <repositories>

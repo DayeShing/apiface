@@ -52,7 +52,6 @@
 <script>
 import Layout from "./layout.vue";
 import Version from "../page/version.vue";
-import $axios from "axios";
 export default {
   data() {
     return {
@@ -77,11 +76,11 @@ export default {
   },
   methods: {
     getConf() {
-      let $this = this;
-      $axios.get("static/conf.json", { id: 1 }).then(response => {
-        window.CONF = response.data;
-        $this.init();
-      });
+      this.$fetch("static/conf.json", "get")
+        .then(res => {
+          this.init(res);
+        })
+        .catch(err => {});
     },
     $self(k) {
       return this.$t(this.page + k);
@@ -176,22 +175,22 @@ export default {
         return false;
       }
     },
-    init() {
+    init(conf) {
       // 非直接访问
-      if (window.CONF) {
-        this.title = window.CONF.title;
-        this.single = window.CONF.mode == "single";
-        this.proxy = window.CONF.proxy;
-        if (this.single && window.CONF.docs && window.CONF.docs.length > 0) {
-          this.addr = window.CONF.docs[0].options[0].addr;
-          this.options = window.CONF.docs;
+      if (conf) {
+        this.title = conf.title;
+        this.single = conf.mode == "single";
+        this.proxy = conf.proxy;
+        if (this.single && conf.docs && conf.docs.length > 0) {
+          this.addr = conf.docs[0].options[0].addr;
+          this.options = conf.docs;
         } else {
           var addr = window.location.href;
           var index = addr.indexOf("/apiface.html#/");
           if (index != -1) {
             addr = addr.substring(0, index);
           }
-          this.addr = addr + window.CONF.api;
+          this.addr = addr + conf.api;
           this.options = [
             {
               group: this.$self("vm"),

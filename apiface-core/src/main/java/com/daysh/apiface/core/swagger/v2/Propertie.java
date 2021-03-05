@@ -1,15 +1,8 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 19:30
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daysh.apiface.core.enums.VariableEnum;
-import org.apache.commons.lang.StringUtils;
+import com.daysh.apiface.core.util.ObjectUtil;
 
 import java.util.Objects;
 
@@ -166,7 +159,7 @@ public class Propertie implements JsonApi {
         json.put("deprecated", deprecated);
         json.put("onlyRead", onlyRead);
 
-        if (StringUtils.isNotEmpty(ref)) {
+        if (ObjectUtil.isNotEmpty(ref)) {
             if (VariableEnum.ARRAY.getType().equals(type)) {
                 JSONObject items = new JSONObject();
                 items.put("$ref", ref);

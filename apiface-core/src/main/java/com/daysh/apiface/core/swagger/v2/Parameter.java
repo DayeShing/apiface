@@ -1,17 +1,8 @@
-
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.swagger.v2
- * @Author： Daye Shing
- * @CreateTime： 2021-02-27 14:32
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daysh.apiface.core.enums.ParamEnum;
 import com.daysh.apiface.core.util.ObjectUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,9 +108,9 @@ public class Parameter implements JsonApi{
         json.put("type",type);
         json.put("default",example);
         json.put("format",format);
-        if(StringUtils.isNotEmpty(ref) || ObjectUtil.isNotEmpty(parameters)){
+        if(ObjectUtil.isNotEmpty(ref) || ObjectUtil.isNotEmpty(parameters)){
             JSONObject schema = new JSONObject();
-            if(StringUtils.isNotEmpty(ref)){
+            if(ObjectUtil.isNotEmpty(ref)){
                 schema.put("$ref",ref);
             }
             if(ObjectUtil.isNotEmpty(parameters)){

@@ -1,10 +1,3 @@
-/**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.core.enums
- * @Author： Daye Shing
- * @CreateTime： 2021-03-02 03:21
- * @Description: <p>  </p>
- */
 package com.daysh.apiface.core.enums;
 
 /**

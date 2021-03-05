@@ -88,6 +88,10 @@ public class Action implements Meta, Api, Anno, Serializable {
      */
     private String summary;
 
+    private String error;
+
+    private String date;
+
     private Map<String, Annotation> annos;
 
     public Return getRet() {
@@ -234,6 +238,22 @@ public class Action implements Meta, Api, Anno, Serializable {
     }
     public Map<String, Annotation> getAnnos() {
         return annos;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override

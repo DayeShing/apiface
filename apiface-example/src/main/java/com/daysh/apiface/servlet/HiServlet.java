@@ -8,7 +8,6 @@
 package com.daysh.apiface.servlet;
 
 import com.daysh.apiface.model.Hi;
-import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,10 +50,11 @@ public class HiServlet extends HttpServlet {
      * @uri hi
      * @return java.lang.String|id和名称
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      */
     public String sayHello(Hi hi){
-        if(StringUtils.isEmpty(hi.getName())){
+        if(hi.getName() == null || hi.getName().length() ==0){
             hi.setName("aa");
         }
         return String.format("%s->id=%s&name=%s",getClass().getName(),hi.getId(),hi.getName());

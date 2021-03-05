@@ -32,7 +32,7 @@
         <span>({{ val.schema.type }})</span>
         <span v-if="val.schema.format">-/- {{ val.schema.format }})</span>
       </div>
-
+      <div v-else-if="val.error" class="simple-data bg">{{val.error}}</div>
       <div v-else class="no-data">{{ $self("nometa") }}</div>
     </div>
 

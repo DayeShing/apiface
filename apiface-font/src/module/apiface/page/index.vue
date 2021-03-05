@@ -66,7 +66,7 @@
           <div class="article-info-box">
             <div class="article-bar-top">
               <i class="fa fa-info-circle article-type-icon"></i>
-              <pre>{{ data.content.description }}</pre>
+              <p>{{ data.content.description }}</p>
             </div>
             <!-- 地址栏 -->
             <div class="blog-addr-box blog-tags-box">
@@ -245,7 +245,6 @@ export default {
       console.log(data, "api info");
       this.responseInfo.show = false;
       this.data = data;
-      console.log(data.content.parameters);
     }
   }
 };
@@ -383,7 +382,7 @@ export default {
               color: #3184da;
               line-height: 25px;
             }
-            pre {
+            p {
               color: #5893c2;
               line-height: 25px;
               font-size: 13px;

@@ -28,6 +28,7 @@ public class HelloController extends BaseController {
      * @summary 获取sayHello
      * @return java.lang.String|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 15:19
      */
@@ -43,6 +44,7 @@ public class HelloController extends BaseController {
      * @summary 获取sayHello
      * @return java.lang.String|描述
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 15:18
      */
@@ -58,6 +60,7 @@ public class HelloController extends BaseController {
      * @summary 获取sayHello
      * @return com.daysh.apiface.model.Hi|sayHi
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 16:21
      */
@@ -76,6 +79,7 @@ public class HelloController extends BaseController {
      * @summary 获取sayHello
      * @return com.daysh.apiface.model.Hi|sayHi
      * @author Daye Shing | 896379914@qq.com
+     * @error 错误
      * @since 1.0
      * @date 2021/3/2 16:21
      */
