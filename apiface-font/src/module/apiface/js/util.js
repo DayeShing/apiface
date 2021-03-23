@@ -238,9 +238,13 @@ util.install = function (Vue, options) {
       success: true,
       msg: "",
       field: "",
-      path: {}
+      meta: {}
     };
-    var path = {};
+    var meta = {
+      path: {},
+      head: {},
+      cookie: {}
+    };
     if (data && data.length > 0) {
       var tmp = {};
       for (var i = 0; i < data.length; i++) {
@@ -279,7 +283,15 @@ util.install = function (Vue, options) {
           }
           if (data[i].enable) {
             if (data[i].in == 'path') {
-              path[field] = v;
+              meta.path[field] = v;
+              continue;
+            }
+            if (data[i].in == 'head') {
+              meta.head[field] = v;
+              continue;
+            }
+            if (data[i].in == 'cookie') {
+              meta.cookie[field] = v;
               continue;
             }
             var t = this.realValue(data[i].type, v);
@@ -296,7 +308,7 @@ util.install = function (Vue, options) {
         }
       }
       ret.data = tmp;
-      ret.path = path;
+      ret.meta = meta;
     }
     return ret;
   }

@@ -144,6 +144,7 @@ import response from "./response.vue";
 import demo from "./case.vue";
 import request from "./request.vue";
 import LangStorage from "../js/lang/lang";
+import $cookie from "js-cookie";
 export default {
   data() {
     return {
@@ -169,6 +170,7 @@ export default {
         parentDesc: "",
         defaultType: ""
       },
+      cookie: {},
       // 模式 只读，操作
       mode: true,
       // 响应
@@ -204,28 +206,41 @@ export default {
       LangStorage.setLang(lang);
       window.location.reload();
     },
-    submit(data, path) {
+    submit(data, meta) {
       var p = this.data.path;
-      for (var uri in path) {
+
+      for (var uri in meta.path) {
         var tmp = "{" + uri + "}";
-        var u = p.replace(tmp, path[uri]);
+        var u = p.replace(tmp, meta.path[uri]);
         p = u;
       }
-      var meta = {
+
+      var cn = [];
+      for (var c in meta.cookie) {
+        cn.push(c);
+        $cookie.set(c, meta.cookie[c]);
+      }
+      this.cookie[p].data = cn;
+
+      var heads = [
+        {
+          name: "Content-Type",
+          content:
+            this.data.content.status.$in == "body"
+              ? "application/json"
+              : "application/x-www-form-urlencoded"
+        }
+      ];
+      for (var h in meta.head) {
+        heads.push({ name: h, content: meta.head[h] });
+      }
+      var metadata = {
         url: this.data.host + this.data.basePath + p,
         method: this.data.defaultType,
-        heads: [
-          {
-            name: "Content-Type",
-            content:
-              this.data.content.status.$in == "body"
-                ? "application/json"
-                : "application/x-www-form-urlencoded"
-          }
-        ],
+        heads: heads,
         ret: true
       };
-      this.$emit("submit", meta, data);
+      this.$emit("submit", metadata, data);
     },
     resize() {
       this.$nextTick(() => {
@@ -236,6 +251,9 @@ export default {
      * 获取响应数据
      */
     fetch(data) {
+      // $cookie.set(c, meta.cookie[c]);
+      //       }这里 删除cookie,但是要获取唯一请求
+      //       this.cookie[p].data = cn;
       this.responseInfo = data;
     },
     /**

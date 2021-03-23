@@ -8,7 +8,7 @@ package com.daysh.apiface.core.enums;
  */
 public enum ParamEnum {
 
-    BODY,FORM,PATH;
+    BODY,FORM,PATH,HEAD,COOKIE;
 
     public static ParamEnum of(String type){
         for (ParamEnum value : values()) {

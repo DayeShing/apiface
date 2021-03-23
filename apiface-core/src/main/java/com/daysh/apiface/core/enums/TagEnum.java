@@ -120,20 +120,6 @@ public enum TagEnum {
         this.resolver = resolver;
     }
 
-    public static boolean isSpecialTag(List<String> tags) {
-        if (ObjectUtil.isNotEmpty(tags)) {
-            for (String tag : tags) {
-                if (ACTION.getTagName().equalsIgnoreCase(tag)) {
-                    return true;
-                }
-                if (MODEL.getTagName().equalsIgnoreCase(tag)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static boolean isIgnore(List<String> tags) {
         if (ObjectUtil.isNotEmpty(tags)) {
             for (String tag : tags) {

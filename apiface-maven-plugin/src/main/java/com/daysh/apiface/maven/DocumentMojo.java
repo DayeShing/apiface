@@ -1,6 +1,7 @@
 
 package com.daysh.apiface.maven;
 
+import com.alibaba.fastjson.JSON;
 import com.daysh.apiface.conver.ToBuf;
 import com.daysh.apiface.core.api.ApiRule;
 import com.daysh.apiface.core.comment.impl.ClassMark;
@@ -44,7 +45,13 @@ public class DocumentMojo extends AbstractFaceMojo {
     protected byte[] process() {
         List<ClassMark> marks = new ArrayList<>(180);
         marks.addAll(new ResolverImpl(new ApiRule()).resolveResources(ScanUtil.scanResources(sourseDirectory, new String[]{"java"}, rule)));
-        return GZIPUtil.compress(ToBuf.toBuf(marks));
+        if(marks.size() == 0){
+            return null;
+        }
+        if(gzip){
+            return GZIPUtil.compress(ToBuf.toBuf(marks));
+        }
+        return JSON.toJSONString(marks).getBytes();
     }
 
     @Override

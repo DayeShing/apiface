@@ -48,9 +48,6 @@ public class ApiRule implements Rule {
      * @since 1.0
      */
     public boolean classMark(List<String> tags) {
-        if (TagEnum.isSpecialTag(tags)) {
-            return false;
-        }
         return TagEnum.isIgnore(tags);
     }
 

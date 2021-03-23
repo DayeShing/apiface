@@ -73,6 +73,10 @@ public class SpringMvcSupportHelper {
                         BaseElement body = (BaseElement) annos.get(RequestBody.name());
                         BaseElement p = (BaseElement) annos.get(RequestParam.name());
                         BaseElement path = (BaseElement) annos.get(PathVariable.name());
+                        BaseElement head = (BaseElement) annos.get(RequestHeader.name());
+                        BaseElement cook = (BaseElement) annos.get(CookieValue.name());
+
+
                         if (body != null) {
                             param.setRequired(body.isRequired());
                             param.setForm(ParamEnum.BODY);
@@ -90,6 +94,22 @@ public class SpringMvcSupportHelper {
                             param.setRequired(path.isRequired());
                             param.setForm(ParamEnum.PATH);
                             String name = ObjectUtil.isNotEmpty(path.getName()) ? path.getName() : path.getValue();
+                            if (ObjectUtil.isNotEmpty(name)) {
+                                param.setName(name);
+                            }
+                        }else if (head != null) {
+                            param.setRequired(head.isRequired());
+                            param.setForm(ParamEnum.HEAD);
+                            param.setExample(head.getDefaultValue());
+                            String name = ObjectUtil.isNotEmpty(head.getName()) ? head.getName() : head.getValue();
+                            if (ObjectUtil.isNotEmpty(name)) {
+                                param.setName(name);
+                            }
+                        }else if (cook != null) {
+                            param.setRequired(cook.isRequired());
+                            param.setForm(ParamEnum.COOKIE);
+                            param.setExample(cook.getDefaultValue());
+                            String name = ObjectUtil.isNotEmpty(cook.getName()) ? cook.getName() : cook.getValue();
                             if (ObjectUtil.isNotEmpty(name)) {
                                 param.setName(name);
                             }

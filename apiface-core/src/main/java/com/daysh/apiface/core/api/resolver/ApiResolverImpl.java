@@ -7,6 +7,7 @@
  */
 package com.daysh.apiface.core.api.resolver;
 
+import com.alibaba.fastjson.JSON;
 import com.daysh.apiface.core.api.meta.*;
 import com.daysh.apiface.core.api.v2.SpringMvcSupportHelper;
 import com.daysh.apiface.core.comment.Mark;
@@ -65,7 +66,7 @@ public class ApiResolverImpl implements ApiResolver {
     private Map<String, FieldGroup> fields;
 
     public ApiResolverImpl() {
-        this(null);
+        this(Thread.currentThread().getContextClassLoader());
     }
 
     public ApiResolverImpl(ClassLoader classLoader) {
@@ -84,7 +85,7 @@ public class ApiResolverImpl implements ApiResolver {
                 // 设置描述和类全名
                 String name = mark.getName();
                 try {
-                    Class clazz = Class.forName(name, true, classLoader);
+                    Class clazz = Class.forName(name, false, classLoader);
                     Annotation annotation = clazz.getAnnotation(Deprecated.class);
                     String desc = mark.getDesc();
                     if (TagEnum.isAction(tags)) {
@@ -115,7 +116,7 @@ public class ApiResolverImpl implements ApiResolver {
                         group.setFields(fields(clazz, mark));
                         fields.put(name, group);
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

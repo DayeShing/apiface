@@ -125,27 +125,24 @@ export default {
       );
       if (data.content.parameters && data.content.parameters.length > 0) {
         if (data.content.status.isBody) {
-          arr.push("```bash");
-          arr.push(
-            JSON.stringify(
-              this.toJSONObject(data.content.parameters[0].schema.data),
-              null,
-              4
-            )
-          );
-          arr.push("```");
-          arr.push(this.title(false));
-          arr.push(":---:|:--:|:--:|:--:|:--:");
-          this.reqFor(
-            data.content.parameters[0].schema.data.child,
-            arr,
-            undefined
-          );
-        } else {
-          arr.push(this.title(true));
-          arr.push(":---:|:--:|:--:|:--:|:--:");
-          this.reqFor(data.content.parameters, arr, undefined);
+          for (var i = 0; i < data.content.parameters.length; i++) {
+            if (data.content.parameters[i].type == "json") {
+              arr.push("```bash");
+              arr.push(data.content.parameters[i].name + ":");
+              arr.push(
+                JSON.stringify(
+                  this.toJSONObject(data.content.parameters[i].schema.data),
+                  null,
+                  4
+                )
+              );
+              arr.push("```");
+            }
+          }
         }
+        arr.push(this.title(true));
+        arr.push(":---:|:--:|:--:|:--:|:--:");
+        this.reqFor(data.content.parameters, arr, undefined);
       } else {
         arr.push(this.$self("noparam"));
       }

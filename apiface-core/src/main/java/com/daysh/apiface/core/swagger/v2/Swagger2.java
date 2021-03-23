@@ -18,6 +18,8 @@ public class Swagger2 implements ApiTransform, JsonApi {
 
     private Set<Tag> tags = new HashSet<Tag>();
     private Set<Path> action = new HashSet<Path>();
+    private List<Path> doublePath = new ArrayList<>();
+
     private List<Definition> definitions = new ArrayList<Definition>();
     private Map<String, ActionGroup> actions;
     private Map<String, FieldGroup> fields;
@@ -40,8 +42,8 @@ public class Swagger2 implements ApiTransform, JsonApi {
             } else {
                 this.tags.add(new Tag(group.getName(), group.getDesc()));
             }
-            action.addAll(getChildActions(group, group));
-            action.addAll(getActions(group, group));
+            getChildActions(group, group);
+            getActions(group, group);
         }
 
         for (Map.Entry<String, FieldGroup> entry : fields.entrySet()) {
@@ -61,7 +63,17 @@ public class Swagger2 implements ApiTransform, JsonApi {
         json.put("tags", tags);
         JSONObject as = new JSONObject();
         for (Path path : action) {
-            as.put(path.getUrl(), path.toJSON());
+            JSONObject jsonPath = path.toJSON();
+            for (Path p : doublePath) {
+                if(p.getUrl().equals(path)){
+                    JSONObject tmp = p.toJSON();
+                    for (Map.Entry<String, Object> entry : tmp.entrySet()) {
+                        jsonPath.put(entry.getKey(),entry.getValue());
+                    }
+                }
+
+            }
+            as.put(path.getUrl(), jsonPath);
         }
         json.put("paths", as);
         JSONObject arr = new JSONObject();
@@ -126,8 +138,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         return p;
     }
 
-    protected Set<Path> getChildActions(ActionGroup top, ActionGroup group) {
-        Set<Path> as = new HashSet<Path>();
+    protected void getChildActions(ActionGroup top, ActionGroup group) {
         ActionGroup child = actions.get(group.getRef());
         if (child != null) {
             // 继承包装类与卸载包装类
@@ -136,25 +147,22 @@ public class Swagger2 implements ApiTransform, JsonApi {
             if(ObjectUtil.isNotEmpty(pack) && ObjectUtil.isEmpty(topPack)){
                 top.setPack(pack);
             }
-            as.addAll(getChildActions(top, child));
-            as.addAll(getActions(top, child));
+            getChildActions(top, child);
+            getActions(top, child);
         }
-        return as;
     }
 
-    protected Set<Path> getActions(ActionGroup top, ActionGroup group) {
-        Set<Path> as = new HashSet<Path>();
+    protected void getActions(ActionGroup top, ActionGroup group) {
         List<Action> actions = group.getActions();
         for (Action action : actions) {
             if(action.isHidden()){
                 continue;
             }
-            as.add(getAction(top, action));
+            getAction(top, action);
         }
-        return as;
     }
 
-    protected Path getAction(ActionGroup group, Action action) {
+    protected void getAction(ActionGroup group, Action action) {
 
         Path path = new Path(action.getName(),action.getSummary(), action.getDesc());
         path.setRequiredBody(action.isRequiredBody());
@@ -177,7 +185,11 @@ public class Swagger2 implements ApiTransform, JsonApi {
         path.setUrl(uri(group.getUri(), action.getUri()));
         path.setResponses(getResponse(action.getRet()));
         path.setParameters(getParameters(action.getParams()));
-        return path;
+        if(this.action.contains(path)){
+            doublePath.add(path);
+            return;
+        }
+        this.action.add(path);
     }
 
     protected Response getResponse(Return ret) {

@@ -1,10 +1,12 @@
 package com.daysh.apiface.maven;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.daysh.apiface.conver.ToBean;
 import com.daysh.apiface.core.api.meta.Auther;
 import com.daysh.apiface.core.api.resolver.ApiResolver;
 import com.daysh.apiface.core.api.resolver.ApiResolverImpl;
+import com.daysh.apiface.core.comment.impl.ClassMark;
 import com.daysh.apiface.core.resolver.tag.AutherResolver;
 import com.daysh.apiface.core.swagger.v2.Swagger2;
 import com.daysh.apiface.core.util.GZIPUtil;
@@ -20,6 +22,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -34,7 +37,7 @@ import java.util.jar.JarFile;
         requiresDependencyResolution = ResolutionScope.COMPILE,
         threadSafe = true
 )
-@Execute(phase = LifecyclePhase.PREPARE_PACKAGE)
+@Execute(phase = LifecyclePhase.PACKAGE)
 public class ApiMojo extends AbstractFaceMojo {
 
     public static final String MOJO = "api";
@@ -43,18 +46,21 @@ public class ApiMojo extends AbstractFaceMojo {
             property = "artifactId",
             defaultValue = ""
     )
-    private String artifactId;
-
-//    @Parameter(
-//            property = "artifactId",
-//            defaultValue = ""
-//    )
-//    private String artifactId;
+    protected String artifactId;
 
     private ApiResolver resolver = null;
 
     public void loadMark(byte[] bytes) {
-        resolver.resolver(ToBean.toBeans(GZIPUtil.uncompress(bytes)));
+        try{
+            if(gzip){
+                resolver.resolver(ToBean.toBeans(GZIPUtil.uncompress(bytes)));
+            }else {
+                resolver.resolver(JSON.parseArray(new String(bytes), ClassMark.class));
+            }
+        }catch(Exception e){
+            getLog().info(String.format("----------->> 解压文档失败: %s <<-----------", e.getMessage()));
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -118,8 +124,8 @@ public class ApiMojo extends AbstractFaceMojo {
 
     @Override
     protected byte[] process() throws MojoExecutionException {
-        resolver = new ApiResolverImpl(getProjectClassLoader());
-        loadMark(getProjectClassLoader(), String.format("%s/%s",DIRECTORY, getFilename(DocumentMojo.MOJO)));
+        resolver = new ApiResolverImpl(classLoader);
+        loadMark(classLoader, String.format("%s/%s",DIRECTORY, getFilename(DocumentMojo.MOJO)));
         JSONObject transform = new Swagger2().transform(resolver.getActions(), resolver.getFields());
         return info(transform).toJSONString().getBytes();
     }

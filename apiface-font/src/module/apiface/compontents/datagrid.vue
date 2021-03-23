@@ -3,11 +3,11 @@
   作者：Daye Shing
 -->
 <template>
+  <!-- :row-key="rowkey" -->
   <el-table
     class="datagrid"
     :data="data"
     default-expand-all
-    :row-key="rowkey"
     :tree-props="{children: 'child', hasChildren: 'isLeft'}"
     border
     stripe

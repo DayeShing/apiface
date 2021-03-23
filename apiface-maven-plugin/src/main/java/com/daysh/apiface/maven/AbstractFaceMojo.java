@@ -49,8 +49,13 @@ public abstract class AbstractFaceMojo extends AbstractMojo {
     )
     protected File outputDirectory;
 
-    protected ClassLoader projectClassLoader;
-    protected static final Set<String> MODULE = new HashSet<>();
+    @Parameter(
+            property = "gzip",
+            defaultValue = "true"
+    )
+    protected boolean gzip;
+
+    protected ClassLoader classLoader;
 
     protected abstract byte[] process() throws MojoExecutionException;
 
@@ -66,15 +71,20 @@ public abstract class AbstractFaceMojo extends AbstractMojo {
         return String.format("%s.%s",mojo(),project.getArtifactId());
     }
 
+    @Override
     public void execute() throws MojoExecutionException {
-        // 执行重复
-        if(ObjectUtil.equals("pom",project.getPackaging()) || !isExecute() || MODULE.contains(module())){
+        if(ObjectUtil.equals("pom",project.getPackaging())
+                || !isExecute()
+        ){
             return;
         }
-        MODULE.add(module());
         try {
+            classLoader = getClassLoader();
             before();
-            ObjectUtil.write(dist(),process());
+            byte[] process = process();
+            if(process != null){
+                ObjectUtil.write(dist(),process);
+            }
             after();
         }catch (Exception e){
             getLog().info(String.format("----------->> 构建 %s 模块的%s失败 <<-----------", project.getArtifactId(),mojo()));
@@ -98,28 +108,28 @@ public abstract class AbstractFaceMojo extends AbstractMojo {
 
     protected List<String> getCompileClasspathElements(MavenProject p)  {
         try {
-            return (List)(p.getCompileClasspathElements() == null ? Collections.emptyList() : new LinkedList(p.getCompileClasspathElements()));
-        } catch (DependencyResolutionRequiredException e) {
+            if(p.getCompileClasspathElements() == null){
+                return Collections.emptyList();
+            }
+            return new LinkedList<String>(p.getCompileClasspathElements());
+        } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
-    protected ClassLoader getProjectClassLoader() throws MojoExecutionException {
-        if (this.projectClassLoader == null) {
-            List classPath = this.getCompileClasspathElements(this.project);
-            List<URL> urls = new ArrayList(classPath.size());
-            Iterator i$ = classPath.iterator();
-            while(i$.hasNext()) {
-                String filename = (String)i$.next();
-                try {
-                    urls.add((new File(filename)).toURL());
-                } catch (MalformedURLException var6) {
-                    throw new MojoExecutionException("MalformedURLException: " + var6.getMessage(), var6);
-                }
+    protected ClassLoader getClassLoader() {
+        List<String> classPath = getCompileClasspathElements(this.project);
+        List<URL> urls = new ArrayList<URL>(classPath.size());
+        for (String jar : classPath) {
+            try {
+                urls.add((new File(jar)).toURL());
+            } catch (Exception var6) {
+                getLog().info(String.format("----------->> 加载包 %s 失败 <<-----------", jar));
             }
-            this.projectClassLoader = new URLClassLoader((URL[])urls.toArray(new URL[urls.size()]), (ClassLoader)null);
         }
-        return this.projectClassLoader;
+        URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[urls.size()]), getClass().getClassLoader());
+        Thread.currentThread().setContextClassLoader(loader);
+        return loader;
     }
 
 }

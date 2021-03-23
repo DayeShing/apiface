@@ -283,7 +283,7 @@ export default {
       var data = this.toParams(this.data);
       console.log(data, "request data");
       if (data.success) {
-        this.$emit("submit", this.formatParam(data.data), data.path);
+        this.$emit("submit", this.formatParam(data.data), data.meta);
       } else {
         this.$message({
           type: "error",
