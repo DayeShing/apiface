@@ -7,7 +7,7 @@
 [![license](https://img.shields.io/github/license/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![Contributors](https://img.shields.io/github/contributors/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/contributors/)
 [![JDK](https://img.shields.io/badge/JDK-1.8+-blue.svg)](https://github.com/DayeShing)
-[![Maven](https://img.shields.io/maven/v/metadata-url/repo1.maven.org/maven2/com/google/code/gson/gson/maven-metadata.xml)](https://github.com/DayeShing)
+[![Maven](https://img.shields.io/badge/Maven-3.0+-blue.svg)](https://github.com/DayeShing)
 [![Language](https://img.shields.io/badge/Language-java+-orange.svg)](https://github.com/DayeShing)
 [![npm](https://img.shields.io/npm/v/yarn/legacy)](https://github.com/DayeShing)
 ![tag](https://img.shields.io/static/v1?label=&message=文档构建&color=brightgreen)
