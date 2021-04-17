@@ -55,6 +55,11 @@ public class Return implements Meta, Serializable {
      */
     private boolean base;
 
+    /**
+     * 是否数组
+     */
+    private boolean array;
+
     public Return() {
     }
 
@@ -133,5 +138,13 @@ public class Return implements Meta, Serializable {
 
     public void setBase(boolean base) {
         this.base = base;
+    }
+
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
     }
 }

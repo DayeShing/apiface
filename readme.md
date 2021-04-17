@@ -1,3 +1,27 @@
+[![API](https://img.shields.io/badge/Api-99+-blueviolet.svg)](https://github.com/DayeShing)
+[![Author](https://img.shields.io/badge/Author-DayeShing-yellowgreen.svg?icon=github)](https://github.com/DayeShing)
+[![Release](https://img.shields.io/github/release/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
+[![issues](https://img.shields.io/github/issues/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
+[![forks](https://img.shields.io/github/forks/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
+[![stars](https://img.shields.io/github/stars/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
+[![license](https://img.shields.io/github/license/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
+[![Contributors](https://img.shields.io/github/contributors/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/contributors/)
+[![JDK](https://img.shields.io/badge/JDK-1.8+-blue.svg)](https://github.com/DayeShing)
+[![Maven](https://img.shields.io/maven/v/metadata-url/repo1.maven.org/maven2/com/google/code/gson/gson/maven-metadata.xml)](https://github.com/DayeShing)
+[![Language](https://img.shields.io/badge/Language-java+-orange.svg)](https://github.com/DayeShing)
+[![npm](https://img.shields.io/npm/v/yarn/legacy)](https://github.com/DayeShing)
+![tag](https://img.shields.io/static/v1?label=&message=文档构建&color=brightgreen)
+![tag](https://img.shields.io/static/v1?label=&message=APIs&color=green)
+![tag](https://img.shields.io/static/v1?label=&message=javadoc&color=yellowgreen)
+![tag](https://img.shields.io/static/v1?label=&message=swagger&color=yellow)
+![tag](https://img.shields.io/static/v1?label=&message=java注释&color=orange)
+![tag](https://img.shields.io/static/v1?label=&message=javadoc2APIs&color=red)
+![tag](https://img.shields.io/static/v1?label=&message=注释文档&color=blue)
+![tag](https://img.shields.io/static/v1?label=&message=注释生成APIs&color=blueviolet)
+![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
+![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
+![tag](https://img.shields.io/static/v1?label=&message=doc&color=lightgrey)
+
 # apiface (一套由java开发的接口文档工具)
 ###### Tools that run in an operational or development environment
 
@@ -6,10 +30,9 @@
 
 
 ### 开发环境
-> * nodejs
-> * yarn
-> * maven
-> * jdk8
+> * nodejs and yarn
+> * maven or gradle
+> * jdk8+
 
 
 * ### 开发初衷
@@ -112,7 +135,7 @@ writeApis->e
 |@since|版本标记|@since version|class,method|所有文档注释|标明一个类，方法，或其它标识符是在哪个特定版本开始添加进来的|
 |@action|接口类标记|@action group,group1|(abstract)class|无@ignore的文档注释|标记该注释类是一个接口类|
 |@error|错误描述|@error 发送错误时的描述|method|含@action的文档注释|接口的错误描述|
-|@error|时间|@error data-time|method|含@action的文档注释|接口的最后编辑时间|
+|@date|时间|@date data-time|method|含@action的文档注释|接口的最后编辑时间|
 |@hidden|隐藏标记|@hidden|class,method|含@action的文档注释|标记该注释中接口类或接口仅仅是一个被继承类引用的文档|
 |@pack|使用统一包装|@pack 类全名<T>|class|含@action的文档注释|通常用于指定返回全局包装格式，其中包装类必须是有且仅有一个泛型|
 |@unpack|不使用统一包装|@unpack|class,method|含@action的文档注释|标记具体接口不使用全局包装|
@@ -130,7 +153,7 @@ writeApis->e
 |@param|接口参数|@param 参数名丨参数类型丨描述|method|含@action的文档注释|标记具体接口的参数，带描述|
 |@param|接口参数|@param 参数名丨参数类型丨必须丨描述|method|含@action的文档注释|标记具体接口的参数，带参数限制|
 |@param|接口参数|@param 参数名丨参数类型丨必须丨默认值丨描述|method|含@action的文档注释|标记具体接口的参数，带默认值|
-|@param|接口参数|@param 参数名丨参数类型丨必须丨默认值丨类型 body/form/path丨描述|method|含@action的文档注释|标记具体接口的参数，带类型|
+|@param|接口参数|@param 参数名丨参数类型丨必须丨默认值丨类型 body/form/path/head/cookie丨描述|method|含@action的文档注释|标记具体接口的参数，带类型|
 |@model|模型类标记|@model onlyname|(abstract)class,interface|无@ignore的文档注释|标记该注释类是一个模型类|
 |@hidden|隐藏标记|@hidden|(get)method,feild|含@model的文档注释|标记该注释中模型类中属性字段是否展示|
 |@required|是否必须|@required|feild|含@model的文档注释|标记该注释中模型类中属性字段是否必须|
@@ -200,7 +223,7 @@ writeApis->e
  * 编译打包apiface-proxy成war包
  * 部署war包并访问
  
-注：上述过程maven都已经帮我们做好了，您只需要安装好环境 并执行mvn package命令即可
+注：上述过程maven都已经帮我们做好了，您只需要安装好环境 并执行mvn install命令即可
 
 * ### apiface-maven-plugin的使用方式（apiface的maven插件生成APIs接口文档）
 ##### <a id="apifaceMavenPlugin">apiface-maven-plugin参数</a>
@@ -320,13 +343,102 @@ apiface-example 的目的仅仅是用户测试用例以及使用演示
 ```
 注：$params$的值为
 ```groovy
-groovyScript("def result=''; def params=\"${_1}\".replaceAll('[\\\\[|\\\\]|\\\\s]', '').split(',').toList();for(i = 0; i < params.size(); i++) {result+=('' == params[i])? '' : ' \\n * @param ' + params[i] + ' |参数类型|必须|默认值|参数类型 body/form/path|参数描述'}; return result", methodParameters())
+groovyScript("def result=''; def params=\"${_1}\".replaceAll('[\\\\[|\\\\]|\\\\s]', '').split(',').toList();for(i = 0; i < params.size(); i++) {result+=('' == params[i])? '' : ' \\n * @param ' + params[i] + ' |参数类型|必须|默认值|参数类型 body/form/path/head/cookie|参数描述'}; return result", methodParameters())
 ```
 ##### 使用template
 ```
 /api 或者 /mod 或者 /**c(回车)
 public class Template{
     public String text(String name){/***(回车)
+        return "";
+    }
+}
+```
+
+##### Model注释写法
+```java
+/**
+ * 描述该Model
+ * @model Model
+ * @author Daye Shing | 896379914@qq.com
+ * @since 1.0
+ * @date 时间
+ */
+public class Model {
+    
+    /**
+     * name描述
+     * @hidden
+     * @example 默认值
+     */
+    private String name;
+
+    /**
+     * 优先级比下面age get方法的优先级低(age的描述)
+     * @required
+     */
+    private int age;
+
+    /**
+     * 优先级比上面age属性的优先级高(age的描述)
+     * @required
+     */
+    public String getAge(){
+        return age;
+    }
+}
+```
+##### 普通类注释写法
+```java
+/**
+ * 描述
+ * @author Daye Shing | 896379914@qq.com
+ * @since 1.0
+ * @ignore
+ * @date 时间
+ */
+public class Service {
+    
+    /**
+     * 详细描述 （类上面使用了ignore ，方法上可以忽略，使用ignore是为了减少生成文档的注释）
+     * @param name |参数类型|必须|默认值|参数类型 body/form/path|参数描述
+     * @ignore
+     * @return java.lang.String|描述
+     * @author Daye Shing | 896379914@qq.com
+     * @since 1.0
+     * @date 2021/4/17 21:47
+     */
+    public String text(String name){
+        return "";
+    }
+}
+```
+##### 接口类注释写法
+```java
+/**
+ * 描述
+ * @author Daye Shing | 896379914@qq.com
+ * @since 1.0
+ * @action 分组名称
+ * @uri uri（使用springmvc 可以忽略，但是其他非spring的就可能要添加）
+ * @date 时间
+ */
+public class Action {
+
+    /**
+     * 详细描述 (注释参数可以不用对于下面方法的形参)
+     * @param name |参数类型|必须|默认值|参数类型 body/form/path|参数描述
+     * @uri text
+     * @summary 摘要
+     * @method post,get
+     * @exclude age
+     * @error 错误描述
+     * @return java.lang.String|描述
+     * @author Daye Shing | 896379914@qq.com
+     * @since 1.0
+     * @date 2021/4/17 3:51
+     */
+    public String text(String name) {
         return "";
     }
 }

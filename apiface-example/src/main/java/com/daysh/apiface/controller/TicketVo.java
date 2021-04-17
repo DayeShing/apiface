@@ -1,6 +1,8 @@
 package com.daysh.apiface.controller;
 
 
+import javax.persistence.Table;
+
 /**
  * TicketVo的包装类描述(我们这样做不是因为我们想改变你，而是我们可以这么做)
  * @model 用户统计

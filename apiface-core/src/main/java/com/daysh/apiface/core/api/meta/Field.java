@@ -70,6 +70,10 @@ public class Field implements Meta, Serializable {
      */
     private boolean base;
 
+    /**
+     * 是否数组
+     */
+    private boolean array;
 
     public boolean isBase() {
         return base;
@@ -174,4 +178,11 @@ public class Field implements Meta, Serializable {
         this.onlyRead = onlyRead;
     }
 
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
+    }
 }

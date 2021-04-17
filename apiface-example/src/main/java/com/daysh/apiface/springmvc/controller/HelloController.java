@@ -88,4 +88,31 @@ public class HelloController extends BaseController {
         hi.setName(hi.getName() + path + userId);
         return hi;
     }
+
+    /**
+     * 详细描述
+     * @param hi |com.daysh.apiface.model.Hi|必须|hi
+     * @param path |string|参数描述
+     * @param userId |string|参数描述
+     * @param aa |string|参数描述
+     * @param json |string|参数描述
+     * @param cookie |string|参数描述
+     * @summary sayHiPath
+     * @error 错误描述
+     * @return com.daysh.apiface.model.Hi|描述
+     * @author Daye Shing | 896379914@qq.com
+     * @since 1.0
+     * @date 2021/3/7 6:05
+     */
+    @PostMapping(value = "json/{path}/{userId}/{aa}")
+    public Object sayHiPath(@RequestBody Hi hi,
+                            @PathVariable String path,
+                            @PathVariable String userId,
+                            @PathVariable String aa,
+                            @RequestHeader String json,
+                            @CookieValue String cookie
+    ){
+        hi.setName(hi.getName() + path + userId);
+        return hi;
+    }
 }

@@ -1,6 +1,7 @@
 package com.daysh.apiface.core.swagger.v2;
 
 import com.alibaba.fastjson.JSONObject;
+import com.daysh.apiface.core.enums.VariableEnum;
 import com.daysh.apiface.core.util.ObjectUtil;
 
 /**
@@ -21,6 +22,8 @@ public class Response implements JsonApi{
     private String type;
 
     private String description;
+
+    private boolean array;
 
     public String getRef() {
         return ref;
@@ -46,15 +49,29 @@ public class Response implements JsonApi{
         this.description = description;
     }
 
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
+    }
+
     @Override
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("description",description);
-        if(ObjectUtil.isNotEmpty(ref)){
+        json.put("type",type);
+        if(array){
+            JSONObject items = new JSONObject();
+            json.put("type", VariableEnum.ARRAY.getType());
+            if(ObjectUtil.isNotEmpty(ref)){
+                items.put("$ref",ref);
+            }
+            items.put("type",type);
+            json.put("items",items);
+        }else if(ObjectUtil.isNotEmpty(ref)){
             json.put("$ref",ref);
-        }
-        if(ObjectUtil.isNotEmpty(type)){
-            json.put("type",type);
         }
         return json;
     }

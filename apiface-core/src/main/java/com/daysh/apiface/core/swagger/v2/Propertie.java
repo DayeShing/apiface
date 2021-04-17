@@ -51,6 +51,8 @@ public class Propertie implements JsonApi {
      */
     private boolean onlyRead;
 
+    private boolean array;
+
     public String getName() {
         return name;
     }
@@ -133,6 +135,14 @@ public class Propertie implements JsonApi {
         this.onlyRead = onlyRead;
     }
 
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,7 +159,7 @@ public class Propertie implements JsonApi {
     @Override
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        json.put("type", type);
+        json.put("type", array?VariableEnum.ARRAY.getType():type);
         json.put("format", format);
 
         json.put("description", description);
@@ -159,15 +169,15 @@ public class Propertie implements JsonApi {
         json.put("deprecated", deprecated);
         json.put("onlyRead", onlyRead);
 
-        if (ObjectUtil.isNotEmpty(ref)) {
-            if (VariableEnum.ARRAY.getType().equals(type)) {
-                JSONObject items = new JSONObject();
+        if (array) {
+            JSONObject items = new JSONObject();
+            if (ObjectUtil.isNotEmpty(ref)) {
                 items.put("$ref", ref);
-                json.put("items", items);
             }
-            if (VariableEnum.OBJECT.getType().equals(type)) {
-                json.put("$ref", ref);
-            }
+            items.put("type", type);
+            json.put("items", items);
+        }else if (VariableEnum.OBJECT.getType().equals(type) && ObjectUtil.isNotEmpty(ref)) {
+            json.put("$ref", ref);
         }
         return json;
     }

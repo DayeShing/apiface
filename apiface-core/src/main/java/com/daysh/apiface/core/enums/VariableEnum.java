@@ -1,6 +1,6 @@
 package com.daysh.apiface.core.enums;
 
-import java.util.Date;
+import java.util.Collection;
 
 /**
  * @Description: <p> 变量枚举 </p>
@@ -11,38 +11,89 @@ import java.util.Date;
  */
 public enum VariableEnum {
 
+    //{ "date","object",  "date-time", "__file", "bigdecimal"}
     //base
-    VOID("void","Void","java.lang.Void","",true,""),
-    BYTE("byte","Byte","java.lang.Byte","",true,"0"),
-    SHORT("short","Short","java.lang.Short","",true,"0"),
+    VOID("void", "Void", "java.lang.Void", "", true, ""),
+    BYTE("byte", "Byte", "java.lang.Byte", "", true, "0"),
+    SHORT("short", "Short", "java.lang.Short", "", true, "0"),
 
-    INT("int","Integer","java.lang.Integer","int32",true,"0"),
-    LONG("long","Long","java.lang.Long","int64",true,"0"),
-    CHAR("char","Character","java.lang.Character","char",true,"a"),
+    INT("int", "Integer", "java.lang.Integer", "int32", true, "0"),
+    LONG("long", "Long", "java.lang.Long", "int64", true, "0"),
+    CHAR("char", "Character", "java.lang.Character", "char", true, "a"),
 
-    FLOAT("float","Float","java.lang.Float","number",true,"0"),
-    DOUBLE("double","Double","java.lang.Double","number",true,"0"),
-    BOOLEAN("boolean","Boolean","java.lang.Boolean","boolean",true,"false"),
+    FLOAT("float", "Float", "java.lang.Float", "number", true, "0"),
+    DOUBLE("double", "Double", "java.lang.Double", "number", true, "0"),
+    BOOLEAN("boolean", "Boolean", "java.lang.Boolean", "boolean", true, "false"),
 
     // compelx
-    STRING("string","String","java.lang.String","",true,""),
-    DATE("date","Date","java.util.Date","date",true,""),
+    STRING("string", "String", "java.lang.String", "", true, ""),
+    DATE("date", "Date", "java.util.Date", "date", true, ""),
 
     //包装
-    ARRAY("array","Array","","",false,"[]"),
-    OBJECT("object","Object","java.lang.Object","",false,"{}");
+    ARRAY("array", "Array", "", "", false, "[]"),
+    //包装
+    ARRAY_LIST("array", "List", "", "", false, "[]"),
+    OBJECT("object", "Object", "java.lang.Object", "", false, "{}");
 
-    public static VariableEnum of(String type){
+    public static VariableEnum of(String type) {
+        if (type == null) {
+            return VOID;
+        }
+        if (type.endsWith("[]") || type.startsWith("array[") || type.startsWith("Array[")) {
+            return ARRAY;
+        }
+        int of = type.indexOf("<");
+        if (of > -1) {
+            String name = type.substring(0, of);
+            try {
+                Class<?> t = Class.forName(name);
+                if (Collection.class.isAssignableFrom(t)) {
+                    return ARRAY_LIST;
+                }
+                return OBJECT;
+            } catch (ClassNotFoundException e) {
+                return OBJECT;
+            }
+        }
         VariableEnum[] values = values();
         for (VariableEnum value : values) {
-            if(value.getType().equals(type)){
+            if(value.isBase()) {
+                if (value.getType().equals(type)) {
+                    return value;
+                }
+                if (value.getAlias().equals(type)) {
+                    return value;
+                }
+                if (value.getClazz().equals(type)) {
+                    return value;
+                }
+            }
+        }
+        return OBJECT;
+    }
+
+    public static VariableEnum typeof(Class type) {
+        if (type == null) {
+            return VOID;
+        }
+        if (type.isArray()) {
+            return ARRAY;
+        }
+        if (Collection.class.isAssignableFrom(type)) {
+            return ARRAY_LIST;
+        }
+        VariableEnum[] values = values();
+        for (VariableEnum value : values) {
+            if(value.isBase()){
+            if (value.getType().equals(type.getName())) {
                 return value;
             }
-            if(value.getAlias().equals(type)){
+            if (value.getAlias().equals(type.getName())) {
                 return value;
             }
-            if(value.getClazz().equals(type)){
+            if (value.getClazz().equals(type.getName())) {
                 return value;
+            }
             }
         }
         return OBJECT;
@@ -133,5 +184,13 @@ public enum VariableEnum {
 
     public void setExample(String example) {
         this.example = example;
+    }
+
+    public boolean isArray() {
+        return ARRAY.equals(this);
+    }
+
+    public boolean isList() {
+        return ARRAY_LIST.equals(this);
     }
 }

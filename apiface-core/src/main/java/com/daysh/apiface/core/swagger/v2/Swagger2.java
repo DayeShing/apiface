@@ -1,5 +1,6 @@
 package com.daysh.apiface.core.swagger.v2;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.daysh.apiface.core.api.meta.*;
 import com.daysh.apiface.core.api.resolver.ApiTransform;
@@ -65,7 +66,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         for (Path path : action) {
             JSONObject jsonPath = path.toJSON();
             for (Path p : doublePath) {
-                if(p.getUrl().equals(path)){
+                if(p.getUrl().equals(path.getUrl())){
                     JSONObject tmp = p.toJSON();
                     for (Map.Entry<String, Object> entry : tmp.entrySet()) {
                         jsonPath.put(entry.getKey(),entry.getValue());
@@ -126,6 +127,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
     protected Propertie getPropertie(Field f) {
         Propertie p = new Propertie();
         p.setName(f.getName());
+        p.setArray(f.isArray());
         p.setDescription(f.getDesc());
         p.setDeprecated(f.isDeprecated());
         p.setFormat(f.getFormat());
@@ -197,12 +199,16 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if (ret == null) {
             response.setType(VariableEnum.VOID.getType());
         }
+        response.setArray(ret.isArray());
+        response.setType(ret.getType());
         response.setDescription(ret.getDesc());
-        if (ret.isBase()) {
-            // 基本类型
-            response.setType(ret.getType());
-        } else if (ObjectUtil.equals(ret.getName(), ret.getRef())) {
-            //复杂类型非泛型
+
+        //ObjectUtil.equals(ret.getName(), ret.getRef())
+        if (false) {
+            //泛型
+//            parameter.setType(param.getType());
+        } else {
+            //复杂类型非泛型,数组类型
             if (fields.containsKey(ret.getRef())) {
                 //存在该文档
                 response.setRef(ret.getRef());
@@ -232,12 +238,15 @@ public class Swagger2 implements ApiTransform, JsonApi {
         parameter.setFormat(param.getFormat());
         parameter.setName(param.getName());
         parameter.setRequired(param.isRequired());
-        if (param.isBase()) {
-            // 基本类型
-            parameter.setType(param.getType());
-        } else if (ObjectUtil.equals(param.getType(), param.getRef())) {
-            //复杂类型非泛型
+        parameter.setArray(param.isArray());
+        parameter.setType(param.getType());
 
+        //ObjectUtil.equals(param.getType(), param.getRef()) || param.isArray()
+        if (false) {
+            //泛型
+            parameter.setType(param.getType());
+        } else {
+            //复杂类型非泛型,数组类型
             if (fields.containsKey(param.getRef())) {
                 //存在该文档
                 parameter.setRef(param.getRef());
@@ -245,9 +254,6 @@ public class Swagger2 implements ApiTransform, JsonApi {
                 // 不存在定义，返回一个模糊对象
                 parameter.setType(VariableEnum.OBJECT.getType());
             }
-        } else {
-            //泛型
-            parameter.setType(param.getType());
         }
         return parameter;
     }

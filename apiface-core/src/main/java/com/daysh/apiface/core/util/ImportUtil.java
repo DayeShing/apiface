@@ -9,6 +9,7 @@ package com.daysh.apiface.core.util;
 
 import com.github.javaparser.ast.ImportDeclaration;
 
+import javax.naming.Name;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +35,14 @@ public class ImportUtil {
             for (String s : target) {
                 for (ImportDeclaration anImport : imports) {
                     String name = anImport.getName().toString();
-                    if (name.endsWith(s)) {
+                    String end = name;
+                    int index = end.lastIndexOf(".");
+                    if(index > 0){
+                        end = end.substring(++index);
+                    }
+//                    System.err.println(s);
+//                    System.err.println(type);
+                    if (end.equals(s)) {
                         type = type.replace(s,name);
                     }
                 }

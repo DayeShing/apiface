@@ -18,6 +18,7 @@ import com.daysh.apiface.core.comment.impl.ParamMark;
 import com.daysh.apiface.core.comment.tag.GeneralTag;
 import com.daysh.apiface.core.enums.TagEnum;
 import com.daysh.apiface.core.enums.VariableEnum;
+import com.daysh.apiface.core.exception.ApiException;
 import com.daysh.apiface.core.util.ObjectUtil;
 
 import java.beans.BeanInfo;
@@ -26,6 +27,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -209,30 +211,110 @@ public class ApiResolverImpl implements ApiResolver {
         return action;
     }
 
+//    protected Param validParam(Param param, String ref,int count) {
+//        if(count > 1){
+//            param.setType(VariableEnum.OBJECT.getType());
+//            param.setRef(ref);
+//            return param;
+//        }
+//        try {
+//            String array = null;
+//            String type = ref;
+//            VariableEnum variable = VariableEnum.of(type);
+//            int of = type.indexOf("<");
+//            if (of > -1) {
+//                type = type.substring(0, of);
+//            }
+//            param.setFormat(variable.getFormat());
+//            param.setType(variable.getType());
+//            if (variable.isBase()) {
+//                if (param.isRequired() && ObjectUtil.isEmpty(param.getExample())) {
+//                    param.setExample(variable.getExample());
+//                }
+//                param.setBase(true);
+//            } else if (variable.isArray()) {
+//                param.setArray(true);
+//
+//                if (ref.endsWith("[]")) {
+//                    array = ref.replace("[]", "");
+//                } else if (ref.startsWith("array[")) {
+//                    array = ref.replace("array[", "").replace("]", "");
+//                }else if (ref.startsWith("Array[")) {
+//                    array = ref.replace("Array[", "").replace("]", "");
+//                }
+//                return validParam(param, arrayType,++count);
+//            }else if(variable.isList()){
+//                if (of > -1) {
+//                    array = ref.substring(of).replace(">", "").replace(">", "");
+//                }
+//            } else {
+//                param.setRef(Class.forName(type, false, classLoader).getName());
+//            }
+//        } catch (ClassNotFoundException e) {
+//            param.setType(VariableEnum.OBJECT.getType());
+//            param.setRef(VariableEnum.OBJECT.getClazz());
+//        }
+//        return param;
+//    }
+
     protected List<Param> validParam(List<Param> params) {
         List<Param> parameters = new ArrayList<>();
         if (ObjectUtil.isNotEmpty(params)) {
             for (Param param : params) {
-                try {
-                    String type = param.getType();
-                    int of = type.indexOf("<");
-                    if (of > -1) {
-                        type = type.substring(0, of);
+//                parameters.add(validParam(param, param.getType(),0));
+
+                String ref = param.getType();
+
+                VariableEnum of = VariableEnum.of(ref);
+                String array = null;
+                String type = ref;
+                param.setType(of.getType());
+                if (of.isBase()) {
+                    if (param.isRequired() && ObjectUtil.isEmpty(param.getExample())) {
+                        param.setExample(of.getExample());
                     }
-                    VariableEnum variable = VariableEnum.of(type);
-                    param.setFormat(variable.getFormat());
-                    if (variable.isBase()) {
-                        param.setType(variable.getType());
-                        if(param.isRequired() && ObjectUtil.isEmpty(param.getExample())){
-                            param.setExample(variable.getExample());
+                    param.setFormat(of.getFormat());
+                    param.setBase(true);
+                } else if (of.isArray()) {
+                    if (ref.endsWith("[]")) {
+                        array = ref.replace("[]", "");
+                    } else if (ref.startsWith("array[")) {
+                        array = ref.replace("array[", "").replace("]", "");
+                    } else if (ref.startsWith("Array[")) {
+                        array = ref.replace("Array[", "").replace("]", "");
+                    }
+                } else if (of.isList()) {
+                    int index = type.indexOf("<");
+                    if (index > -1) {
+                        array = ref.substring(index).replace(">", "").replace("<", "");
+                    }
+                } else {
+                    try {
+                        param.setRef(Class.forName(type, false, classLoader).getName());
+                    } catch (ClassNotFoundException e) {
+                        param.setType(VariableEnum.OBJECT.getType());
+                        param.setRef(VariableEnum.OBJECT.getClazz());
+                    }
+                }
+
+                if (array != null) {
+                    param.setArray(true);
+                    of = VariableEnum.of(array);
+                    param.setType(of.getType());
+                    if (of.isBase()) {
+                        if (param.isRequired() && ObjectUtil.isEmpty(param.getExample())) {
+                            param.setExample(of.getExample());
                         }
+                        param.setFormat(of.getFormat());
                         param.setBase(true);
                     } else {
-                        param.setRef(Class.forName(type, false, classLoader).getName());
+                        try {
+                            param.setRef(Class.forName(array, false, classLoader).getName());
+                        } catch (ClassNotFoundException e) {
+                            param.setType(VariableEnum.OBJECT.getType());
+                            param.setRef(VariableEnum.OBJECT.getClazz());
+                        }
                     }
-                } catch (ClassNotFoundException e) {
-                    param.setType(VariableEnum.OBJECT.getType());
-                    param.setRef(VariableEnum.OBJECT.getClazz());
                 }
                 parameters.add(param);
             }
@@ -255,27 +337,77 @@ public class ApiResolverImpl implements ApiResolver {
     }
 
     protected Return validReturn(Return ret) {
-        try {
-            String name = ret.getName();
-            int of = name.indexOf("<");
-            if (of > -1) {
-                name = name.substring(0, of);
+        String ref = ret.getName();
+
+        VariableEnum of = VariableEnum.of(ref);
+        String array = null;
+        String type = ref;
+        ret.setType(of.getType());
+        if (of.isBase()) {
+            ret.setFormat(of.getFormat());
+            ret.setBase(true);
+        } else if (of.isArray()) {
+            if (ref.endsWith("[]")) {
+                array = ref.replace("[]", "");
+            } else if (ref.startsWith("array[")) {
+                array = ref.replace("array[", "").replace("]", "");
+            } else if (ref.startsWith("Array[")) {
+                array = ref.replace("Array[", "").replace("]", "");
             }
-            VariableEnum variable = VariableEnum.of(name);
-            ret.setFormat(variable.getFormat());
-            if (variable.isBase()) {
-                ret.setType(variable.getType());
-                ret.setExample(variable.getExample());
-                ret.setBase(true);
+        } else if (of.isList()) {
+            int index = type.indexOf("<");
+            if (index > -1) {
+                array = ref.substring(index).replace(">", "").replace("<", "");
+            }
+        } else {
+            try {
+                ret.setRef(Class.forName(type, false, classLoader).getName());
+            } catch (ClassNotFoundException e) {
+                ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
+                ret.setType(VariableEnum.OBJECT.getType());
                 return ret;
             }
-            ret.setRef(Class.forName(name, false, classLoader).getName());
-            return ret;
-        } catch (ClassNotFoundException e) {
-            ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
-            ret.setType(VariableEnum.OBJECT.getType());
-            return ret;
         }
+
+        if (array != null) {
+            ret.setArray(true);
+            of = VariableEnum.of(array);
+            ret.setType(of.getType());
+            if (of.isBase()) {
+                ret.setFormat(of.getFormat());
+                ret.setBase(true);
+            } else {
+                try {
+                    ret.setRef(Class.forName(array, false, classLoader).getName());
+                } catch (ClassNotFoundException e) {
+                    ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
+                    ret.setType(VariableEnum.OBJECT.getType());
+                    return ret;
+                }
+            }
+        }
+        return ret;
+//        try {
+//            String name = ret.getName();
+//            int of = name.indexOf("<");
+//            if (of > -1) {
+//                name = name.substring(0, of);
+//            }
+//            VariableEnum variable = VariableEnum.of(name);
+//            ret.setFormat(variable.getFormat());
+//            if (variable.isBase()) {
+//                ret.setType(variable.getType());
+//                ret.setExample(variable.getExample());
+//                ret.setBase(true);
+//                return ret;
+//            }
+//            ret.setRef(Class.forName(name, false, classLoader).getName());
+//            return ret;
+//        } catch (ClassNotFoundException e) {
+//            ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
+//            ret.setType(VariableEnum.OBJECT.getType());
+//            return ret;
+//        }
     }
 
     protected Action getAction(MethodMark mark, Method method, boolean isSpringMvc) {
@@ -315,16 +447,16 @@ public class ApiResolverImpl implements ApiResolver {
                 }
             }
         }
-        throw null;
+        throw new ApiException(String.format("【%s】 no such a method 【%s】 with param 【%s】", clazz.getName(), method.getName(), JSON.toJSONString(method.getParams())));
     }
 
     protected String realName(Method method) {
-        String name = method.getName().replace("get", "");
+        String name = method.getName().replace("get", "").replace("is", "");
         return String.format("%s%s", name.substring(0, 1).toLowerCase(), name.substring(1));
     }
 
     protected Field getField(Field field, Mark mark) {
-        if(mark == null){
+        if (mark == null) {
             return field;
         }
         Map<String, List<String>> tags = getTagValues(mark.getDocTags());
@@ -348,25 +480,89 @@ public class ApiResolverImpl implements ApiResolver {
         }
         return field;
     }
-    protected Field getField(Class clazz,Method method, MethodMark mark, PropertyDescriptor p) {
+
+//    protected Field getField(Field field, Class<?> type) {
+//        VariableEnum of = VariableEnum.typeof(type);
+//        field.setType(type.getName());
+//
+//        if(of.isBase()){
+//            field.setType(of.getType());
+//            field.setBase(true);
+//            field.setFormat(of.getFormat());
+//        }else if(of.isArray()){
+//            field.setArray(true);
+//            if (Collection.class.isAssignableFrom(type) ) {
+//                //&& type instanceof ParameterizedType
+//                ParameterizedType hiType = (ParameterizedType) type.getGenericSuperclass();
+//                Class<?> hiListClass = (Class<?>) hiType.getActualTypeArguments()[0];
+//                System.out.println(hiListClass); // class java.lang.Integer.
+////                return ARRAY;
+//            }else if(type.isArray()){
+//                String array = type.getTypeName().replace("[]", "");
+//                try {
+//                    return getField(field,Class.forName(array, false, classLoader));
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+////                System.err.println("method:getTypeName:" + );
+////                type.getName() ;
+////                type.
+//
+//            }else{
+//
+//            }
+//
+//            System.err.println("method:getName:" + type.getName());
+//            System.err.println("method:getSimpleName:" + type.getSimpleName());
+//            System.err.println("method:getTypeName:" + type.getTypeName());
+//        }else{
+//            field.setRef(type.getName());
+//        }
+//        return field;
+//    }
+
+    protected Field getField(Class clazz, Method method, MethodMark mark, PropertyDescriptor p) {
         Field field = new Field();
         field.setName(realName(method));
         field.setDesc(method.getName());
-        if(mark != null){
+        if (mark != null) {
             field.setDesc(mark.getDesc());
         }
-
-
         Class<?> type = method.getReturnType();
-        VariableEnum of = VariableEnum.of(type.getName());
-        field.setType(type.getName());
-        field.setRef(type.getName());
-        if(of.isBase()){
+        VariableEnum of = VariableEnum.typeof(type);
+
+        field.setType(of.getType());
+        if (of.isBase()) {
             field.setType(of.getType());
             field.setBase(true);
             field.setFormat(of.getFormat());
+        } else if (of.isArray()) {
+            field.setArray(true);
+            String array = type.getTypeName().replace("[]", "");
+            of = VariableEnum.of(array);
+            if (!of.isBase()) {
+                field.setType(VariableEnum.OBJECT.getType());
+                field.setRef(array);
+            }
+        } else if (of.isList()) {
+            field.setArray(true);
+            ParameterizedType gt = (ParameterizedType) method.getGenericReturnType();
+            Class actualType = (Class<?>) gt.getActualTypeArguments()[0];
+            of = VariableEnum.typeof(actualType);
+            if (!of.isBase()) {
+                field.setType(VariableEnum.OBJECT.getType());
+                field.setRef(actualType.getTypeName());
+            }
+        } else {
+            field.setRef(type.getName());
         }
-
+        if (field.isArray()) {
+            if (of.isBase()) {
+                field.setType(of.getType());
+                field.setBase(true);
+                field.setFormat(of.getFormat());
+            }
+        }
         field.setDeprecated(method.getAnnotation(Deprecated.class) != null);
         field.setOnlyRead(p.getWriteMethod() == null);
         return getField(field, mark);
@@ -387,21 +583,42 @@ public class ApiResolverImpl implements ApiResolver {
             java.lang.reflect.Field f = clazz.getDeclaredField(mark.getName());
             if (f != null) {
                 Field field = new Field();
-
                 field.setName(f.getName());
                 field.setDesc(mark.getDesc());
                 field.setExample(mark.getExample());
-
                 Class<?> type = f.getType();
-                VariableEnum of = VariableEnum.of(type.getName());
-                field.setType(mark.getType());
-                field.setRef(type.getName());
-                if(of.isBase()){
-                    field.setType(of.getType());
+                VariableEnum of = VariableEnum.typeof(type);
+                field.setType(of.getType());
+                if (of.isBase()) {
                     field.setBase(true);
                     field.setFormat(of.getFormat());
+                } else if (of.isArray()) {
+                    field.setArray(true);
+                    String array = type.getTypeName().replace("[]", "");
+                    of = VariableEnum.of(array);
+                    if (!of.isBase()) {
+                        field.setType(VariableEnum.OBJECT.getType());
+                        field.setRef(array);
+                    }
+                } else if (of.isList()) {
+                    field.setArray(true);
+                    ParameterizedType gt = (ParameterizedType) f.getGenericType();
+                    Class actualType = (Class<?>) gt.getActualTypeArguments()[0];
+                    of = VariableEnum.typeof(actualType);
+                    if (!of.isBase()) {
+                        field.setType(VariableEnum.OBJECT.getType());
+                        field.setRef(actualType.getTypeName());
+                    }
+                } else {
+                    field.setRef(type.getName());
                 }
-
+                if (field.isArray()) {
+                    if (of.isBase()) {
+                        field.setType(of.getType());
+                        field.setBase(true);
+                        field.setFormat(of.getFormat());
+                    }
+                }
                 field.setDeprecated(f.getAnnotation(Deprecated.class) != null);
                 field.setOnlyRead(p.getWriteMethod() == null);
                 return getField(field, mark);
@@ -435,6 +652,9 @@ public class ApiResolverImpl implements ApiResolver {
                 if ("getClass".equals(name)) {
                     continue;
                 }
+                if (name.startsWith("is")) {
+                    name = name.replace("is", "get");
+                }
                 if (marks.containsKey(name)) {
                     Mark meta = marks.get(name);
                     if (meta instanceof FieldMark) {
@@ -445,7 +665,7 @@ public class ApiResolverImpl implements ApiResolver {
                     }
                     continue;
                 }
-                fields.add(getField(clazz, method,null, p));
+                fields.add(getField(clazz, method, null, p));
             }
         } catch (IntrospectionException e) {
             e.printStackTrace();
