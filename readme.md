@@ -45,6 +45,7 @@
  * 5.文档工具对代码具有入侵性，如swagger
  * 6.单一前端仅仅能访问单一后端，不能单一前端访问不同后端获取不同后端的接口文档
  * 7.接口文档和实际的接口版本不一致时，还要维护一套接口文档
+ * 8.接口文档不能直接转换给不同厂商使用，涉及多厂商接口调用时又要写多一次接口文档
 正是如此apiface的产生是为了针对上述的诸多问题，如果您对apiface感兴趣，可以深入看下代码，apiface还会继续完善的
 ```
 
@@ -55,7 +56,7 @@
  * 3.前端只需部署一套就能访问不同的后端接口并展示其文档接口
  * 4.仅仅需要根据实际接口写符合要求的javadoc,不用写任何的其他代码
  * 5.前端获取接口文档不依赖于后端运行环境(接口测试用例需要后端给真实的数据)
- * 6.兼容swagger2接口文档，如果您的项目依赖swagger接口文档，想换一套前端UI，可以使用apiface
+ * 6.兼容swagger2接口文档，如果您的项目依赖swagger2接口文档，想换一套前端UI，可以使用apiface
  * 7.理论上支持一切由java语言开发的web应用
 ```
 
@@ -89,7 +90,11 @@
     (1).apiface: 页面完全兼容swagger2的
     (2).swagger2：理论上可以用swagger2界面展示apiface的接口，但是一般人不会这么做，除非脑袋被驴踢了
     (3).结果:apiface 比较好
- * 8.综上所诉，我认为apiface不对项目本身存在任何形式的代码入侵，难能可贵，但局限于编译的时候，所以用相同编译插件的时候可以考虑apiface，
+ * 8.离线浏览：
+    (1).apiface: 支持下载转换成md富文本形式的文件
+    (2).swagger2：目前暂未发现
+    (3).结果:apiface 比较好
+ * 9.综上所诉，我认为apiface不对项目本身存在任何形式的代码入侵，难能可贵，但局限于编译的时候，所以用相同编译插件的时候可以考虑apiface，
     如果您的项目现在使用swagger2,想换一个，也可考虑apiface,因为apiface支持swagger2的页面
 ```
 
@@ -100,6 +105,7 @@
 > * apiface-proxy  apiface （文档项目分离）访问后端的代理，解决cookie跨域
 > * apiface-font apiface的前端代码
 > * apiface-maven-plugin  apiface 文档生成的插件，基于maven生命周期
+> * apiface-gradle-plugin  apiface 文档生成的插件，基于gradle ,(开发中...)
 
 * ### apiface-core的实现原理与使用方式(apiface的核心实现)
 ##### api的生成流程
@@ -134,30 +140,30 @@ writeApis->e
 |@author|开发者信息标记|@author username丨email|class,method|所有文档注释|标记该类或方法作者信息|
 |@since|版本标记|@since version|class,method|所有文档注释|标明一个类，方法，或其它标识符是在哪个特定版本开始添加进来的|
 |@action|接口类标记|@action group,group1|(abstract)class|无@ignore的文档注释|标记该注释类是一个接口类|
-|@error|错误描述|@error 发送错误时的描述|method|含@action的文档注释|接口的错误描述|
-|@date|时间|@date data-time|method|含@action的文档注释|接口的最后编辑时间|
+|@error|错误描述标记|@error 发送错误时的描述|method|含@action的文档注释|接口的错误描述|
+|@date|时间标记|@date data-time|method|含@action的文档注释|接口的最后编辑时间|
 |@hidden|隐藏标记|@hidden|class,method|含@action的文档注释|标记该注释中接口类或接口仅仅是一个被继承类引用的文档|
-|@pack|使用统一包装|@pack 类全名<T>|class|含@action的文档注释|通常用于指定返回全局包装格式，其中包装类必须是有且仅有一个泛型|
-|@unpack|不使用统一包装|@unpack|class,method|含@action的文档注释|标记具体接口不使用全局包装|
+|@pack|使用统一包装|@pack 类全名<T>|class|含@action的文档注释|（现阶段没实现）通常用于指定返回全局包装格式，其中包装类必须是有且仅有一个泛型|
+|@unpack|不使用统一包装|@unpack|class,method|含@action的文档注释|（现阶段没实现）标记具体接口不使用全局包装|
 |@uri|标记资源uri|@uri /uri|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的uri|
 |@summary|标记摘要|@summary 摘要|method|含@action的文档注释|接口简短的描述|
 |@method|标记请求方法|@method get,post|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的请求方法|
 |@produce|标记请求context类型|@produce text/html,text/xml|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的请求内容|
 |@consume|标记响应context类型|@consume text/html,text/xml|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的响应内容|
-|@exclude|接口排除参数|@exclude param1,param2|method|含@action的文档注释|标记具体接口的参数是一个包装类，但有些不想展示的参数|
+|@exclude|接口排除参数|@exclude param1,param2|method|含@action的文档注释|（现阶段没实现）标记具体接口的参数是一个包装类，但有些不想展示的参数|
 |@return|接口返回值|@return 类全名<T,V>丨描述|method|含@action的文档注释|标记具体接口的返回是一个包装类|
 |@return|接口返回值|@return 类全名或基本类型|method|含@action的文档注释|标记具体接口的返回是一个包装类或者基本类(java的基本类型+string,date)|
 |@return|接口返回值|@return int丨描述|method|含@action的文档注释|标记具体接口的返回是一个基本类，描述可以省略|
-|@param|接口参数|@param 参数名|method|含@action的文档注释|标记具体接口的参数是为某名的基类|
-|@param|接口参数|@param 参数名丨参数类型|method|含@action的文档注释|标记具体接口的参数是为某名的包装类（类全名）或者基本类|
-|@param|接口参数|@param 参数名丨参数类型丨描述|method|含@action的文档注释|标记具体接口的参数，带描述|
-|@param|接口参数|@param 参数名丨参数类型丨必须丨描述|method|含@action的文档注释|标记具体接口的参数，带参数限制|
-|@param|接口参数|@param 参数名丨参数类型丨必须丨默认值丨描述|method|含@action的文档注释|标记具体接口的参数，带默认值|
-|@param|接口参数|@param 参数名丨参数类型丨必须丨默认值丨类型 body/form/path/head/cookie丨描述|method|含@action的文档注释|标记具体接口的参数，带类型|
+|@param|接口参数标记|@param 参数名|method|含@action的文档注释|标记具体接口的参数是为某名的基类|
+|@param|接口参数标记|@param 参数名丨参数类型|method|含@action的文档注释|标记具体接口的参数是为某名的包装类（类全名）或者基本类|
+|@param|接口参数标记|@param 参数名丨参数类型丨描述|method|含@action的文档注释|标记具体接口的参数，带描述|
+|@param|接口参数标记|@param 参数名丨参数类型丨必须丨描述|method|含@action的文档注释|标记具体接口的参数，带参数限制|
+|@param|接口参数标记|@param 参数名丨参数类型丨必须丨默认值丨描述|method|含@action的文档注释|标记具体接口的参数，带默认值|
+|@param|接口参数标记|@param 参数名丨参数类型丨必须丨默认值丨类型 body/form/path/head/cookie丨描述|method|含@action的文档注释|标记具体接口的参数，带类型|
 |@model|模型类标记|@model onlyname|(abstract)class,interface|无@ignore的文档注释|标记该注释类是一个模型类|
-|@hidden|隐藏标记|@hidden|(get)method,feild|含@model的文档注释|标记该注释中模型类中属性字段是否展示|
-|@required|是否必须|@required|feild|含@model的文档注释|标记该注释中模型类中属性字段是否必须|
-|@example|隐藏标记|@example 默认值|(get)method,feild|含@model的文档注释|标记该注释中模型类中属性字段默认值|
+|@hidden|隐藏标记|@hidden|(get)method,field|含@model的文档注释|标记该注释中模型类中属性字段是否展示|
+|@required|是否必须|@required|(get)method,field|含@model的文档注释|标记该注释中模型类中属性字段是否必须|
+|@example|隐藏标记|@example 默认值|(get)method,field|含@model的文档注释|标记该注释中模型类中属性字段默认值|
 ##### <a id="javadocUsing">apiface的javadoc标记实际使用详解</a>
 注： 详看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)文件中用法
 
@@ -240,10 +246,13 @@ writeApis->e
 
 ##### <a id="apifaceMavenPluginUsing">apiface-maven-plugin使用方式</a>
 ```xml
+<!--
+插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖
+-->
 <plugin>
-    <groupId>com.daysh.apiface</groupId>
+    <groupId>io.github.dayeshing</groupId>
     <artifactId>apiface-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
     <configuration>
         <artifactId>apiface-example</artifactId>
 
@@ -401,7 +410,7 @@ public class Service {
     
     /**
      * 详细描述 （类上面使用了ignore ，方法上可以忽略，使用ignore是为了减少生成文档的注释）
-     * @param name |参数类型|必须|默认值|参数类型 body/form/path|参数描述
+     * @param name |参数类型|必须|默认值|参数类型 body/form/path/head/cookie|参数描述
      * @ignore
      * @return java.lang.String|描述
      * @author Daye Shing | 896379914@qq.com
@@ -447,3 +456,15 @@ public class Action {
 注：
 * javadoc的使用详情参见 <a href="#javadocs">apiface的javadoc标记规范</a>和<a href="#javadocUsing">apiface的javadoc标记实际使用详解</a>
 * apiface-maven-plugin的使用详情参见 <a href="#apifaceMavenPluginUsing">apiface-maven-plugin使用方式</a>和<a href="#apifaceMavenPlugin">apiface-maven-plugin参数</a>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,9 +1,9 @@
 /**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.restlet
- * @Author： Daye Shing
- * @CreateTime： 2021-03-02 01:17
- * @Description: <p>  </p>
+ *  apiface
+ *  com.daysh.apiface.restlet
+ * @author  Daye Shing
+ * @date 2021-03-02 01:17
+ *<p>  </p>
  */
 package com.daysh.apiface.restlet;
 

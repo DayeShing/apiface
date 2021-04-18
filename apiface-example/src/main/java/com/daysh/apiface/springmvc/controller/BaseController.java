@@ -1,9 +1,9 @@
 /**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.springmvc.controller
- * @Author： Daye Shing
- * @CreateTime： 2021-02-28 12:49
- * @Description: <p>  </p>
+ *  apiface
+ *  com.daysh.apiface.springmvc.controller
+ * @author  Daye Shing
+ * @date 2021-02-28 12:49
+ *<p>  </p>
  */
 package com.daysh.apiface.springmvc.controller;
 

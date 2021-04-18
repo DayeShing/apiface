@@ -15,19 +15,19 @@ import java.net.URL;
 import java.util.Enumeration;
 
 /**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.filter
- * @Author： Daye Shing
- * @CreateTime： 2020-08-14 07:19
- * @Description: <p>  </p>
+ *  apiface
+ *  com.daysh.apiface.filter
+ * @author  Daye Shing
+ * @date 2020-08-14 07:19
+ *<p>  </p>
  */
 
 /**
- * @Description: <p> 代理类 </p>
- * @ClassName: AgentFilter
- * @ClassAllName: com.daysh.apiface.filter.AgentFilter
- * @Author： Daye Shing
- * @Date： 2020-08-14 07:19
+ *<p> 代理类 </p>
+ *  AgentFilter
+ *  com.daysh.apiface.filter.AgentFilter
+ * @author  Daye Shing
+ * @date   2020-08-14 07:19
  */
 public class AgentServlet extends HttpServlet {
 

@@ -1,5 +1,5 @@
 syntax = "proto3";
-option java_package = "com.daysh.apiface.serializer";
+option java_package = "io.github.dayeshing.apiface.serializer";
 option java_outer_classname = "MethodMarkSerializer";
 import "ParamMark.proto";
 import "GeneralTag.proto";

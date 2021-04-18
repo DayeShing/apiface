@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>apiface</artifactId>
-        <groupId>com.daysh.apiface</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <groupId>io.github.dayeshing</groupId>
+        <version>1.2.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <description>apiface 使用样例 </description>
@@ -24,8 +24,6 @@
     </dependencyManagement>
 
     <dependencies>
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -82,21 +80,15 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <version>${lombok.version}</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
 
     <build>
         <plugins>
             <plugin>
-                <groupId>com.daysh.apiface</groupId>
+                <groupId>io.github.dayeshing</groupId>
                 <artifactId>apiface-maven-plugin</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.2.1-SNAPSHOT</version>
                 <configuration>
                     <artifactId>apiface-example</artifactId>
 

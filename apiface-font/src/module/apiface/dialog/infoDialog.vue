@@ -55,7 +55,7 @@
     <el-card class="box-card" style="margin-top: 10px;">
       <div slot="header" class="clearfix">
         <span class="block-title-left"></span>
-        <span>{{ $self("auther") }}</span>
+        <span>{{ $self("author") }}</span>
       </div>
       <el-row>
         <el-col :span="12">

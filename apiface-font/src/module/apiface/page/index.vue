@@ -38,27 +38,27 @@
             <span class="subtitle-article">{{ data.parent }}({{ data.parentDesc }})</span>
             <br />
           </div>
-          <div class="author-info" v-if="data.content.auther">
+          <div class="author-info" v-if="data.content.author">
             <el-avatar :size="45" src="../icons/api.png">
               <img src="../icons/api.png" />
             </el-avatar>
-            <span class="auther-info-title">
-              {{data.content.auther.name}}
+            <span class="author-info-title">
+              {{data.content.author.name}}
               <el-button round size="mini">{{ $self("focus") }}</el-button>
             </span>
             <br />
             <span>
               <i class="fa fa-h-square" aria-hidden="true"></i>
               <span
-                class="auther-info-item"
-                v-if="data.content.auther.contact"
-              >{{ $self("contact") }} : {{data.content.auther.contact}}</span>
+                class="author-info-item"
+                v-if="data.content.author.contact"
+              >{{ $self("contact") }} : {{data.content.author.contact}}</span>
               <span
-                class="auther-info-item"
+                class="author-info-item"
                 v-if="data.content.version"
               >{{ $self("version") }} : {{data.content.version}}</span>
               <span
-                class="auther-info-item"
+                class="author-info-item"
                 v-if="data.content.date"
               >{{ $self("date") }} : {{data.content.date}}</span>
             </span>
@@ -314,13 +314,13 @@ export default {
             margin-left: 15px;
             padding: 4px 15px !important;
           }
-          .auther-info-title {
+          .author-info-title {
             line-height: 24px;
             font-size: 14px;
             font-weight: 500;
             color: #f1917d;
           }
-          .auther-info-item {
+          .author-info-item {
             line-height: 22px;
             padding-right: 15px;
           }

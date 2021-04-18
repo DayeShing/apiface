@@ -1,9 +1,9 @@
 /**
- * @BelongsProject： apiface
- * @BelongsPackage： com.daysh.apiface.config
- * @Author： Daye Shing
- * @CreateTime： 2021-03-02 00:59
- * @Description: <p>  </p>
+ *  apiface
+ *  com.daysh.apiface.config
+ * @author  Daye Shing
+ * @date 2021-03-02 00:59
+ *<p>  </p>
  */
 package com.daysh.apiface.config;
 
