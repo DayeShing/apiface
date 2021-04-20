@@ -16,7 +16,7 @@ public class MethodGroupResolver implements TagResolver {
 
     @Override
     public List<String> resolver(List<String> contents) {
-        List<String> ret = new ArrayList<>();
+        List<String> ret = new ArrayList<String>();
         for (RequestMethod value : RequestMethod.values()) {
             for (String content : contents) {
                 boolean flag = false;

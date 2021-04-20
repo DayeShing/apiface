@@ -15,7 +15,7 @@ public class GroupResolver implements TagResolver {
 
     @Override
     public List<String> resolver(List<String> contents) {
-        List<String> ret = new ArrayList<>();
+        List<String> ret = new ArrayList<String>();
         for (String content : contents) {
             if(content != null && !"".equals(content)){
                 String[] split = content.split(",");

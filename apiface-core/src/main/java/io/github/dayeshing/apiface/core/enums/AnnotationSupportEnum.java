@@ -69,7 +69,7 @@ public enum AnnotationSupportEnum implements AnnotationResolver<Annotation> {
     }
 
     public static Map<String,Annotation> resolver(java.lang.annotation.Annotation ... annos) {
-        Map<String,Annotation> map = new HashMap<>();
+        Map<String,Annotation> map = new HashMap<String,Annotation>();
         if(annos != null){
             for (java.lang.annotation.Annotation anno : annos) {
                 for (AnnotationSupportEnum value : values()) {

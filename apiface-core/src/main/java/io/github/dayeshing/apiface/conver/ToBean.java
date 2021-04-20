@@ -21,7 +21,7 @@ import java.util.List;
 public class ToBean {
 
     public static List<ClassMark> toBeans(byte[] buf)  {
-        List<ClassMark> marks = new ArrayList<>(100);
+        List<ClassMark> marks = new ArrayList<ClassMark>(100);
         try {
             MarkSerializer.Mark mark = MarkSerializer.Mark.parseFrom(buf);
             List<ClassMarkSerializer.ClassMark> marksList = mark.getMarksList();
@@ -38,19 +38,19 @@ public class ToBean {
         ClassMark mark = new ClassMark();
         mark.setName(classMark.getName());
         mark.setDesc(classMark.getDesc());
-        List<GeneralTag> docTags = new ArrayList<> (15);
+        List<GeneralTag> docTags = new ArrayList<GeneralTag> (15);
         List<GeneralTagSerializer.GeneralTag> docTagsList = classMark.getDocTagsList();
         for (GeneralTagSerializer.GeneralTag docTag : docTagsList) {
             docTags.add(getDocTag(docTag));
         }
         mark.setDocTags(docTags);
-        List<FieldMark> fields = new ArrayList<> (25);
+        List<FieldMark> fields = new ArrayList<FieldMark> (25);
         List<FieldMarkSerializer.FieldMark> fieldsList = classMark.getFieldsList();
         for (FieldMarkSerializer.FieldMark field : fieldsList) {
             fields.add(getFieldMark(field));
         }
         mark.setFields(fields);
-        List<MethodMark> methods = new ArrayList<> (25);
+        List<MethodMark> methods = new ArrayList<MethodMark> (25);
         List<MethodMarkSerializer.MethodMark> methodsList = classMark.getMethodsList();
         for (MethodMarkSerializer.MethodMark method : methodsList) {
             methods.add(getMethodMark(method));
@@ -64,7 +64,7 @@ public class ToBean {
         mark.setName(method.getName());
         mark.setDesc(method.getDesc());
 
-        List<GeneralTag> docTags = new ArrayList<> (15);
+        List<GeneralTag> docTags = new ArrayList<GeneralTag> (15);
         List<GeneralTagSerializer.GeneralTag> docTagsList = method.getDocTagsList();
         for (GeneralTagSerializer.GeneralTag docTag : docTagsList) {
             docTags.add(getDocTag(docTag));
@@ -92,7 +92,7 @@ public class ToBean {
         mark.setDesc(field.getDesc());
         mark.setType(field.getType());
         mark.setExample(field.getExample());
-        List<GeneralTag> docTags = new ArrayList<> (15);
+        List<GeneralTag> docTags = new ArrayList<GeneralTag> (15);
         List<GeneralTagSerializer.GeneralTag> docTagsList = field.getDocTagsList();
         for (GeneralTagSerializer.GeneralTag docTag : docTagsList) {
             docTags.add(getDocTag(docTag));

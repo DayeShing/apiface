@@ -97,7 +97,7 @@ public class ApiResolverImpl implements ApiResolver {
                         group.setDesc(desc);
                         group.setRef(ref(clazz));
                         boolean springMvc = SpringMvcSupportHelper.isSpringMvc(clazz, group);
-                        List<Action> apis = new ArrayList<>();
+                        List<Action> apis = new ArrayList<Action>();
                         for (MethodMark method : mark.getMethods()) {
                             Method md = associateMethod(clazz, method);
                             if (md == null) {
@@ -258,7 +258,7 @@ public class ApiResolverImpl implements ApiResolver {
 //    }
 
     protected List<Param> validParam(List<Param> params) {
-        List<Param> parameters = new ArrayList<>();
+        List<Param> parameters = new ArrayList<Param>();
         if (ObjectUtil.isNotEmpty(params)) {
             for (Param param : params) {
 //                parameters.add(validParam(param, param.getType(),0));
@@ -316,6 +316,7 @@ public class ApiResolverImpl implements ApiResolver {
                         }
                     }
                 }
+//                System.err.println(JSON.toJSONString(param));
                 parameters.add(param);
             }
         }
@@ -426,10 +427,11 @@ public class ApiResolverImpl implements ApiResolver {
         Method[] mds = clazz.getMethods();
         int index = 0;
         for (Method md : mds) {
-            if (md.getName().equals(method.getName()) && md.getParameterCount() == paramSize && paramSize == index) {
+            int count = md.getParameterCount();
+            if (md.getName().equals(method.getName()) && count == paramSize && paramSize == index) {
                 return md;
             }
-            if (md.getName().equals(method.getName()) && md.getParameterCount() == paramSize) {
+            if (md.getName().equals(method.getName()) && count == paramSize) {
                 List<ParamMark> params = method.getParams();
                 Class<?>[] parameterTypes = md.getParameterTypes();
                 for (int i = 0; i < paramSize; i++) {

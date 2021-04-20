@@ -19,7 +19,7 @@ public class ParamResoler implements TagResolver {
 
     @Override
     public List<Param> resolver(List<String> contents) {
-        List<Param> params = new ArrayList<>();
+        List<Param> params = new ArrayList<Param>();
         if(ObjectUtil.isNotEmpty(contents)){
             for (String content : contents) {
                 params.add(resolver(content));

@@ -1,0 +1,436 @@
+{
+  "id": "2432805",
+  "name": "music",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1049683",
+      "name": "add",
+      "font_class": "add",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "2285753",
+      "name": "save",
+      "font_class": "save",
+      "unicode": "e6ed",
+      "unicode_decimal": 59117
+    },
+    {
+      "icon_id": "7241495",
+      "name": "list",
+      "font_class": "list",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "8620104",
+      "name": "play",
+      "font_class": "play",
+      "unicode": "e7ab",
+      "unicode_decimal": 59307
+    },
+    {
+      "icon_id": "4933367",
+      "name": "评论",
+      "font_class": "pinglun",
+      "unicode": "e745",
+      "unicode_decimal": 59205
+    },
+    {
+      "icon_id": "20512383",
+      "name": "侧边栏-顺序切换1",
+      "font_class": "cebianlan-shunxuqiehuan-copy",
+      "unicode": "ea41",
+      "unicode_decimal": 59969
+    },
+    {
+      "icon_id": "13137519",
+      "name": "歌词未点击",
+      "font_class": "geciweidianji",
+      "unicode": "e727",
+      "unicode_decimal": 59175
+    },
+    {
+      "icon_id": "1159896",
+      "name": "单曲循环",
+      "font_class": "danquxunhuan",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "1207794",
+      "name": "保存顺序",
+      "font_class": "baocunshunxu",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "11177852",
+      "name": "随机播放",
+      "font_class": "ziyuan",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "7239882",
+      "name": "setting",
+      "font_class": "setting",
+      "unicode": "e74f",
+      "unicode_decimal": 59215
+    },
+    {
+      "icon_id": "9648371",
+      "name": "Setting",
+      "font_class": "Setting",
+      "unicode": "e711",
+      "unicode_decimal": 59153
+    },
+    {
+      "icon_id": "16896803",
+      "name": "bx-volume-full",
+      "font_class": "bx-volume-full",
+      "unicode": "e996",
+      "unicode_decimal": 59798
+    },
+    {
+      "icon_id": "20113036",
+      "name": "bx-volume-mute",
+      "font_class": "bx-volume-mute",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "7605135",
+      "name": "notice",
+      "font_class": "notice",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "10483868",
+      "name": "01_skin",
+      "font_class": "_skin",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "66662",
+      "name": "iconfont-refund",
+      "font_class": "iconfontrefund",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "226990",
+      "name": "iconfont-yanjing",
+      "font_class": "iconfontyanjing",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "321519",
+      "name": "iconfont-fujian (1)",
+      "font_class": "iconfontfujian1",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "326446",
+      "name": "iconfont-user",
+      "font_class": "iconfontuser",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "385727",
+      "name": "iconfont-pengyouquan",
+      "font_class": "iconfontpengyouquan",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "394364",
+      "name": "iconfont-shuaxin",
+      "font_class": "iconfontshuaxin",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "394376",
+      "name": "iconfont-quanbu",
+      "font_class": "iconfontquanbu",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "465110",
+      "name": "iconfont-phone",
+      "font_class": "iconfontphone",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "544070",
+      "name": "iconfont-tonghuajilu",
+      "font_class": "iconfonttonghuajilu",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "552850",
+      "name": "iconfont-favor",
+      "font_class": "iconfontfavor",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "576608",
+      "name": "iconfont-svgclassifyselect",
+      "font_class": "iconfontsvgclassifyselect",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "584009",
+      "name": "iconfont-dingwei",
+      "font_class": "iconfontdingwei",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "623499",
+      "name": "iconfont-unie675",
+      "font_class": "iconfontunie675",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "623501",
+      "name": "iconfont-unie626",
+      "font_class": "iconfontunie626",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "623539",
+      "name": "iconfont-untitled99",
+      "font_class": "iconfontuntitled99",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "627169",
+      "name": "iconfont-wodedingdan",
+      "font_class": "iconfontwodedingdan",
+      "unicode": "e6e8",
+      "unicode_decimal": 59112
+    },
+    {
+      "icon_id": "691928",
+      "name": "iconfont-anquan",
+      "font_class": "iconfontanquan",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "703383",
+      "name": "playlist-minus",
+      "font_class": "playlistminus",
+      "unicode": "e9fe",
+      "unicode_decimal": 59902
+    },
+    {
+      "icon_id": "719105",
+      "name": "iconfont-yuyin",
+      "font_class": "iconfontyuyin",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "779893",
+      "name": "iconfont-dianhua",
+      "font_class": "iconfontdianhua",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "870160",
+      "name": "image",
+      "font_class": "tupian2",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "900599",
+      "name": "iconfont-bofang",
+      "font_class": "iconfontbofang",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "1040774",
+      "name": "iconfont-jiaxingshoucang",
+      "font_class": "iconfontjiaxingshoucang",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "1146277",
+      "name": "iconfont_voice",
+      "font_class": "icon7",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "1160129",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "1163061",
+      "name": "iconfont-8",
+      "font_class": "iconfont8",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "1163078",
+      "name": "iconfont-25",
+      "font_class": "iconfont25",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "1285518",
+      "name": "iconfont-chuangyebanzhishu",
+      "font_class": "iconfont-chuangyebanzhishu",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    },
+    {
+      "icon_id": "1445107",
+      "name": "playlist-plus",
+      "font_class": "playlist-plus",
+      "unicode": "e851",
+      "unicode_decimal": 59473
+    },
+    {
+      "icon_id": "1445325",
+      "name": "sort",
+      "font_class": "sort",
+      "unicode": "e8b3",
+      "unicode_decimal": 59571
+    },
+    {
+      "icon_id": "1555828",
+      "name": "music",
+      "font_class": "music",
+      "unicode": "e6b6",
+      "unicode_decimal": 59062
+    },
+    {
+      "icon_id": "5226595",
+      "name": "playlist",
+      "font_class": "playlist",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "5394474",
+      "name": "all",
+      "font_class": "all",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "7275424",
+      "name": "Next track",
+      "font_class": "Nexttrack",
+      "unicode": "e6a2",
+      "unicode_decimal": 59042
+    },
+    {
+      "icon_id": "7275433",
+      "name": "Previous track",
+      "font_class": "Previoustrack",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "8327013",
+      "name": "Pause",
+      "font_class": "Pause",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "8327015",
+      "name": "Play",
+      "font_class": "Play",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "10043887",
+      "name": "Player",
+      "font_class": "Player",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "10168419",
+      "name": "playlist",
+      "font_class": "playlist1",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "10294689",
+      "name": "more",
+      "font_class": "more",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "17104677",
+      "name": "play-list-2-fill",
+      "font_class": "play-list-2-fill",
+      "unicode": "e810",
+      "unicode_decimal": 59408
+    },
+    {
+      "icon_id": "17412393",
+      "name": "List",
+      "font_class": "List",
+      "unicode": "e69e",
+      "unicode_decimal": 59038
+    },
+    {
+      "icon_id": "17412456",
+      "name": "Music",
+      "font_class": "Music",
+      "unicode": "e6a9",
+      "unicode_decimal": 59049
+    },
+    {
+      "icon_id": "17734006",
+      "name": "Video File",
+      "font_class": "VideoFile",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "19989539",
+      "name": "music",
+      "font_class": "music1",
+      "unicode": "ea40",
+      "unicode_decimal": 59968
+    }
+  ]
+}

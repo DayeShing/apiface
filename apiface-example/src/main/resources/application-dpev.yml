@@ -1,6 +1,6 @@
 config:
   include: devOracle
-  port: 28080
+  port: 28081
   context-path: /app
   self: http://www.daysh.top
 

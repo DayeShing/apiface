@@ -1,12 +1,10 @@
-[![API](https://img.shields.io/badge/Api-99+-blueviolet.svg)](https://github.com/DayeShing)
-[![Author](https://img.shields.io/badge/Author-DayeShing-yellowgreen.svg?icon=github)](https://github.com/DayeShing)
 [![Release](https://img.shields.io/github/release/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![issues](https://img.shields.io/github/issues/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![forks](https://img.shields.io/github/forks/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![stars](https://img.shields.io/github/stars/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![license](https://img.shields.io/github/license/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/releases/)
 [![Contributors](https://img.shields.io/github/contributors/DayeShing/apiface.svg)](https://github.com/DayeShing/apiface/contributors/)
-[![JDK](https://img.shields.io/badge/JDK-1.8+-blue.svg)](https://github.com/DayeShing)
+[![JDK](https://img.shields.io/badge/JDK-1.6+-blue.svg)](https://github.com/DayeShing)
 [![Maven](https://img.shields.io/badge/Maven-3.0+-blue.svg)](https://github.com/DayeShing)
 [![Language](https://img.shields.io/badge/Language-java+-orange.svg)](https://github.com/DayeShing)
 [![npm](https://img.shields.io/npm/v/yarn/legacy)](https://github.com/DayeShing)
@@ -20,7 +18,6 @@
 ![tag](https://img.shields.io/static/v1?label=&message=注释生成APIs&color=blueviolet)
 ![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
 ![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
-![tag](https://img.shields.io/static/v1?label=&message=doc&color=lightgrey)
 
 # apiface (一套由java开发的接口文档工具)
 ###### Tools that run in an operational or development environment
@@ -28,11 +25,20 @@
 ### 演示地址
 * 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface</a>
 
+### 单纯使用环境（apiface的使用门槛）
+> * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的APIs接口）
+> * maven 或 gradle 或 自定义扫描路径生成APIs接口(不推荐)
 
-### 开发环境
+注：
+ * 使用成本低(集成开发环境下javadoc可以按需自动生成)，仅仅需要学习<a href="#javadocs">apiface的javadoc规范</a>
+ * 或者详看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)项目中文件中用法
+ * maven插件的使用详情参见 <a href="#apifaceMavenPluginUsing">apiface-maven-plugin</a>使用方式
+ * 将java执行打包后的target文件夹下的 XXX-XXXX-XXX.json就是APIs里面的接口数据
+
+### 开发环境（apiface的开发门槛）
 > * nodejs and yarn
 > * maven or gradle
-> * jdk8+
+> * jdk6+
 
 
 * ### 开发初衷
@@ -57,7 +63,8 @@
  * 4.仅仅需要根据实际接口写符合要求的javadoc,不用写任何的其他代码
  * 5.前端获取接口文档不依赖于后端运行环境(接口测试用例需要后端给真实的数据)
  * 6.兼容swagger2接口文档，如果您的项目依赖swagger2接口文档，想换一套前端UI，可以使用apiface
- * 7.理论上支持一切由java语言开发的web应用
+ * 7.理论上支持java或类似kotlin等运行在jvm层的 “任意语言” 使用 “任意框架” 编写的http协议的APIs接口
+ * 8.使用成本低(集成开发环境下javadoc可以按需自动生成)，仅仅需要学习<a href="#javadocs">apiface的javadoc规范</a>
 ```
 
 * ### apiface与swagger2的比较
@@ -100,12 +107,14 @@
 
 
 * ### apiface的模块说明
-> * apiface-core apiface的核心代码
-> * apiface-example apiface的使用范例
-> * apiface-proxy  apiface （文档项目分离）访问后端的代理，解决cookie跨域
-> * apiface-font apiface的前端代码
-> * apiface-maven-plugin  apiface 文档生成的插件，基于maven生命周期
+> * apiface-core           apiface 的核心代码
+> * apiface-example        apiface 的使用范例
+> * apiface-proxy          apiface（文档项目分离）访问后端的代理，解决cookie跨域
+> * apiface-font           apiface 的前端代码(旧,不维护)
+> * apiface-front          apiface 的前端代码(新)
+> * apiface-maven-plugin   apiface 文档生成的插件，基于maven生命周期
 > * apiface-gradle-plugin  apiface 文档生成的插件，基于gradle ,(开发中...)
+
 
 * ### apiface-core的实现原理与使用方式(apiface的核心实现)
 ##### api的生成流程
@@ -167,8 +176,7 @@ writeApis->e
 ##### <a id="javadocUsing">apiface的javadoc标记实际使用详解</a>
 注： 详看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)文件中用法
 
-
-* ### apiface-font的使用方式(apiface前后端接口交互方案(前端界面))
+* ### apiface-front的使用方式(apiface前后端接口交互方案(前端界面),新版 )
 
 #### 安装&运行&打包
 > * yarn                  -- 安装依赖
@@ -182,6 +190,7 @@ writeApis->e
 > * 4.支持i18n，国际化
 > * 5.支持生成本地文档 markdown形式
 > * 6.动态前端配置(不需要再打包apiface-font 仅仅需要配置conf.json)
+> * 7.接口对接遇到问题可以分享测试用例,提高前后端交流能力
 
 #### 依赖
 > * "axios": "^0.16.2"
@@ -205,27 +214,26 @@ writeApis->e
 |name|接口显示名称|字符串，任意值|跟随options|用于显示接口显示名称|
 |addr|接口地址|字符串，url|跟随options|用于显示接口地址以及获取描述文档的依据|
 
-注： 在[conf.json](./apiface-font/static/conf.json)文件中配置
+注： 在[conf.json](./apiface-front/public/conf.json)文件中配置
 
 #### 演示
-![avatar](./apiface-font/static/demo/e1.png)
-![avatar](./apiface-font/static/demo/e2.png)
-![avatar](./apiface-font/static/demo/u1.png)
-![avatar](./apiface-font/static/demo/u2.png)
-![avatar](./apiface-font/static/demo/u3.png)
-![avatar](./apiface-font/static/demo/z1.png)
-![avatar](./apiface-font/static/demo/z2.png)
-![avatar](./apiface-font/static/demo/z3.png)
-![avatar](./apiface-font/static/demo/z4.png)
-![avatar](./apiface-font/static/demo/z5.png)
-![avatar](./apiface-font/static/demo/z6.png)
-
+![avatar](./apiface-front/public/demo/e1.png)
+![avatar](./apiface-front/public/demo/e2.png)
+![avatar](./apiface-front/public/demo/u1.png)
+![avatar](./apiface-front/public/demo/u2.png)
+![avatar](./apiface-front/public/demo/u3.png)
+![avatar](./apiface-front/public/demo/z1.png)
+![avatar](./apiface-front/public/demo/z2.png)
+![avatar](./apiface-front/public/demo/z3.png)
+![avatar](./apiface-front/public/demo/z4.png)
+![avatar](./apiface-front/public/demo/z5.png)
+![avatar](./apiface-front/public/demo/z6.png)
 
 * ### apiface-proxy使用方式
 ##### 部署步骤
- * 将使用apiface-maven-plugin生成api.json放入[static](./apiface-proxy/src/main/webapp/static)文件夹内
- * 将编译apiface-font生成[dist](./apiface-font/dist)文件夹内的所有文件放入[static](./apiface-proxy/src/main/webapp/static)文件夹内
- * 按需修改apiface-proxy中的[conf.json](./apiface-proxy/src/main/webapp/static/conf.json)
+ * 将使用apiface-maven-plugin生成api.json放入[webapp](./apiface-proxy/src/main/webapp)文件夹内
+ * 将编译apiface-front生成[dist](./apiface-front/dist)文件夹内的所有文件放入[webapp](./apiface-proxy/src/main/webapp)文件夹内
+ * 按需修改apiface-proxy中的[conf.json](./apiface-proxy/src/main/webapp/conf.json)
  * 编译打包apiface-proxy成war包
  * 部署war包并访问
  
@@ -364,7 +372,7 @@ public class Template{
 }
 ```
 
-##### Model注释写法
+##### 包装类注释写法
 ```java
 /**
  * 描述该Model
@@ -458,7 +466,44 @@ public class Action {
 * apiface-maven-plugin的使用详情参见 <a href="#apifaceMavenPluginUsing">apiface-maven-plugin使用方式</a>和<a href="#apifaceMavenPlugin">apiface-maven-plugin参数</a>
 
 
+* ### apiface-font的使用方式(apiface前后端接口交互方案(前端界面),旧版本，不维护)
 
+#### 安装&运行&打包
+> * yarn                  -- 安装依赖
+> * yarn dev              -- 运行前端环境
+> * yarn build            -- 打包
+
+#### 特点
+> * 1.界面完全兼容swagger2界面
+> * 2.支持多后台接口方案(一套界面搞定若干个系统的API展示)
+> * 3.支持apiface无入侵api接口方案(一个自定义的API接口展示方案)
+> * 4.支持i18n，国际化
+> * 5.支持生成本地文档 markdown形式
+> * 6.动态前端配置(不需要再打包apiface-font 仅仅需要配置conf.json)
+
+#### 依赖
+> * "axios": "^0.16.2"
+> * "element-ui": "^2.13.0"
+> * "font-awesome": "^4.7.0"
+> * "mavon-editor": "^2.9.0"
+> * "vue": "^2.5.9"
+> * "vue-i18n": "^8.20.0"
+> * "vue-json-viewer": "^2.2.14"
+
+#### 模式说明（前端动态配置）
+|属性名|含义|类型|生效条件|描述|
+|:------:|:------:|:------|:------| :------|
+|mode|模式选择|字符串，枚举值|当值为single或dev|single意味着访问docs[]中的分组接口可以单独部署，而dev 则是集成部署就行swagger一样放在代码后端代码中|
+|api|接口文档地址|字符串，任意值|mode值为dev时|在集成部署中有效并指向接口访问地址 eq:proxy/apifaces/api-docs（其中proxy为base uri  apifaces/api-docs 为实际接口）|
+|title|接口网页标题|字符串，任意值|title不为空时|为方便使用者定义自己的标题，优先等级大于默认|
+|proxy|使用代理地址|字符串，任意值|mode值为single，并且proxy不为空时|指向代理服务器-配合apiface-proxy使用，eq:http://ip:port/proxy/agent/api,用于访问多套API接口时解决跨域问题|
+|docs|动态接口配置|数组|mode值为single|为下拉选项的API接口选项提供候选值|
+|group|接口分组名称|字符串，任意值|跟随docs|用于显示接口分组名称|
+|options|接口地址包装|数组|跟随docs|将一个接口地址包装为接口显示名称的接口地址|
+|name|接口显示名称|字符串，任意值|跟随options|用于显示接口显示名称|
+|addr|接口地址|字符串，url|跟随options|用于显示接口地址以及获取描述文档的依据|
+
+注： 在[conf.json](./apiface-font/static/conf.json)文件中配置
 
 
 

@@ -44,7 +44,7 @@ public class MethodResolver extends VoidVisitorAdapter<Void> implements Resolver
     @Override
     public List<MethodMark> resolver(CompilationUnit unit) {
         imports = unit.getImports();
-        marks = new LinkedList<>();
+        marks = new LinkedList<MethodMark>();
         visit(unit,null);
         return marks;
     }
@@ -66,7 +66,7 @@ public class MethodResolver extends VoidVisitorAdapter<Void> implements Resolver
         List<Parameter> parameters = m.getParameters();
         // 设置参数
         if(ObjectUtil.isNotEmpty(parameters)){
-            List<ParamMark> param = new LinkedList<>();
+            List<ParamMark> param = new LinkedList<ParamMark>();
             for (Parameter parameter : parameters) {
                 param.add(new ParamMark(ImportUtil.fullType(parameter.getType().toString(),imports),parameter.getName()));
             }

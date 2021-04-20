@@ -18,7 +18,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
 
     private Set<Tag> tags = new HashSet<Tag>();
     private Set<Path> action = new HashSet<Path>();
-    private List<Path> doublePath = new ArrayList<>();
+    private List<Path> doublePath = new ArrayList<Path>();
 
     private List<Definition> definitions = new ArrayList<Definition>();
     private Map<String, ActionGroup> actions;
@@ -206,7 +206,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if (false) {
             //泛型
 //            parameter.setType(param.getType());
-        } else {
+        } else if(ObjectUtil.isNotEmpty(ret.getRef())){
             //复杂类型非泛型,数组类型
             if (fields.containsKey(ret.getRef())) {
                 //存在该文档
@@ -244,7 +244,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if (false) {
             //泛型
             parameter.setType(param.getType());
-        } else {
+        } else if(ObjectUtil.isNotEmpty(param.getRef())){
             //复杂类型非泛型,数组类型
             if (fields.containsKey(param.getRef())) {
                 //存在该文档

@@ -36,6 +36,21 @@
                         <fileset>
                             <directory>${project.basedir}/src/main/webapp/static</directory>
                         </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/webapp/css</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/webapp/js</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/webapp/img</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/webapp/fonts</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/webapp/demo</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -59,7 +74,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>${project.parent.basedir}/apiface-font/dist</directory>
+                                    <directory>${project.parent.basedir}/apiface-front/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

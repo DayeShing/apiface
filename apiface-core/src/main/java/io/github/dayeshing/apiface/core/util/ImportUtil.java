@@ -24,7 +24,7 @@ import java.util.Set;
 public class ImportUtil {
 
     public static String fullType(String type, List<ImportDeclaration> imports){
-        Set<String> target = new HashSet<>();
+        Set<String> target = new HashSet<String>();
         String[] replace = type.replace("<", ",").replace(">",",").split(",");
         for (String s : replace) {
             if(ObjectUtil.isNotEmpty(s)){
@@ -40,8 +40,6 @@ public class ImportUtil {
                     if(index > 0){
                         end = end.substring(++index);
                     }
-//                    System.err.println(s);
-//                    System.err.println(type);
                     if (end.equals(s)) {
                         type = type.replace(s,name);
                     }

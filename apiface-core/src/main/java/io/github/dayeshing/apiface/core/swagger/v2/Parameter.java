@@ -139,7 +139,7 @@ public class Parameter implements JsonApi {
             }
 
             if (ObjectUtil.isNotEmpty(parameters)) {
-                List<JSONObject> ret = new ArrayList<>();
+                List<JSONObject> ret = new ArrayList<JSONObject>();
                 for (Parameter parameter : parameters) {
                     ret.add(parameter.toJSON());
                 }

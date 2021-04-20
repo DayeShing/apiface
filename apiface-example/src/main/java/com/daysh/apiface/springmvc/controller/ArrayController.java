@@ -51,7 +51,7 @@ public class ArrayController {
 
     /**
      * json 数组23
-     * @param hot |String[]|hot
+     * @param hot |string[]|hot
      * @summary 摘要23
      * @error 错误描述
      * @return string[]|描述

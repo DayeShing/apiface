@@ -21,7 +21,7 @@ public abstract class AbstractResolver<T extends Mark> implements Resolver<T>, F
 
     @Override
     public List<T> resolve(List<String> files) {
-        List<T> marks = new LinkedList<>();
+        List<T> marks = new LinkedList<T>();
         if (ObjectUtil.isNotEmpty(files)) {
             for (String file : files) {
                 marks.addAll(resolve(file));
@@ -32,7 +32,7 @@ public abstract class AbstractResolver<T extends Mark> implements Resolver<T>, F
 
     @Override
     public List<T> resolveResources(List<File> files) {
-        List<T> marks = new LinkedList<>();
+        List<T> marks = new LinkedList<T>();
         if (ObjectUtil.isNotEmpty(files)) {
             for (File file : files) {
                 marks.addAll(resolve(file));
@@ -48,15 +48,22 @@ public abstract class AbstractResolver<T extends Mark> implements Resolver<T>, F
 
     @Override
     public List<T> resolve(File file) {
-        try (FileInputStream in = new FileInputStream(file)) {
-            CompilationUnit unit = JavaParser.parse(in);
-            if (unit.getTypes().size() > 0) {
-                return resolver(unit);
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            if(file.getName().endsWith(".java")){
+                CompilationUnit unit = JavaParser.parse(in);
+                if (unit.getTypes().size() > 0) {
+                    return resolver(unit);
+                }
             }
+            // 其他语言入口 todo
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            ObjectUtil.close(in);
         }
-        return new LinkedList<>();
+        return new LinkedList<T>();
     }
 
 }

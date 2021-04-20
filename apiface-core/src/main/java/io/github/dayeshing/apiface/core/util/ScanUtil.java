@@ -76,7 +76,7 @@ public class ScanUtil {
      * @since 1.0
      */
     public static List<File> scanFiles(File file, String[] suffixs, String rule, String top) {
-        List<File> ret = new ArrayList<>(50);
+        List<File> ret = new ArrayList<File>(50);
         File[] fs = file.listFiles();
         for (File f : fs) {
             // 校验是否合法-

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.dayeshing</groupId>
+    <artifactId>apiface</artifactId>
+    <packaging>pom</packaging>
+    <version>1.2.1-SNAPSHOT</version>
+
+    <description>
+        A set of interface documentation tools developed by java,
+        Tools that run in an operational or development environment
+    </description>
+    <name>apiface</name>
+    <url>https://github.com/DayeShing/apiface</url>
+
+    <modules>
+        <module>apiface-core</module>
+        <module>apiface-maven-plugin</module>
+        <!--        <module>apiface-gradle-plugin</module>-->
+
+        <module>apiface-proxy</module>
+        <module>apiface-example</module>
+        <module>apiface-front</module>
+        <!--        <module>apiface-font</module>-->
+    </modules>
+
+    <properties>
+        <scope>compile</scope>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.compiler.version>1.6</jdk.compiler.version>
+        <maven.compiler.veriosn>2.3.2</maven.compiler.veriosn>
+        <maven.resource.version>2.7</maven.resource.version>
+
+        <maven.surefire.plugin.version>2.5</maven.surefire.plugin.version>
+        <nexus.staging.maven.plugin>1.6.7</nexus.staging.maven.plugin>
+        <maven.surefire.plugin.version>2.5</maven.surefire.plugin.version>
+        <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
+        <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
+    </properties>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.veriosn}</version>
+                <configuration>
+                    <source>${jdk.compiler.version}</source>
+                    <target>${jdk.compiler.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resource.version}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>daysh</id>
+            <name>Daye Shing</name>
+            <url>http://self.daysh.top</url>
+            <email>2357920725@qq.com</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/DayeShing/apiface/issues</url>
+    </issueManagement>
+
+    <scm>
+        <tag>main</tag>
+        <connection>scm:git@github.com:DayeShing/apiface.git</connection>
+        <developerConnection>scm:git@github.com:DayeShing/apiface.git</developerConnection>
+        <url>git@github.com:DayeShing/apiface.git</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus.staging.maven.plugin}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                        <configuration>
+                            <skip>true</skip>
+                            <skipTests>true</skipTests>
+                            <testFailureIgnore>true</testFailureIgnore>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven.source.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven.javadoc.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                            <doclint>none</doclint>
+                            <tags>
+                                <tag>
+                                    <name>ignore</name>
+                                    <placement>a</placement>
+                                    <head>忽略</head>
+                                </tag>
+                                <tag>
+                                    <name>throws</name>
+                                    <placement>a</placement>
+                                    <head>异常</head>
+                                </tag>
+                                <tag>
+                                    <name>methodName</name>
+                                    <placement>a</placement>
+                                    <head>方法名</head>
+                                </tag>
+                                <tag>
+                                    <name>description</name>
+                                    <placement>a</placement>
+                                    <head>描述</head>
+                                </tag>
+                                <tag>
+                                    <name>exclude</name>
+                                    <placement>a</placement>
+                                    <head>排除参数</head>
+                                </tag>
+                            </tags>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven.gpg.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

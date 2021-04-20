@@ -26,7 +26,7 @@ public class RequestMappingResolver extends AbstractAnnotationResolver<RequestMa
     protected RequestMapping after(RequestMapping requestMapping, Annotation anno) {
         List<String> method = requestMapping.getMethod();
         if (ObjectUtil.isEmpty(method)) {
-            method = new ArrayList<>();
+            method = new ArrayList<String>();
             switch (AnnotationSupportEnum.valueOf(anno.annotationType().getSimpleName())) {
                 case DeleteMapping:
                     method.add("DELETE");

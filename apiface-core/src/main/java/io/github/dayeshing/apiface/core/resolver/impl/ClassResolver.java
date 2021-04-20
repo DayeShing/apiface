@@ -39,7 +39,7 @@ public class ClassResolver implements Resolver<ClassMark> {
 
     @Override
     public List<ClassMark> resolver(CompilationUnit unit) {
-        List<ClassMark> marks = new LinkedList<>();
+        List<ClassMark> marks = new LinkedList<ClassMark>();
         if (unit.getTypes().size() > 0) {
             // 获取声明类型
             TypeDeclaration clazz = unit.getTypes().get(0);

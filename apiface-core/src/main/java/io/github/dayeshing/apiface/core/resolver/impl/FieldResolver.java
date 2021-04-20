@@ -42,7 +42,7 @@ public class FieldResolver extends VoidVisitorAdapter<Void> implements Resolver<
     @Override
     public List<FieldMark> resolver(CompilationUnit unit) {
         imports = unit.getImports();
-        marks = new LinkedList<>();
+        marks = new LinkedList<FieldMark>();
         visit(unit, null);
         return marks;
     }

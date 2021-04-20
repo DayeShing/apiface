@@ -1,0 +1,28 @@
+{
+  "docs": [{
+    "group": "swagger2-example",
+    "options": [{
+      "name": "本地示例(英文)",
+      "addr": "http://localhost:8080/proxy/docs.json"
+    }, {
+      "name": "本地示例(中文)",
+      "addr": "http://localhost:8080/proxy/demo.json"
+    }]
+  }, {
+    "group": "apiface-example",
+    "options": [{
+      "name": "Maven(java)",
+      "addr": "http://localhost:8080/proxy/apiface-example-1.2.1-SNAPSHOT.json"
+    }, {
+      "name": "Maven(kotlin)",
+      "addr": "http://localhost:8080/proxy/apiface-example-Maven-kotlin.json"
+    }, {
+      "name": "gradle(java)",
+      "addr": "http://localhost:8080/proxy/apiface-example-gradle-java.json"
+    }]
+  }],
+  "mode": "single",
+  "api": "/base/api/api-docs",
+  "title": "apiface",
+  "proxy": "/proxy/agent/api"
+}

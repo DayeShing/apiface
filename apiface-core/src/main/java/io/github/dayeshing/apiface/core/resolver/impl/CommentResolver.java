@@ -96,7 +96,7 @@ public class CommentResolver {
             }
             // 读取标记
             StringBuffer buf = null;
-            docTags = new ArrayList<>();
+            docTags = new ArrayList<GeneralTag>();
             for (; index < comments.length; index++) {
                 String tmp = comments[index].trim();
                 if (tmp.startsWith("@")) {
@@ -116,7 +116,7 @@ public class CommentResolver {
     }
 
     public List<String> tags() {
-        List<String> tags = new ArrayList<>();
+        List<String> tags = new ArrayList<String>();
         if (ObjectUtil.isNotEmpty(docTags)) {
             for (GeneralTag docTag : docTags) {
                 tags.add(docTag.getTagName());

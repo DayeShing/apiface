@@ -192,7 +192,7 @@ public class Path implements JsonApi {
                 JSONObject user = new JSONObject();
                 user.put("name", author.getName());
                 user.put("contact", author.getContact());
-                path.put("auther", user);
+                path.put("author", user);
             }
             if (ObjectUtil.isNotEmpty(version)) {
                 path.put("version", version);
@@ -212,7 +212,7 @@ public class Path implements JsonApi {
             path.put("responses", res);
 
             if (ObjectUtil.isNotEmpty(parameters)) {
-                List<JSONObject> ret = new ArrayList<>();
+                List<JSONObject> ret = new ArrayList<JSONObject>();
                 for (Parameter parameter : parameters) {
                     ret.add(parameter.toJSON());
                 }
