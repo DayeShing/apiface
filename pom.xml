@@ -7,7 +7,7 @@
     <groupId>io.github.dayeshing</groupId>
     <artifactId>apiface</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
 
     <description>
         A set of interface documentation tools developed by java,
@@ -19,12 +19,13 @@
     <modules>
         <module>apiface-core</module>
         <module>apiface-maven-plugin</module>
-        <!--        <module>apiface-gradle-plugin</module>-->
+        <module>apiface-gradle-plugin</module>
 
         <module>apiface-proxy</module>
         <module>apiface-example</module>
+
         <module>apiface-front</module>
-        <!--        <module>apiface-font</module>-->
+        <module>apiface-font</module>
     </modules>
 
     <properties>

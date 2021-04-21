@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.2.4-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+apply plugin : 'apiface'
+apiface {
+    host='127.0.0.1:28080'
+    basePath='/app'
+    license='9527'
+    licenseUrl='http://self.daysh.top'
+    url='http://self.daysh.top'
+    developer='Daye Shing|xuandeyu14@gmail.com'
+    description='apiface让您的接口文档更丰富、更优雅'
+    version='1.2.4-SNAPSHOT'
+    title='接口文档 APIs'
+}
+Task cp = task copyJars(type: Copy) {
+    group('apiface')
+    from configurations.runtimeClasspath
+    into './build/jars'
+}
+Task c = project.tasks.getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME)
+c.dependsOn(cp)
+c.mustRunAfter(cp)
+
+
+group = 'com.daysh.apiface'
+version = '1.2.4-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation  group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
+}
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+test {
+    useJUnitPlatform()
+}

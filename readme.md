@@ -33,6 +33,7 @@
  * 使用成本低(集成开发环境下javadoc可以按需自动生成)，仅仅需要学习<a href="#javadocs">apiface的javadoc规范</a>
  * 或者详看[apiface-example](./apiface-example/src/main/java/com/daysh/apiface)项目中文件中用法
  * maven插件的使用详情参见 <a href="#apifaceMavenPluginUsing">apiface-maven-plugin</a>使用方式
+ * gradle插件的使用详情参见 <a href="#apifaceGradlePluginUsing">apiface-gradle-plugin</a>使用方式
  * 将java执行打包后的target文件夹下的 XXX-XXXX-XXX.json就是APIs里面的接口数据
 
 ### 开发环境（apiface的开发门槛）
@@ -107,13 +108,16 @@
 
 
 * ### apiface的模块说明
-> * apiface-core           apiface 的核心代码
-> * apiface-example        apiface 的使用范例
-> * apiface-proxy          apiface（文档项目分离）访问后端的代理，解决cookie跨域
-> * apiface-font           apiface 的前端代码(旧,不维护)
-> * apiface-front          apiface 的前端代码(新)
-> * apiface-maven-plugin   apiface 文档生成的插件，基于maven生命周期
-> * apiface-gradle-plugin  apiface 文档生成的插件，基于gradle ,(开发中...)
+> * apiface-core             apiface 的核心代码
+> * apiface-maven-plugin     apiface 文档生成的插件，基于maven生命周期
+> * apiface-gradle-plugin    apiface 文档生成的插件，基于gradle
+>
+> * apiface-proxy            apiface（文档项目分离）访问后端的代理，解决cookie跨域
+> * apiface-font             apiface 的前端代码(旧,不维护)
+> * apiface-front            apiface 的前端代码(新)
+>
+> * apiface-example          apiface 的使用范例，基于maven 构建    （maven 使用者看这个就够）
+> * apiface-gradle-example   apiface 的使用范例，基于gradle构建    （gradle使用者看这个就够）
 
 
 * ### apiface-core的实现原理与使用方式(apiface的核心实现)
@@ -288,15 +292,96 @@ writeApis->e
 ```
 
 
-* ### apiface-example使用方式(apiface的使用实例demo)
+##### <a id="apifaceGradlePluginUsing">apiface-gradle-plugin使用方式</a>
+```groovy
+/**
+ * 插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖
+ */
+//构建环境
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.2.4-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+//使用文档构建插件，必须按这样配置
+apply plugin : 'apiface'
+apiface {
+    host='127.0.0.1:28080'
+    basePath='/app'
+    license='9527'
+    licenseUrl='http://self.daysh.top'
+    url='http://self.daysh.top'
+    developer='Daye Shing|xuandeyu14@gmail.com'
+    description='apiface让您的接口文档更丰富、更优雅'
+    version='1.2.4-SNAPSHOT'
+    title='接口文档 APIs'
+}
+// 由于本人gradle不太熟练 ，所以要用下面的配合使用，必须
+Task cp = task copyJars(type: Copy) {
+    group('apiface')
+    from configurations.runtimeClasspath
+    into './build/jars'
+}
+Task c = project.tasks.getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME)
+c.dependsOn(cp)
+c.mustRunAfter(cp)
+
+// 其他的配置，无关api打包构建
+
+group = 'com.daysh.apiface'
+version = '1.2.4-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+}
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+test {
+    useJUnitPlatform()
+}
+```
+
+* ### apiface-example使用方式(apiface的使用实例demo 基于maven 构建)
 ##### 使用方式
 `
-在使用之前，您需要部署 apiface-font 前端文件到服务器，或者直接部署apiface-proxy到servlet容器并运行，
+在使用之前，您需要部署 apiface-front 前端文件到服务器，或者直接部署apiface-proxy到servlet容器并运行，
 然后使用apiface-maven-plugin maven的api生成文档并部署器api.json到服务器
 然后在apiface-example中的包com.daysh.apiface.boot下有各类环境的运行程序，运行就能看到实际的测试用例
 apiface-example 的目的仅仅是用户测试用例以及使用演示
 `
 
+* ### apiface-gradle-example使用方式(apiface的使用实例demo 基于gradle构建)
+##### 使用方式
+`
+在使用之前，您需要部署 apiface-front 前端文件到服务器，或者直接部署apiface-proxy到servlet容器并运行，
+然后使用apiface-gradle-plugin maven的api生成文档并部署器api.json到服务器
+然后在apiface-gradle-example中的包com.daysh.apiface.boot下有各类环境的运行程序，运行就能看到实际的测试用例
+apiface-gradle-example 的目的仅仅是用户测试用例以及使用演示
+`
 
 * ### idea使用live template生成您的注释(简化您编写javadoc的操作)
 ##### 定义template

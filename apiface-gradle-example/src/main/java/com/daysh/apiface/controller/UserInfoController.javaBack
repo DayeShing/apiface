@@ -1,0 +1,79 @@
+
+@RestController
+@RequestMapping("user")
+@Api(value = "个人信息",tags = {"个人信息"})
+public class UserInfoController {
+
+    @RequestMapping("userInfo")
+    public Object userInfo() {
+        return null;
+    }
+
+    @RequestMapping("issue")
+    @ApiOperation(value = "签发token证书", httpMethod = "POST", notes = "签发证书返回单点登陆的token", response = String.class)
+    public Object issue(@RequestBody @Validated(Register.class) MoblieUserVo user) {
+        return null;
+    }
+
+    @RequestMapping("getUserInfo")
+    @ApiOperation(value = "获取登陆用户基本信息", httpMethod = "GET", notes = "获取登陆用户基本信息", response = MoblieUserVo.class)
+    public Object getUserInfo() {
+        return null;
+    }
+
+    @RequestMapping("isPerfect")
+    @ApiOperation(value = "用户信息是否完善", httpMethod = "GET", notes = "用户信息是否完善", response = Boolean.class)
+    public Object isPerfect(){
+        return null;
+    }
+
+    @RequestMapping(value = "updateUser")
+    @ApiOperation(value = "保存用户基本信息", httpMethod = "POST", notes = "保存用户基本信息", response = MoblieUserVo.class)
+    public Object updateUser(@RequestBody @Validated(Update.class) MoblieUserVo user) {
+        return null;
+    }
+
+    @RequestMapping(value = "getFocus")
+    @ApiOperation(value = "获取我关注用户信息", httpMethod = "GET", notes = "获取我关注用户信息", response = FocusUser.class)
+    public Object getFocus() {
+        return null;
+    }
+
+    @RequestMapping(value = "focus")
+    @ApiOperation(value = "关注用户", httpMethod = "POST", notes = "关注用户", response = Integer.class)
+    public Object focus(@RequestBody @Validated FocusUser focusUser) {
+        return null;
+    }
+
+    @RequestMapping(value = "ignore")
+    @ApiOperation(value = "取消关注用户", httpMethod = "POST", notes = "取消关注用户", response = Integer.class)
+    public Object ignore(@RequestBody @Validated FocusUser focusUser) {
+        return null;
+    }
+
+    @RequestMapping(value = "listToFocusUser")
+    @ApiOperation(value = "获取被关注用户列表", httpMethod = "GET", notes = "获取被关注用户列表,切记滚动加载和分页加载返回的数据不一样", response = MoblieUserVo.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "用户昵称搜索", dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "focus", value = "是否仅仅查询被关注",defaultValue = "true",dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "roll", value = "分页是否滚动加载",defaultValue = "false", dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "page", value = "当前页",defaultValue = "1", dataType = "int", paramType = "form"),
+            @ApiImplicitParam(name = "rows", value = "一次分页加载记录条数",defaultValue = "10", dataType = "int", paramType = "form")
+    })
+    public Object listToFocusUser(String keyword, @RequestParam(value = "focus",defaultValue = "true") boolean focus, Page page) {
+        return null;
+    }
+
+    @RequestMapping(value = "listUser")
+    @ApiOperation(value = "获取用户列表", httpMethod = "GET", notes = "获取用户列表,切记滚动加载和分页加载返回的数据不一样", response = MoblieUserVo.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "用户昵称搜索", dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "focus", value = "是否仅仅查询关注",defaultValue = "true",dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "roll", value = "分页是否滚动加载",defaultValue = "false", dataType = "boolean", paramType = "form"),
+            @ApiImplicitParam(name = "page", value = "当前页",defaultValue = "1", dataType = "int", paramType = "form"),
+            @ApiImplicitParam(name = "rows", value = "一次分页加载记录条数",defaultValue = "10", dataType = "int", paramType = "form")
+    })
+    public Object listUser(String keyword, @RequestParam(value = "focus",defaultValue = "true") boolean focus, Page page) {
+        return null;
+    }
+}

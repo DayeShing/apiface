@@ -1,0 +1,25 @@
+{
+  "docs": [{
+    "group": "swagger2-example",
+    "options": [{
+      "name": "本地示例(英文)",
+      "addr": "https://dayeshing.github.io/apiface/docs.json"
+    }, {
+      "name": "本地示例(中文)",
+      "addr": "https://dayeshing.github.io/apiface/demo.json"
+    }]
+  }, {
+    "group": "apiface-example",
+    "options": [{
+      "name": "Maven(java)",
+      "addr": "https://dayeshing.github.io/apiface/apiface-example-1.2.1-SNAPSHOT.json"
+    },{
+      "name": "gradle(java)",
+      "addr": "https://dayeshing.github.io/apiface/apiface-gradle-example.json"
+    }]
+  }],
+  "mode": "single",
+  "api": "/base/api/api-docs",
+  "title": "apiface",
+  "proxy": ""
+}
