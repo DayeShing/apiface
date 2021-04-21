@@ -13,12 +13,9 @@
     "options": [{
       "name": "Maven(java)",
       "addr": "https://dayeshing.github.io/apiface/apiface-example-1.2.1-SNAPSHOT.json"
-    }, {
-      "name": "Maven(kotlin)",
-      "addr": "https://dayeshing.github.io/apiface/apiface-example-Maven-kotlin.json"
-    }, {
+    },{
       "name": "gradle(java)",
-      "addr": "https://dayeshing.github.io/apiface/apiface-example-gradle-java.json"
+      "addr": "https://dayeshing.github.io/apiface/apiface-gradle-example.json"
     }]
   }],
   "mode": "single",
