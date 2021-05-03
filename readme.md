@@ -25,6 +25,9 @@
 ### 演示地址
 * 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface 静态（纯前端）</a>
 <a href="http://www.daysh.top/index/" target="_blank">apiface动态（包含后端）</a>
+超级管理员 账号：admin 密码：123456
+文档管理员 账号：manager 密码：123456
+文档使用者 账号：document 密码：123456
 
 ### 单纯使用环境（apiface的使用门槛）
 > * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的RESTFUL APIs接口）
