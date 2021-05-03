@@ -9,7 +9,7 @@
 ![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
 ![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
 
-# [apiface](http://daysh.top/)使用篇
+# [apiface](http://www.daysh.top/index/)使用篇
 ### 单纯使用环境（apiface的使用门槛）
 > * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的RESTFUL APIs接口）
 > * maven 或 gradle 
@@ -235,7 +235,7 @@ public class Action {
 * #### 第四步 (用apiface接口成模管理工具)调试接口
 apiface接口成模管理工具 
 1.静态网页（静态文件不能跨域）演示地址:<a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface</a>
-2.动态网页（访问后端）演示地址:<a href="http://daysh.top/index" target="_blank">apiface</a> 或 <a href="http://apiface.daysh.top/index" target="_blank">apiface</a>
+2.动态网页（访问后端）演示地址:<a href="http://www.daysh.top/index" target="_blank">apiface</a> 或 <a href="http://apiface.daysh.top/index" target="_blank">apiface</a>
 
 * end
 --- 
@@ -243,7 +243,7 @@ apiface接口成模管理工具
 ### apiface接口成模管理工具下载及部署
 
 ##### docker 方式部署(前后端)，只需要执行几项命令，以centos7.x 系统作说明
-* 1.获取下载安装包下载位置：<a href="http://daysh.top/assets/IO.tar.gz" target="_blank">http://daysh.top/assets/IO.tar.gz</a> 或
+* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/IO.tar.gz" target="_blank">http://daysh.top/assets/IO.tar.gz</a> 或
                                 <a href="http://apiface.daysh.top/assets/IO.tar.gz" target="_blank">http://apiface.daysh.top/assets/IO.tar.gz</a> 
 * 2.修改配置:
     1.修改nginx 反向代理服务ip 指向部署应用的内网ip或公网ip(gong网ip需要开端口)
@@ -294,7 +294,7 @@ firewall-cmd --reload
 
 
 ##### tomcat 方式部署 前端包含在jar里面(前后端)
-* 1.获取下载安装包下载位置：<a href="http://daysh.top/assets/dist.zip" target="_blank">http://daysh.top/assets/dist.zip</a> 或
+* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/dist.zip" target="_blank">http://www.daysh.top/assets/dist.zip</a> 或
                 <a href="http://apiface.daysh.top/assets/dist.zip" target="_blank">http://apiface.daysh.top/assets/dist.zip</a> 
 * 2.修改配置:
     修改springboot项目中的数据库ip地址
@@ -306,7 +306,7 @@ firewall-cmd --reload
 
 
 ##### 纯前端 方式部署 (无后端)
-* 1.获取下载安装包下载位置：<a href="http://daysh.top/assets/apiface.war" target="_blank">http://daysh.top/assets/apiface.war</a> 或
+* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/apiface.war" target="_blank">http://daysh.top/assets/apiface.war</a> 或
 <a href="http://apiface.daysh.top/assets/apiface.war" target="_blank">http://apiface.daysh.top/assets/apiface.war</a> 
 * 2.将dist文件下的所有文件部署到任意一台web服务器
 访问：http://ip:port/apiface.html 即可
