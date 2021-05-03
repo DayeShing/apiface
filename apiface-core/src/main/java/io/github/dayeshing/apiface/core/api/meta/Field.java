@@ -65,10 +65,16 @@ public class Field implements Meta, Serializable {
      * 只读
      */
     private boolean onlyRead = true;
+
     /**
      * 是否基本类型
      */
     private boolean base;
+
+    /**
+     * 泛型，类型参数
+     */
+    private boolean generic;
 
     /**
      * 是否数组
@@ -184,5 +190,13 @@ public class Field implements Meta, Serializable {
 
     public void setArray(boolean array) {
         this.array = array;
+    }
+
+    public boolean isGeneric() {
+        return generic;
+    }
+
+    public void setGeneric(boolean generic) {
+        this.generic = generic;
     }
 }

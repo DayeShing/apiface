@@ -7,7 +7,7 @@
     <groupId>io.github.dayeshing</groupId>
     <artifactId>apiface</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.8.9-SNAPSHOT</version>
 
     <description>
         A set of interface documentation tools developed by java,
@@ -41,8 +41,20 @@
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
+
+        <junit.version>4.12</junit.version>
     </properties>
 
+
+    <dependencies>
+        <!-- 单元测试-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>

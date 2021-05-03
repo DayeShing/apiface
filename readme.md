@@ -19,15 +19,18 @@
 ![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
 ![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
 
-# apiface (一套由java开发的接口文档工具)
+# [apiface (一套由java开发的接口文档工具)](http://daysh.top/)
 ###### Tools that run in an operational or development environment
 
 ### 演示地址
-* 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface</a>
+* 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface 静态（纯前端）</a>
+<a href="http://daysh.top/index" target="_blank">apiface动态（包含后端）</a>
 
 ### 单纯使用环境（apiface的使用门槛）
-> * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的APIs接口）
+> * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的RESTFUL APIs接口）
 > * maven 或 gradle 或 自定义扫描路径生成APIs接口(不推荐)
+
+[使用篇详细](./useme.md)
 
 注：
  * 使用成本低(集成开发环境下javadoc可以按需自动生成)，仅仅需要学习<a href="#javadocs">apiface的javadoc规范</a>
@@ -87,7 +90,7 @@
     (2).swagger2：使用的类加载器：项目运行的类加载器，支持全面
     (3).结果:swagger2 比较好（毕竟swagger2 搞了很多年了）
  * 5.使用条件：
-    (1).apiface: 必须用maven或gradle(下一阶段支持)编译
+    (1).apiface: 必须用maven或gradle编译
     (2).swagger2：引入相关的包
     (3).结果:apiface、swagger2各有有优势
  * 6.界面UI:
@@ -109,8 +112,8 @@
 
 * ### apiface的模块说明
 > * apiface-core             apiface 的核心代码
-> * apiface-maven-plugin     apiface 文档生成的插件，基于maven生命周期
-> * apiface-gradle-plugin    apiface 文档生成的插件，基于gradle
+> * apiface-maven-plugin     apiface 文档生成的maven插件，基于maven
+> * apiface-gradle-plugin    apiface 文档生成的gradle插件，基于gradle
 >
 > * apiface-proxy            apiface（文档项目分离）访问后端的代理，解决cookie跨域
 > * apiface-font             apiface 的前端代码(旧,不维护)
@@ -163,7 +166,7 @@ writeApis->e
 |@method|标记请求方法|@method get,post|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的请求方法|
 |@produce|标记请求context类型|@produce text/html,text/xml|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的请求内容|
 |@consume|标记响应context类型|@consume text/html,text/xml|class,method|含@action的文档注释|springmvc可忽略，标记具体接口使用的响应内容|
-|@exclude|接口排除参数|@exclude param1,param2|method|含@action的文档注释|（现阶段没实现）标记具体接口的参数是一个包装类，但有些不想展示的参数|
+|@exclude|接口排除参数|@exclude param1,param2.field|method|含@action的文档注释|标记具体接口的参数是一个包装类，但有些不想展示的参数|
 |@return|接口返回值|@return 类全名<T,V>丨描述|method|含@action的文档注释|标记具体接口的返回是一个包装类|
 |@return|接口返回值|@return 类全名或基本类型|method|含@action的文档注释|标记具体接口的返回是一个包装类或者基本类(java的基本类型+string,date)|
 |@return|接口返回值|@return int丨描述|method|含@action的文档注释|标记具体接口的返回是一个基本类，描述可以省略|
@@ -190,9 +193,9 @@ writeApis->e
 #### 特点
 > * 1.界面完全兼容swagger2界面
 > * 2.支持多后台接口方案(一套界面搞定若干个系统的API展示)
-> * 3.支持apiface无入侵api接口方案(一个自定义的API接口展示方案)
-> * 4.支持i18n，国际化
-> * 5.支持生成本地文档 markdown形式
+> * 3.支持apiface无入侵api接口文档方案(一个自定义的API接口展示方案)
+> * 4.支持i18n，国际化(局部支持)
+> * 5.支持生成本地文档（离线文档） markdown形式，
 > * 6.动态前端配置(不需要再打包apiface-font 仅仅需要配置conf.json)
 > * 7.接口对接遇到问题可以分享测试用例,提高前后端交流能力
 
@@ -208,14 +211,14 @@ writeApis->e
 #### 模式说明（前端动态配置）
 |属性名|含义|类型|生效条件|描述|
 |:------:|:------:|:------|:------| :------|
-|mode|模式选择|字符串，枚举值|当值为single或dev|single意味着访问docs[]中的分组接口可以单独部署，而dev 则是集成部署就行swagger一样放在代码后端代码中|
+|mode|模式选择|字符串，枚举值|当值为single或dev或app|single意味着访问docs[]中的分组接口可以单独部署，而dev 则是集成部署就行swagger一样放在代码后端代码中，而app模式 则是apiface专门为接口文档开发的一个文档管理系统|
 |api|接口文档地址|字符串，任意值|mode值为dev时|在集成部署中有效并指向接口访问地址 eq:proxy/apifaces/api-docs（其中proxy为base uri  apifaces/api-docs 为实际接口）|
 |title|接口网页标题|字符串，任意值|title不为空时|为方便使用者定义自己的标题，优先等级大于默认|
 |proxy|使用代理地址|字符串，任意值|mode值为single，并且proxy不为空时|指向代理服务器-配合apiface-proxy使用，eq:http://ip:port/proxy/agent/api,用于访问多套API接口时解决跨域问题|
 |docs|动态接口配置|数组|mode值为single|为下拉选项的API接口选项提供候选值|
-|group|接口分组名称|字符串，任意值|跟随docs|用于显示接口分组名称|
+|text|接口分组名称|字符串，任意值|跟随docs|用于显示接口分组名称|
 |options|接口地址包装|数组|跟随docs|将一个接口地址包装为接口显示名称的接口地址|
-|name|接口显示名称|字符串，任意值|跟随options|用于显示接口显示名称|
+|text|接口显示名称|字符串，任意值|跟随options|用于显示接口显示名称|
 |addr|接口地址|字符串，url|跟随options|用于显示接口地址以及获取描述文档的依据|
 
 注： 在[conf.json](./apiface-front/public/conf.json)文件中配置
@@ -244,7 +247,7 @@ writeApis->e
 注：上述过程maven都已经帮我们做好了，您只需要安装好环境 并执行mvn install命令即可
 
 * ### apiface-maven-plugin的使用方式（apiface的maven插件生成APIs接口文档）
-##### <a id="apifaceMavenPlugin">apiface-maven-plugin参数</a>
+##### <a id="apifaceMavenPlugin">插件参数</a>
 > * host          打包生成的接口文档指向 该项目部署的测试服务器，用于用例测试
 > * basePath      相当于 HttpServletRequest.getContextPath()，部署项目的实际baseUrl用于用例测试
 > * license       
@@ -259,7 +262,7 @@ writeApis->e
 ##### <a id="apifaceMavenPluginUsing">apiface-maven-plugin使用方式</a>
 ```xml
 <!--
-插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖
+插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖，  认准 1.4.5-RC 版本及其以上版本
 -->
 <plugin>
     <groupId>io.github.dayeshing</groupId>
@@ -295,7 +298,7 @@ writeApis->e
 ##### <a id="apifaceGradlePluginUsing">apiface-gradle-plugin使用方式</a>
 ```groovy
 /**
- * 插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖
+ * 插件已发布至中央仓库，可以直接从中央仓库获取 插件以及插件依赖，  认准 1.4.5-RC 版本及其以上版本
  */
 //构建环境
 buildscript {
@@ -304,7 +307,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.2.4-SNAPSHOT'
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.8.9-SNAPSHOT'
     }
 }
 
@@ -324,7 +327,7 @@ apiface {
     url='http://self.daysh.top'
     developer='Daye Shing|xuandeyu14@gmail.com'
     description='apiface让您的接口文档更丰富、更优雅'
-    version='1.2.4-SNAPSHOT'
+    version='1.8.9-SNAPSHOT'
     title='接口文档 APIs'
 }
 // 由于本人gradle不太熟练 ，所以要用下面的配合使用，必须
@@ -340,7 +343,7 @@ c.mustRunAfter(cp)
 // 其他的配置，无关api打包构建
 
 group = 'com.daysh.apiface'
-version = '1.2.4-SNAPSHOT'
+version = '1.8.9-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -590,7 +593,18 @@ public class Action {
 
 注： 在[conf.json](./apiface-font/static/conf.json)文件中配置
 
-
+#### 演示
+![avatar](./apiface-font/static/demo/e1.png)
+![avatar](./apiface-font/static/demo/e2.png)
+![avatar](./apiface-font/static/demo/u1.png)
+![avatar](./apiface-font/static/demo/u2.png)
+![avatar](./apiface-font/static/demo/u3.png)
+![avatar](./apiface-font/static/demo/z1.png)
+![avatar](./apiface-font/static/demo/z2.png)
+![avatar](./apiface-font/static/demo/z3.png)
+![avatar](./apiface-font/static/demo/z4.png)
+![avatar](./apiface-font/static/demo/z5.png)
+![avatar](./apiface-font/static/demo/z6.png)
 
 
 

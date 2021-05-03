@@ -11,8 +11,7 @@ import io.github.dayeshing.apiface.core.util.ObjectUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.github.dayeshing.apiface.core.enums.AnnotationSupportEnum.*;
 
@@ -44,17 +43,20 @@ public class SpringMvcSupportHelper {
         action.setMethods(anno.getMethod());
         action.setProduces(anno.getProduces());
         action.setConsumes(anno.getConsumes());
-        String name = anno.getName();
-        if(ObjectUtil.isEmpty(name)){
-            if(ObjectUtil.isNotEmpty(anno.getValue())){
-                name = anno.getValue().get(0);
-            } else if(ObjectUtil.isNotEmpty(anno.getPath())){
-                name = anno.getPath().get(0);
-            }
+        Set<String> name = new HashSet<String>();
+        if(ObjectUtil.isNotEmpty(anno.getName())){
+            name.add(anno.getName());
         }
-        if(ObjectUtil.isNotEmpty(name)){
-            action.setUri(name);
+        if(ObjectUtil.isNotEmpty(anno.getValue())){
+            name.addAll(anno.getValue());
         }
+        if(ObjectUtil.isNotEmpty(anno.getPath())){
+            name.addAll(anno.getPath());
+        }
+        if(ObjectUtil.isNotEmpty(action.getUri())){
+            name.addAll(action.getUri());
+        }
+        action.setUri(name);
         return action;
     }
 

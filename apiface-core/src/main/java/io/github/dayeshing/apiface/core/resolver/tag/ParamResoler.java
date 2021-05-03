@@ -57,7 +57,6 @@ public class ParamResoler implements TagResolver {
             }
         } else {
             param.setType(VariableEnum.OBJECT.getType());
-            param.setRef(VariableEnum.OBJECT.getClazz());
         }
         return param;
     }

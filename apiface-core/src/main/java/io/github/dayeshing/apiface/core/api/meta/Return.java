@@ -51,6 +51,11 @@ public class Return implements Meta, Serializable {
     private String example;
 
     /**
+     * 泛型
+     */
+    private boolean generic;
+
+    /**
      * 是否基本类型
      */
     private boolean base;
@@ -146,5 +151,13 @@ public class Return implements Meta, Serializable {
 
     public void setArray(boolean array) {
         this.array = array;
+    }
+
+    public boolean isGeneric() {
+        return generic;
+    }
+
+    public void setGeneric(boolean generic) {
+        this.generic = generic;
     }
 }

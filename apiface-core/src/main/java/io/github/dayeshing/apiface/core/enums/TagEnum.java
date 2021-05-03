@@ -65,7 +65,7 @@ public enum TagEnum {
     /**
      * 本地uri处理
      */
-    URI("@uri", null),
+    URI("@uri", new GroupResolver()),
     /**
      * 响应类行 doc,json,xml,...
      */

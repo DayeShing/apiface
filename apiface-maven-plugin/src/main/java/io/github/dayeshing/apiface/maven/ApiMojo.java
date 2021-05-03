@@ -6,6 +6,7 @@ import io.github.dayeshing.apiface.conver.ToBean;
 import io.github.dayeshing.apiface.core.api.meta.Author;
 import io.github.dayeshing.apiface.core.api.resolver.ApiResolver;
 import io.github.dayeshing.apiface.core.api.resolver.ApiResolverImpl;
+import io.github.dayeshing.apiface.core.api.resolver.GetFieldGroupResolver;
 import io.github.dayeshing.apiface.core.comment.impl.ClassMark;
 import io.github.dayeshing.apiface.core.resolver.tag.AuthorResolver;
 import io.github.dayeshing.apiface.core.swagger.v2.Swagger2;
@@ -125,7 +126,7 @@ public class ApiMojo extends AbstractFaceMojo {
     protected byte[] process() throws MojoExecutionException {
         resolver = new ApiResolverImpl(classLoader);
         loadMark(classLoader, String.format("%s/%s",DIRECTORY, getFilename(DocumentMojo.MOJO)));
-        JSONObject transform = new Swagger2().transform(resolver.getActions(), resolver.getFields());
+        JSONObject transform = new Swagger2((GetFieldGroupResolver) resolver).transform(resolver.getActions(), resolver.getFields());
         return info(transform).toJSONString().getBytes();
     }
 
@@ -136,6 +137,7 @@ public class ApiMojo extends AbstractFaceMojo {
 
     protected JSONObject info(JSONObject transform) {
         transform.put("swagger", owner);
+        transform.put("apiface", "1");
         transform.put("host", host);
         transform.put("basePath", basePath);
 

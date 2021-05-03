@@ -20,18 +20,19 @@ import io.github.dayeshing.apiface.core.enums.TagEnum;
 import io.github.dayeshing.apiface.core.enums.VariableEnum;
 import io.github.dayeshing.apiface.core.exception.ApiException;
 import io.github.dayeshing.apiface.core.util.ObjectUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * 纯doc文档解析规则为：
@@ -50,8 +51,9 @@ import java.util.Map;
  * @Date： 2020-08-16 10:20
  * @since 标明该类模块的版本 ( 指定版本)
  */
-public class ApiResolverImpl implements ApiResolver {
+public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
 
+    protected Logger log = LoggerFactory.getLogger(getClass());
     /**
      * 类加载器-去掉类加载器校验-纯doc解析
      */
@@ -109,6 +111,11 @@ public class ApiResolverImpl implements ApiResolver {
                         actions.put(name, SpringMvcSupportHelper.springMvcSupport(mark, transTag(group, tags), clazz, springMvc));
                     }
                     if (TagEnum.isModel(tags)) {
+
+//                        Type genericSuperclass = clazz.getGenericSuperclass();
+//                        genericSuperclass.getTypeName();
+//                        继承泛型类
+
                         FieldGroup group = new FieldGroup();
                         group.setDeprecated(annotation != null);
                         group.setName(name);
@@ -131,7 +138,9 @@ public class ApiResolverImpl implements ApiResolver {
             List<String> value = entry.getValue();
             switch (tag) {
                 case URI:
-                    action.setUri((String) tag.resolver(value));
+                    HashSet<String> url = new HashSet<>();
+                    url.addAll((List<String>) tag.resolver(value));
+                    action.setUri(url);
                     break;
                 case METHOD:
                     action.setMethods((List<String>) tag.resolver(value));
@@ -148,7 +157,6 @@ public class ApiResolverImpl implements ApiResolver {
                 case SINCE:
                     action.setVersion((String) tag.resolver(value));
                     break;
-
                 case EXCLUDE:
                     if (action instanceof Action) {
                         ((Action) action).setExclude((List<String>) tag.resolver(value));
@@ -161,11 +169,11 @@ public class ApiResolverImpl implements ApiResolver {
                     break;
                 case HIDDEN:
                     if (action instanceof Action) {
-                        // 这里要校验返回值
+                        // 是否隐藏
                         ((Action) action).setHidden(true);
                     }
                     if (action instanceof ActionGroup) {
-                        // 这里要校验返回值
+                        // 是否隐藏
                         ((ActionGroup) action).setHidden(true);
                     }
                     break;
@@ -211,57 +219,10 @@ public class ApiResolverImpl implements ApiResolver {
         return action;
     }
 
-//    protected Param validParam(Param param, String ref,int count) {
-//        if(count > 1){
-//            param.setType(VariableEnum.OBJECT.getType());
-//            param.setRef(ref);
-//            return param;
-//        }
-//        try {
-//            String array = null;
-//            String type = ref;
-//            VariableEnum variable = VariableEnum.of(type);
-//            int of = type.indexOf("<");
-//            if (of > -1) {
-//                type = type.substring(0, of);
-//            }
-//            param.setFormat(variable.getFormat());
-//            param.setType(variable.getType());
-//            if (variable.isBase()) {
-//                if (param.isRequired() && ObjectUtil.isEmpty(param.getExample())) {
-//                    param.setExample(variable.getExample());
-//                }
-//                param.setBase(true);
-//            } else if (variable.isArray()) {
-//                param.setArray(true);
-//
-//                if (ref.endsWith("[]")) {
-//                    array = ref.replace("[]", "");
-//                } else if (ref.startsWith("array[")) {
-//                    array = ref.replace("array[", "").replace("]", "");
-//                }else if (ref.startsWith("Array[")) {
-//                    array = ref.replace("Array[", "").replace("]", "");
-//                }
-//                return validParam(param, arrayType,++count);
-//            }else if(variable.isList()){
-//                if (of > -1) {
-//                    array = ref.substring(of).replace(">", "").replace(">", "");
-//                }
-//            } else {
-//                param.setRef(Class.forName(type, false, classLoader).getName());
-//            }
-//        } catch (ClassNotFoundException e) {
-//            param.setType(VariableEnum.OBJECT.getType());
-//            param.setRef(VariableEnum.OBJECT.getClazz());
-//        }
-//        return param;
-//    }
-
     protected List<Param> validParam(List<Param> params) {
         List<Param> parameters = new ArrayList<Param>();
         if (ObjectUtil.isNotEmpty(params)) {
             for (Param param : params) {
-//                parameters.add(validParam(param, param.getType(),0));
 
                 String ref = param.getType();
 
@@ -289,11 +250,19 @@ public class ApiResolverImpl implements ApiResolver {
                         array = ref.substring(index).replace(">", "").replace("<", "");
                     }
                 } else {
+                    int index = type.indexOf("<");
+                    if (index > -1) {
+                        // 这里是泛型属性，
+                        param.setGeneric(true);
+                        type = type.substring(0, index);
+                    }
                     try {
                         param.setRef(Class.forName(type, false, classLoader).getName());
                     } catch (ClassNotFoundException e) {
                         param.setType(VariableEnum.OBJECT.getType());
-                        param.setRef(VariableEnum.OBJECT.getClazz());
+                        param.setDesc("无法实例:" + param.getType());
+                        log.error("无法实例对象:{}:{}", type, param.getType());
+                        param.setGeneric(false);
                     }
                 }
 
@@ -308,15 +277,24 @@ public class ApiResolverImpl implements ApiResolver {
                         param.setFormat(of.getFormat());
                         param.setBase(true);
                     } else {
+
+                        int index = array.indexOf("<");
+                        if (index > -1) {
+                            // 这里是泛型属性，
+                            param.setGeneric(true);
+                            array = array.substring(0, index);
+                        }
                         try {
                             param.setRef(Class.forName(array, false, classLoader).getName());
                         } catch (ClassNotFoundException e) {
                             param.setType(VariableEnum.OBJECT.getType());
                             param.setRef(VariableEnum.OBJECT.getClazz());
+                            param.setDesc("无法实例:" + param.getType());
+                            log.error("无法实例对象:{}:{}", array, param.getType());
+                            param.setGeneric(false);
                         }
                     }
                 }
-//                System.err.println(JSON.toJSONString(param));
                 parameters.add(param);
             }
         }
@@ -361,11 +339,19 @@ public class ApiResolverImpl implements ApiResolver {
                 array = ref.substring(index).replace(">", "").replace("<", "");
             }
         } else {
+            int index = type.indexOf("<");
+            if (index > -1) {
+                // 这里是泛型属性，
+                ret.setGeneric(true);
+                type = type.substring(0, index);
+            }
             try {
                 ret.setRef(Class.forName(type, false, classLoader).getName());
             } catch (ClassNotFoundException e) {
-                ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
+                ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例:" + ret.getName());
                 ret.setType(VariableEnum.OBJECT.getType());
+                log.error("无法实例对象:{}:{}", type, ret.getName());
+                ret.setGeneric(false);
                 return ret;
             }
         }
@@ -378,37 +364,24 @@ public class ApiResolverImpl implements ApiResolver {
                 ret.setFormat(of.getFormat());
                 ret.setBase(true);
             } else {
+
+                int index = array.indexOf("<");
+                if (index > -1) {
+                    // 这里是泛型属性，
+                    ret.setGeneric(true);
+                    array = array.substring(0, index);
+                }
                 try {
                     ret.setRef(Class.forName(array, false, classLoader).getName());
                 } catch (ClassNotFoundException e) {
-                    ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
+                    ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例:" + ret.getName());
                     ret.setType(VariableEnum.OBJECT.getType());
+                    log.error("无法实例对象:{}:{}", array, ret.getName());
                     return ret;
                 }
             }
         }
         return ret;
-//        try {
-//            String name = ret.getName();
-//            int of = name.indexOf("<");
-//            if (of > -1) {
-//                name = name.substring(0, of);
-//            }
-//            VariableEnum variable = VariableEnum.of(name);
-//            ret.setFormat(variable.getFormat());
-//            if (variable.isBase()) {
-//                ret.setType(variable.getType());
-//                ret.setExample(variable.getExample());
-//                ret.setBase(true);
-//                return ret;
-//            }
-//            ret.setRef(Class.forName(name, false, classLoader).getName());
-//            return ret;
-//        } catch (ClassNotFoundException e) {
-//            ret = new Return(VariableEnum.OBJECT.getClazz(), "无法实例" + ret.getName());
-//            ret.setType(VariableEnum.OBJECT.getType());
-//            return ret;
-//        }
     }
 
     protected Action getAction(MethodMark mark, Method method, boolean isSpringMvc) {
@@ -449,6 +422,7 @@ public class ApiResolverImpl implements ApiResolver {
                 }
             }
         }
+        log.error("没有相关的方法:{}:{}", clazz.getName(),method.getName());
         throw new ApiException(String.format("【%s】 no such a method 【%s】 with param 【%s】", clazz.getName(), method.getName(), JSON.toJSONString(method.getParams())));
     }
 
@@ -483,46 +457,19 @@ public class ApiResolverImpl implements ApiResolver {
         return field;
     }
 
-//    protected Field getField(Field field, Class<?> type) {
-//        VariableEnum of = VariableEnum.typeof(type);
-//        field.setType(type.getName());
-//
-//        if(of.isBase()){
-//            field.setType(of.getType());
-//            field.setBase(true);
-//            field.setFormat(of.getFormat());
-//        }else if(of.isArray()){
-//            field.setArray(true);
-//            if (Collection.class.isAssignableFrom(type) ) {
-//                //&& type instanceof ParameterizedType
-//                ParameterizedType hiType = (ParameterizedType) type.getGenericSuperclass();
-//                Class<?> hiListClass = (Class<?>) hiType.getActualTypeArguments()[0];
-//                System.out.println(hiListClass); // class java.lang.Integer.
-////                return ARRAY;
-//            }else if(type.isArray()){
-//                String array = type.getTypeName().replace("[]", "");
-//                try {
-//                    return getField(field,Class.forName(array, false, classLoader));
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-////                System.err.println("method:getTypeName:" + );
-////                type.getName() ;
-////                type.
-//
-//            }else{
-//
-//            }
-//
-//            System.err.println("method:getName:" + type.getName());
-//            System.err.println("method:getSimpleName:" + type.getSimpleName());
-//            System.err.println("method:getTypeName:" + type.getTypeName());
-//        }else{
-//            field.setRef(type.getName());
-//        }
-//        return field;
-//    }
-
+    /**
+     * get方法的文档注释
+     * @param clazz |类
+     * @param method |反射方法
+     * @param mark |方法描述
+     * @param p |属性描述
+     * @summary get方法的文档注释
+     * @method post,get
+     * @ignore
+     * @return io.github.dayeshing.apiface.core.api.meta.Field|描述
+     * @author Daye Shing | 896379914@qq.com
+     * @since 1.0
+     */
     protected Field getField(Class clazz, Method method, MethodMark mark, PropertyDescriptor p) {
         Field field = new Field();
         field.setName(realName(method));
@@ -530,7 +477,15 @@ public class ApiResolverImpl implements ApiResolver {
         if (mark != null) {
             field.setDesc(mark.getDesc());
         }
+        //简单返回类
         Class<?> type = method.getReturnType();
+        // 泛型返回类
+        Type genericType = method.getGenericReturnType();
+        if(!ObjectUtil.equals(type.getName(),genericType.getTypeName())){
+            log.debug("包含泛型:{}:{}", genericType.getTypeName(),genericType.getClass().getName());
+            field.setGeneric(true);
+        }
+
         VariableEnum of = VariableEnum.typeof(type);
 
         field.setType(of.getType());
@@ -539,6 +494,11 @@ public class ApiResolverImpl implements ApiResolver {
             field.setBase(true);
             field.setFormat(of.getFormat());
         } else if (of.isArray()) {
+//            GenericArrayType
+//            System.err.println(type.getTypeName());
+//            Type gt = method.getGenericReturnType();
+//            System.err.println(gt.getTypeName());
+//            System.err.println(gt.getClass().getName());
             field.setArray(true);
             String array = type.getTypeName().replace("[]", "");
             of = VariableEnum.of(array);
@@ -548,8 +508,22 @@ public class ApiResolverImpl implements ApiResolver {
             }
         } else if (of.isList()) {
             field.setArray(true);
-            ParameterizedType gt = (ParameterizedType) method.getGenericReturnType();
-            Class actualType = (Class<?>) gt.getActualTypeArguments()[0];
+            Class actualType;
+            Type gte = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            // 泛型中包含泛型
+            if(gte instanceof ParameterizedType){
+                actualType = (Class) ((ParameterizedType) gte).getRawType();
+//                Type[] types = ((ParameterizedType) gte).getActualTypeArguments();
+//                for (Type actualTypeArgument : types) {
+//
+//                    System.err.println(actualTypeArgument.getTypeName());
+//                    System.err.println(actualTypeArgument.getClass().getName());
+//                }
+            }else{
+                actualType = (Class) gte;
+                field.setGeneric(false);
+            }
+
             of = VariableEnum.typeof(actualType);
             if (!of.isBase()) {
                 field.setType(VariableEnum.OBJECT.getType());
@@ -589,6 +563,11 @@ public class ApiResolverImpl implements ApiResolver {
                 field.setDesc(mark.getDesc());
                 field.setExample(mark.getExample());
                 Class<?> type = f.getType();
+                Type genericType = f.getGenericType();
+                if(!ObjectUtil.equals(type.getName(),genericType.getTypeName())){
+                    log.debug("包含泛型:{}:{}", genericType.getTypeName(),genericType.getClass().getName());
+                    field.setGeneric(true);
+                }
                 VariableEnum of = VariableEnum.typeof(type);
                 field.setType(of.getType());
                 if (of.isBase()) {
@@ -604,8 +583,15 @@ public class ApiResolverImpl implements ApiResolver {
                     }
                 } else if (of.isList()) {
                     field.setArray(true);
-                    ParameterizedType gt = (ParameterizedType) f.getGenericType();
-                    Class actualType = (Class<?>) gt.getActualTypeArguments()[0];
+                    Class actualType;
+                    Type gte = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                    // 泛型中包含泛型
+                    if(gte instanceof ParameterizedType){
+                        actualType = (Class) ((ParameterizedType) gte).getRawType();
+                    }else{
+                        actualType = (Class) gte;
+                        field.setGeneric(false);
+                    }
                     of = VariableEnum.typeof(actualType);
                     if (!of.isBase()) {
                         field.setType(VariableEnum.OBJECT.getType());
@@ -659,14 +645,17 @@ public class ApiResolverImpl implements ApiResolver {
                 }
                 if (marks.containsKey(name)) {
                     Mark meta = marks.get(name);
+                    //文档注释写到字段上
                     if (meta instanceof FieldMark) {
                         fields.add(getField(clazz, (FieldMark) meta, p));
                     }
+                    //文档写到get方法上
                     if (meta instanceof MethodMark) {
                         fields.add(getField(null, method, (MethodMark) meta, p));
                     }
                     continue;
                 }
+                //没有写文档注释的get方法
                 fields.add(getField(clazz, method, null, p));
             }
         } catch (IntrospectionException e) {
@@ -680,7 +669,7 @@ public class ApiResolverImpl implements ApiResolver {
             return null;
         }
         Class superclass = clazz.getSuperclass();
-        if (!superclass.equals(Object.class)) {
+        if (superclass != null && !superclass.equals(Object.class)) {
             return superclass.getName();
         }
         return null;
@@ -688,13 +677,15 @@ public class ApiResolverImpl implements ApiResolver {
 
     protected List<String> refs(Class clazz) {
         List<String> as = new ArrayList<>();
-        Class[] interfaces = clazz.getInterfaces();
-        for (Class anInterface : interfaces) {
-            as.add(anInterface.getName());
-        }
-        String superclass = ref(clazz);
-        if (superclass != null) {
-            as.add(superclass);
+        if(clazz != null){
+            Class[] interfaces = clazz.getInterfaces();
+            for (Class anInterface : interfaces) {
+                as.add(anInterface.getName());
+            }
+            String superclass = ref(clazz);
+            if (superclass != null) {
+                as.add(superclass);
+            }
         }
         return as;
     }
@@ -728,5 +719,50 @@ public class ApiResolverImpl implements ApiResolver {
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    @Override
+    public FieldGroup getField(String ref) {
+        try {
+            Class clazz = Class.forName(ref, false, classLoader);
+            if(exclude(ref,clazz)){
+                return null;
+            }
+            BeanInfo info = Introspector.getBeanInfo(clazz);
+            PropertyDescriptor[] ps = info.getPropertyDescriptors();
+            FieldGroup group = new FieldGroup();
+            group.setDeprecated(clazz.getAnnotation(Deprecated.class) != null);
+            group.setName(ref);
+            group.setDesc(clazz.getSimpleName());
+            group.setTag(ref);
+            group.setRef(refs(clazz));
+            List<Field> fields = new ArrayList<>();
+            for (PropertyDescriptor p : ps) {
+                Method method = p.getReadMethod();
+                String name = method.getName();
+                if ("getClass".equals(name)) {
+                    continue;
+                }
+                //没有写文档注释的get方法
+                fields.add(getField(clazz, method, null, p));
+            }
+            group.setFields(fields);
+            return group;
+        } catch (Exception e) {
+            log.error("加载无文档注释MODEL错误", e);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean exclude(String ref, Class clazz) {
+        if(ObjectUtil.equals("java.lang.Object",ref)){
+            return true;
+        }
+        if(Map.class.isAssignableFrom(clazz)){
+            return true;
+        }
+        log.debug("加载无文档注释MODEL：{}", ref);
+        return false;
     }
 }

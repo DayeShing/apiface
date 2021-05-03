@@ -7,6 +7,7 @@
  */
 package io.github.dayeshing.apiface.core.resolver.impl;
 
+import com.github.javaparser.ast.PackageDeclaration;
 import io.github.dayeshing.apiface.core.enums.VariableEnum;
 import io.github.dayeshing.apiface.core.util.ImportUtil;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -42,14 +43,8 @@ public class VariableResolver {
      */
     private String name;
 
-
-    /**
-     * 是否泛型
-     */
-    private boolean book;
-
-    public VariableResolver(List<ImportDeclaration> imports, VariableDeclarator variable, Type type) {
-        resolver(imports, variable, type);
+    public VariableResolver(List<ImportDeclaration> imports, PackageDeclaration pack, VariableDeclarator variable, Type type) {
+        resolver(imports,pack, variable, type);
     }
 
     public String example(Expression line) {
@@ -59,8 +54,8 @@ public class VariableResolver {
         return "";
     }
 
-    private void resolver(List<ImportDeclaration> imports, VariableDeclarator variable,Type type) {
-        this.type = ImportUtil.fullType(type.toString(), imports);
+    private void resolver(List<ImportDeclaration> imports,PackageDeclaration pack, VariableDeclarator variable,Type type) {
+        this.type = ImportUtil.fullType(type.toString(), imports, pack);
         this.name = variable.getId().toString();
         this.example = VariableEnum.of(this.type) !=null?example(variable.getInit()):"";
     }
@@ -79,14 +74,6 @@ public class VariableResolver {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public boolean isBook() {
-        return book;
-    }
-
-    public void setBook(boolean book) {
-        this.book = book;
     }
 
     public String getName() {

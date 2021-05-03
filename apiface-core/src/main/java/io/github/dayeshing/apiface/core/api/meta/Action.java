@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @Description: <p> 接口类 </p>
@@ -64,7 +65,7 @@ public class Action implements Meta, Api, Anno, Serializable {
     /**
      * 访问uri
      */
-    private String uri;
+    private Set<String> uri;
 
     private List<String> methods;
 
@@ -165,12 +166,12 @@ public class Action implements Meta, Api, Anno, Serializable {
     }
 
     @Override
-    public String getUri() {
+    public Set<String> getUri() {
         return uri;
     }
 
     @Override
-    public void setUri(String uri) {
+    public void setUri(Set<String> uri) {
         this.uri = uri;
     }
 

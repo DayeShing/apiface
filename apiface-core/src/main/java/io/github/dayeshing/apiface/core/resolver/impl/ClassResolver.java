@@ -17,6 +17,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.comments.Comment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -30,6 +32,8 @@ import java.util.List;
  * @Date： 2020-08-14 13:14
  */
 public class ClassResolver implements Resolver<ClassMark> {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private Rule rule;
 
@@ -49,6 +53,7 @@ public class ClassResolver implements Resolver<ClassMark> {
                 CommentResolver cr = new CommentResolver(comment.getContent());
                 boolean model = TagEnum.isModel(cr.tags());
                 if(rule != null && rule.ignore(cr.tags(), MarkEnum.CLASS)){
+                    log.debug("忽略的类:{}",clazz.getName());
                     return marks;
                 }
                 classMark.setDocTags(cr.getDocTags());

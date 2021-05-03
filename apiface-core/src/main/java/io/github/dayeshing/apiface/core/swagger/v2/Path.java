@@ -37,6 +37,11 @@ public class Path implements JsonApi {
      */
     private boolean unpack;
 
+    /**
+     * 全局包装
+     */
+    private String pack;
+
     private boolean body;
 
     private boolean requiredBody;
@@ -68,7 +73,8 @@ public class Path implements JsonApi {
     public Path(String method,String summary, String description) {
         this.summary = method;
         if(ObjectUtil.isNotEmpty(summary)){
-            this.summary = String.format("%s(%s)",summary,method);
+            this.summary = summary;
+//            this.summary = String.format("%s(%s)",summary,method);
         }
         this.description = description;
     }
@@ -188,6 +194,9 @@ public class Path implements JsonApi {
             if (ObjectUtil.isNotEmpty(exclude)) {
                 path.put("excludes", exclude);
             }
+            if (ObjectUtil.isNotEmpty(pack)) {
+                path.put("pack", pack);
+            }
             if (author != null) {
                 JSONObject user = new JSONObject();
                 user.put("name", author.getName());
@@ -285,5 +294,13 @@ public class Path implements JsonApi {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 }

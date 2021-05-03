@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @Description: <p> 接口分组类 </p>
@@ -43,7 +44,7 @@ public class ActionGroup implements Meta, Api,Anno, Serializable {
     /**
      * 访问地址
      */
-    private String uri;
+    private Set<String> uri;
 
     /**
      * 这里用于继承类-可以递归获取继承对象中的字段
@@ -139,12 +140,12 @@ public class ActionGroup implements Meta, Api,Anno, Serializable {
     }
 
     @Override
-    public String getUri() {
+    public Set<String> getUri() {
         return uri;
     }
 
     @Override
-    public void setUri(String uri) {
+    public void setUri(Set<String> uri) {
         this.uri = uri;
     }
 

@@ -7,7 +7,7 @@ package com.daysh.apiface.controller;
  * @ignore
  * @since 1.0
  */
-public class GridReturn {
+public class GridReturn{
 
 
     public static Return grid(Object obj, Page page) {

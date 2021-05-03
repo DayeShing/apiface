@@ -1,0 +1,6 @@
+config:
+  include: devOracle
+  port: 28081
+  context-path: /gradle
+  self: http://www.daysh.top
+

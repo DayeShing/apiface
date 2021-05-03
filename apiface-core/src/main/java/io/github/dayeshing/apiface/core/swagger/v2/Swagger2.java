@@ -1,8 +1,10 @@
 package io.github.dayeshing.apiface.core.swagger.v2;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.github.dayeshing.apiface.core.api.meta.*;
 import io.github.dayeshing.apiface.core.api.resolver.ApiTransform;
+import io.github.dayeshing.apiface.core.api.resolver.GetFieldGroupResolver;
 import io.github.dayeshing.apiface.core.enums.VariableEnum;
 import io.github.dayeshing.apiface.core.util.ObjectUtil;
 
@@ -20,14 +22,20 @@ public class Swagger2 implements ApiTransform, JsonApi {
     private Set<Path> action = new HashSet<Path>();
     private List<Path> doublePath = new ArrayList<Path>();
 
-    private List<Definition> definitions = new ArrayList<Definition>();
-    private Map<String, ActionGroup> actions;
-    private Map<String, FieldGroup> fields;
+    private List<Definition> definitions = new ArrayList<Definition>(200);
+    private Map<String, ActionGroup> actions = new HashMap<>(200);
+    private Map<String, FieldGroup> fields = new HashMap<>(200);
+
+    private GetFieldGroupResolver resolver;
+
+    public Swagger2(GetFieldGroupResolver resolver) {
+        this.resolver = resolver;
+    }
 
     @Override
     public JSONObject transform(Map<String, ActionGroup> actions, Map<String, FieldGroup> fields) {
-        this.actions = actions;
-        this.fields = fields;
+        this.actions.putAll(actions);
+        this.fields.putAll(fields);
 
         for (Map.Entry<String, ActionGroup> entry : actions.entrySet()) {
             ActionGroup group = entry.getValue();
@@ -45,7 +53,6 @@ public class Swagger2 implements ApiTransform, JsonApi {
             getChildActions(group, group);
             getActions(group, group);
         }
-
         for (Map.Entry<String, FieldGroup> entry : fields.entrySet()) {
             FieldGroup group = entry.getValue();
             if(group.isHidden()){
@@ -83,6 +90,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
             }
         }
         json.put("definitions", arr);
+        json.put("apiface", "1");
         return json;
     }
 
@@ -104,6 +112,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
 
     protected Set<Propertie> getChildProperties(FieldGroup group) {
         Set<Propertie> ps = new HashSet<Propertie>();
+        // 这里应该没问题，文档已经存在，只是想去他的继承类再找描述
         for (String ref : group.getRef()) {
             FieldGroup child = fields.get(ref);
             if (child != null) {
@@ -135,7 +144,11 @@ public class Swagger2 implements ApiTransform, JsonApi {
         p.setIgnore(f.isIgnore());
         p.setOnlyRead(f.isOnlyRead());
         p.setType(f.getType());
-        p.setRef(f.getRef());
+        // 这里有问题
+//        p.setRef(f.getRef());
+//      修复后，先去看看有没有该引用，没有将创建一个
+        String ref = getRefs(f.getRef());
+        p.setRef(ref);
         return p;
     }
 
@@ -162,15 +175,14 @@ public class Swagger2 implements ApiTransform, JsonApi {
             getAction(top, action);
         }
     }
-
-    protected void getAction(ActionGroup group, Action action) {
-
+    protected void getAction(ActionGroup group, Action action,String uri){
         Path path = new Path(action.getName(),action.getSummary(), action.getDesc());
         path.setRequiredBody(action.isRequiredBody());
         path.setBody(action.isBody());
         path.setUnpack(action.isUnpack());
         path.setDeprecated(group.isDeprecated() || action.isDeprecated());
         path.setExclude(action.getExclude());
+        path.setPack(getRefs(group.getPack()));
         if (ObjectUtil.isEmpty(group.getTags())) {
             path.setTags(Arrays.asList(group.getName()));
         } else {
@@ -183,7 +195,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         path.setMethods(ObjectUtil.isEmpty(action.getMethods()) ? group.getMethods() : action.getMethods());
         path.setConsumes(ObjectUtil.isEmpty(action.getConsumes()) ? group.getConsumes() : action.getConsumes());
         path.setProduces(ObjectUtil.isEmpty(action.getProduces()) ? group.getProduces() : action.getProduces());
-        path.setUrl(uri(group.getUri(), action.getUri()));
+        path.setUrl(uri);
         path.setResponses(getResponse(action.getRet()));
         path.setParameters(getParameters(action.getParams()));
         if(this.action.contains(path)){
@@ -191,6 +203,21 @@ public class Swagger2 implements ApiTransform, JsonApi {
             return;
         }
         this.action.add(path);
+    }
+    protected void getAction(ActionGroup group, Action action) {
+        Set<String> actionUri = action.getUri();
+        if(ObjectUtil.isNotEmpty(actionUri)){
+            for (String au : actionUri) {
+                Set<String> uri = group.getUri();
+                if(ObjectUtil.isNotEmpty(uri)){
+                    for (String groupUri : uri) {
+                        getAction(group,action,uri(groupUri,au));
+                    }
+                    continue;
+                }
+                getAction(group,action,au);
+            }
+        }
     }
 
     protected Response getResponse(Return ret) {
@@ -203,20 +230,33 @@ public class Swagger2 implements ApiTransform, JsonApi {
         response.setDescription(ret.getDesc());
 
         //ObjectUtil.equals(ret.getName(), ret.getRef())
-        if (false) {
-            //泛型
-//            parameter.setType(param.getType());
-        } else if(ObjectUtil.isNotEmpty(ret.getRef())){
-            //复杂类型非泛型,数组类型
-            if (fields.containsKey(ret.getRef())) {
-                //存在该文档
-                response.setRef(ret.getRef());
-            } else {
-                // 不存在定义，返回一个模糊对象
-                response.setType(VariableEnum.OBJECT.getType());
-            }
+//        if (false) {
+//            //泛型
+////            parameter.setType(param.getType());
+//        }
+        String ref = getRefs(ret.getRef());
+        response.setRef(ref);
+        if(ref != null){
+            response.setType(VariableEnum.OBJECT.getType());
         }
         return response;
+    }
+
+    protected String getRefs(String ref){
+        if(ObjectUtil.isNotEmpty(ref)){
+            //存在该文档
+            if (fields.containsKey(ref)) {
+                return ref;
+            }
+            // 不存在将构建
+            FieldGroup group = resolver.getField(ref);
+            if(group != null){
+                fields.put(ref,group);
+                definitions.add(getDefinition(group));
+                return ref;
+            }
+        }
+        return null;
     }
 
     protected List<Parameter> getParameters(List<Param> params) {
@@ -241,18 +281,15 @@ public class Swagger2 implements ApiTransform, JsonApi {
         parameter.setType(param.getType());
 
         //ObjectUtil.equals(param.getType(), param.getRef()) || param.isArray()
-        if (false) {
-            //泛型
-            parameter.setType(param.getType());
-        } else if(ObjectUtil.isNotEmpty(param.getRef())){
-            //复杂类型非泛型,数组类型
-            if (fields.containsKey(param.getRef())) {
-                //存在该文档
-                parameter.setRef(param.getRef());
-            } else {
-                // 不存在定义，返回一个模糊对象
-                parameter.setType(VariableEnum.OBJECT.getType());
-            }
+//        if (false) {
+//            //泛型
+//            parameter.setType(param.getType());
+//        }
+
+        String ref = getRefs(param.getRef());
+        parameter.setRef(ref);
+        if(ref != null){
+            parameter.setType(VariableEnum.OBJECT.getType());
         }
         return parameter;
     }

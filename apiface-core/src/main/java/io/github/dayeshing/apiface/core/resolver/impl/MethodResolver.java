@@ -7,6 +7,7 @@
  */
 package io.github.dayeshing.apiface.core.resolver.impl;
 
+import com.github.javaparser.ast.PackageDeclaration;
 import io.github.dayeshing.apiface.core.comment.impl.MethodMark;
 import io.github.dayeshing.apiface.core.comment.impl.ParamMark;
 import io.github.dayeshing.apiface.core.enums.MarkEnum;
@@ -36,6 +37,7 @@ public class MethodResolver extends VoidVisitorAdapter<Void> implements Resolver
     private Rule rule;
     private List<ImportDeclaration> imports;
     private List<MethodMark> marks;
+    private PackageDeclaration pack;
 
     public MethodResolver(Rule rule) {
         this.rule = rule;
@@ -43,6 +45,7 @@ public class MethodResolver extends VoidVisitorAdapter<Void> implements Resolver
 
     @Override
     public List<MethodMark> resolver(CompilationUnit unit) {
+        pack = unit.getPackage();
         imports = unit.getImports();
         marks = new LinkedList<MethodMark>();
         visit(unit,null);
@@ -68,7 +71,7 @@ public class MethodResolver extends VoidVisitorAdapter<Void> implements Resolver
         if(ObjectUtil.isNotEmpty(parameters)){
             List<ParamMark> param = new LinkedList<ParamMark>();
             for (Parameter parameter : parameters) {
-                param.add(new ParamMark(ImportUtil.fullType(parameter.getType().toString(),imports),parameter.getName()));
+                param.add(new ParamMark(ImportUtil.fullType(parameter.getType().toString(),imports,pack),parameter.getName()));
             }
             methodMark.setParams(param);
         }

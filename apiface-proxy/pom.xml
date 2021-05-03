@@ -5,7 +5,7 @@
     <parent>
         <artifactId>apiface</artifactId>
         <groupId>io.github.dayeshing</groupId>
-        <version>1.2.4-SNAPSHOT</version>
+        <version>1.8.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
@@ -24,64 +24,64 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>apiface</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/static</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/css</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/js</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/img</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/fonts</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>${project.basedir}/src/main/webapp/demo</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resource.version}</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 复制前端打包文件到这里 -->
-                            <outputDirectory>${project.basedir}/src/main/webapp</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${project.parent.basedir}/apiface-front/dist</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+<!--    <build>-->
+<!--        <finalName>apiface</finalName>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-clean-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <configuration>-->
+<!--                    <filesets>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/static</directory>-->
+<!--                        </fileset>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/css</directory>-->
+<!--                        </fileset>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/js</directory>-->
+<!--                        </fileset>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/img</directory>-->
+<!--                        </fileset>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/fonts</directory>-->
+<!--                        </fileset>-->
+<!--                        <fileset>-->
+<!--                            <directory>${project.basedir}/src/main/webapp/demo</directory>-->
+<!--                        </fileset>-->
+<!--                    </filesets>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-resources-plugin</artifactId>-->
+<!--                <version>${maven.resource.version}</version>-->
+<!--                <configuration>-->
+<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy</id>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-resources</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; 复制前端打包文件到这里 &ndash;&gt;-->
+<!--                            <outputDirectory>${project.basedir}/src/main/webapp</outputDirectory>-->
+<!--                            <overwrite>true</overwrite>-->
+<!--                            <resources>-->
+<!--                                <resource>-->
+<!--                                    <directory>${project.parent.basedir}/apiface-front/dist</directory>-->
+<!--                                </resource>-->
+<!--                            </resources>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 
 </project>

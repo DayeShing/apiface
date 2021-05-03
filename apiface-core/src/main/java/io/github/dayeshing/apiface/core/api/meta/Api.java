@@ -1,6 +1,7 @@
 package io.github.dayeshing.apiface.core.api.meta;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description: <p> TODO </p>
@@ -22,9 +23,9 @@ public interface Api {
 
     void setProduces(List<String> produces);
 
-    String getUri();
+    Set<String> getUri();
 
-    void setUri(String uri);
+    void setUri(Set<String> uri);
 
     Author getAuthor();
 

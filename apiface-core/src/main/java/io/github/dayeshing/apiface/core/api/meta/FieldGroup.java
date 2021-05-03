@@ -41,6 +41,11 @@ public class FieldGroup implements Meta, Serializable {
     private List<Field> fields;
 
     /**
+     * 泛型，Model
+     */
+    private boolean generic;
+
+    /**
      * 是否过期，通过计算获取
      */
     private boolean deprecated;
@@ -96,6 +101,14 @@ public class FieldGroup implements Meta, Serializable {
 
     public void setFields(List<Field> fields) {
         this.fields = fields;
+    }
+
+    public boolean isGeneric() {
+        return generic;
+    }
+
+    public void setGeneric(boolean generic) {
+        this.generic = generic;
     }
 
     @Override

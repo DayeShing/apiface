@@ -1,0 +1,23 @@
+server:
+  port: ${config.port}
+  servlet:
+    context-path: ${config.context-path}
+spring:
+  profiles:
+    active: dpev
+  mvc:
+    dateFormat: yyyy-MM-dd HH:mm:ss
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  jackson:
+    default-property-inclusion: ALWAYS
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true

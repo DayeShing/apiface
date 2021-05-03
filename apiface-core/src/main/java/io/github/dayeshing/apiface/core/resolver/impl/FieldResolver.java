@@ -7,6 +7,7 @@
  */
 package io.github.dayeshing.apiface.core.resolver.impl;
 
+import com.github.javaparser.ast.PackageDeclaration;
 import io.github.dayeshing.apiface.core.comment.impl.FieldMark;
 import io.github.dayeshing.apiface.core.enums.MarkEnum;
 import io.github.dayeshing.apiface.core.resolver.Resolver;
@@ -34,6 +35,7 @@ public class FieldResolver extends VoidVisitorAdapter<Void> implements Resolver<
     private Rule rule;
     private List<ImportDeclaration> imports;
     private List<FieldMark> marks;
+    private PackageDeclaration pack;
 
     public FieldResolver(Rule rule) {
         this.rule = rule;
@@ -41,6 +43,7 @@ public class FieldResolver extends VoidVisitorAdapter<Void> implements Resolver<
 
     @Override
     public List<FieldMark> resolver(CompilationUnit unit) {
+        pack = unit.getPackage();
         imports = unit.getImports();
         marks = new LinkedList<FieldMark>();
         visit(unit, null);
@@ -60,7 +63,7 @@ public class FieldResolver extends VoidVisitorAdapter<Void> implements Resolver<
             Type type = f.getType();
             List<VariableDeclarator> variables = f.getVariables();
             for (VariableDeclarator variable : variables) {
-                VariableResolver v = new VariableResolver(imports, variable, type);
+                VariableResolver v = new VariableResolver(imports,pack, variable, type);
                 FieldMark fieldMark = new FieldMark(v.getType(), v.getName(), v.getExample());
                 if (cr != null) {
                     fieldMark.setDesc(cr.getDesc().toString());
