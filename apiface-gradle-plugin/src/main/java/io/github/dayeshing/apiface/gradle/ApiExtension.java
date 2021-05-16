@@ -14,6 +14,8 @@ public class ApiExtension {
 
     private boolean gzip = true;
 
+    private boolean api = true;
+
     private String rule = "";
 
     private String host = "127.0.0.1:8080";
@@ -130,5 +132,13 @@ public class ApiExtension {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isApi() {
+        return api;
+    }
+
+    public void setApi(boolean api) {
+        this.api = api;
     }
 }

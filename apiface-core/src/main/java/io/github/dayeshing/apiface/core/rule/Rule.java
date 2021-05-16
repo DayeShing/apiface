@@ -32,4 +32,14 @@ public interface Rule {
      * @since 1.0
      */
     boolean ignore(List<String> tag, MarkEnum mark);
+
+    /**
+     * 是否仅仅扫描 api 文档 含action 和 model
+     * @return boolean|描述
+     * @author Daye Shing | 896379914@qq.com
+     * @since 1.0
+     * @date 2021/5/9 10:43
+     */
+    boolean api();
+
 }

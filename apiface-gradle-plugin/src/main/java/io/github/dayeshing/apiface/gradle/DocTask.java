@@ -28,7 +28,7 @@ public class DocTask extends AbstractFaceTask {
         String[] suffix = new String[]{"java","kt","groovy","scala"};
         List<ClassMark> marks = new ArrayList<ClassMark>(180);
         getLog(String.format("----------->> 源码扫描路径：%s <<-----------", sourseDirectory.getParent(),mojo()));
-        marks.addAll(new ResolverImpl(new ApiRule()).resolveResources(ScanUtil.scanResources(sourseDirectory.getParentFile(), suffix , apiExtension.getRule())));
+        marks.addAll(new ResolverImpl(new ApiRule(apiExtension.isApi())).resolveResources(ScanUtil.scanResources(sourseDirectory.getParentFile(), suffix , apiExtension.getRule())));
         if(marks.size() == 0){
             return null;
         }

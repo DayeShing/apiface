@@ -33,7 +33,8 @@ public enum VariableEnum {
     ARRAY("array", "Array", "", "", false, "[]"),
     //包装
     ARRAY_LIST("array", "List", "", "", false, "[]"),
-    OBJECT("object", "Object", "java.lang.Object", "", false, "{}");
+    OBJECT("object", "Object", "java.lang.Object", "string", true, "{}"),
+    COMPLEX("object", "Object", "java.lang.Object", "", false, "{}");
 
     public static VariableEnum of(String type) {
         if (type == null) {
@@ -50,9 +51,9 @@ public enum VariableEnum {
                 if (Collection.class.isAssignableFrom(t)) {
                     return ARRAY_LIST;
                 }
-                return OBJECT;
+                return COMPLEX;
             } catch (ClassNotFoundException e) {
-                return OBJECT;
+                return COMPLEX;
             }
         }
         VariableEnum[] values = values();
@@ -69,7 +70,7 @@ public enum VariableEnum {
                 }
             }
         }
-        return OBJECT;
+        return COMPLEX;
     }
 
     public static VariableEnum typeof(Class type) {
@@ -96,7 +97,7 @@ public enum VariableEnum {
             }
             }
         }
-        return OBJECT;
+        return COMPLEX;
     }
 
     /**

@@ -228,7 +228,7 @@
             <plugin>
                 <groupId>io.github.dayeshing</groupId>
                 <artifactId>apiface-maven-plugin</artifactId>
-                <version>1.8.9-SNAPSHOT</version>
+                <version>1.9.3-SNAPSHOT</version>
                 <configuration>
                     <artifactId>apiface-example</artifactId>
 

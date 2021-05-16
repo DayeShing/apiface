@@ -9,7 +9,7 @@
 ![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
 ![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
 
-# [apiface](http://www.daysh.top/index/)使用篇
+# [apiface](http://apiface.daysh.top/)使用篇
 ### 单纯使用环境（apiface的使用门槛）
 > * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的RESTFUL APIs接口）
 > * maven 或 gradle 
@@ -74,7 +74,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.8.9-SNAPSHOT'
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.9.3-SNAPSHOT'
     }
 }
 
@@ -94,7 +94,7 @@ apiface {
     url='http://self.daysh.top'
     developer='Daye Shing|xuandeyu14@gmail.com'   //开发团队|开发团队联系 ，用于显示开发者信息
     description='apiface让您的接口文档更丰富、更优雅'//该接口平台的描述信息
-    version='1.8.9-SNAPSHOT'  //该接口平台记录的项目的版本
+    version='1.9.3-SNAPSHOT'  //该接口平台记录的项目的版本
     title='接口文档 APIs'   //该接口平台的标题
 }
 // 由于本人gradle不太熟练 ，所以要用下面的配合使用，必须
@@ -110,7 +110,7 @@ c.mustRunAfter(cp)
 // 其他的配置，无关api打包构建
 
 group = 'com.daysh.apiface'
-version = '1.8.9-SNAPSHOT'
+version = '1.9.3-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -235,7 +235,7 @@ public class Action {
 * #### 第四步 (用apiface接口成模管理工具)调试接口
 apiface接口成模管理工具 
 1.静态网页（静态文件不能跨域）演示地址:<a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface</a>
-2.动态网页（访问后端）演示地址:<a href="http://www.daysh.top/index" target="_blank">apiface</a> 或 <a href="http://apiface.daysh.top/index" target="_blank">apiface</a>
+2.动态网页（访问后端）演示地址:<a href="http://daysh.top/index" target="_blank">apiface</a> 或 <a href="http://apiface.daysh.top/index" target="_blank">apiface</a>
 
 * end
 --- 
@@ -243,10 +243,9 @@ apiface接口成模管理工具
 ### apiface接口成模管理工具下载及部署
 
 ##### docker 方式部署(前后端)，只需要执行几项命令，以centos7.x 系统作说明
-* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/IO.tar.gz" target="_blank">http://daysh.top/assets/IO.tar.gz</a> 或
-                                <a href="http://apiface.daysh.top/assets/IO.tar.gz" target="_blank">http://apiface.daysh.top/assets/IO.tar.gz</a> 
+* 1.获取下载安装包下载位置：<a href="http://apiface.daysh.top/assets/IO.tar.gz" target="_blank">http://daysh.top/assets/IO.tar.gz</a>
 * 2.修改配置:
-    1.修改nginx 反向代理服务ip 指向部署应用的内网ip或公网ip(gong网ip需要开端口)
+    1.修改nginx 反向代理服务ip 指向部署应用的内网ip或公网ip(公网ip需要开端口)
     |--IO
     |--|--INDEX
     |--|--|--nginx
@@ -275,7 +274,6 @@ docker pull mysql:5.7
 docker pull redis
 docker network create apiface 
 # 运行 nginx，tomcat,mysql,redis 镜像
-docker run -d -p 6379:6379 --name redis --network apiface --network-alias redis -v /IO/redis/redis.conf:/etc/redis/redis.conf -v /IO/redis/data:/data redis redis-server /etc/redis/redis.conf --appendonly yes
 docker run -d -p 3306:3306 --name mysql --network apiface --network-alias mysql -e MYSQL_ROOT_PASSWORD=admin123 -v /IO/mysql/my.conf:/etc/mysql/my.conf -v /IO/mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf -v /IO/mysql/logs:/var/log/mysql -v /IO/mysql/data:/var/lib/mysql mysql:5.7
 docker run -d -p 28085:8080 -p 10090:10090 --name tomcat --network apiface --network-alias tomcat -v /IO/INDEX/assets:/IO/assets -v /IO/tomcat/logs:/usr/local/tomcat/logs -v /IO/tomcat/webapps:/usr/local/tomcat/webapps tomcat
 docker run -d -p 80:80 -p 443:443 --name nginx -v /IO/INDEX:/IO/INDEX -v /IO/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /IO/nginx/logs:/var/log/nginx nginx
@@ -294,19 +292,14 @@ firewall-cmd --reload
 
 
 ##### tomcat 方式部署 前端包含在jar里面(前后端)
-* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/dist.zip" target="_blank">http://www.daysh.top/assets/dist.zip</a> 或
-                <a href="http://apiface.daysh.top/assets/dist.zip" target="_blank">http://apiface.daysh.top/assets/dist.zip</a> 
+* 1.获取下载安装包下载位置：<a href="http://apiface.daysh.top/assets/apiface.tar.gz" target="_blank">http://daysh.top/assets/apiface.tar.gz</a>
 * 2.修改配置:
-    修改springboot项目中的数据库ip地址
-    |--apiface.jar
-    |--config
-    |--|--appcation-depv.yaml
-* 3.部署，需要环境 jdk8+,tomcat,redis,myysql
+* 3.部署，需要环境 jdk8+,tomcat,mysql
 访问：http://ip:port/apiface/static/index.html 即可
 
 
 ##### 纯前端 方式部署 (无后端)
-* 1.获取下载安装包下载位置：<a href="http://www.daysh.top/assets/apiface.war" target="_blank">http://daysh.top/assets/apiface.war</a> 或
+* 1.获取下载安装包下载位置：<a href="http://apiface.daysh.top/assets/dist.tar.gz" target="_blank">http://daysh.top/assets/dist.tar.gz</a> 或
 <a href="http://apiface.daysh.top/assets/apiface.war" target="_blank">http://apiface.daysh.top/assets/apiface.war</a> 
 * 2.将dist文件下的所有文件部署到任意一台web服务器
 访问：http://ip:port/apiface.html 即可

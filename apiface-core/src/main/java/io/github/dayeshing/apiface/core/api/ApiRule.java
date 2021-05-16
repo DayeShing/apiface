@@ -22,6 +22,12 @@ import java.util.List;
  */
 public class ApiRule implements Rule {
 
+    private boolean api;
+
+    public ApiRule(boolean api) {
+        this.api = api;
+    }
+
     @Override
     public boolean ignore(List<String> tags, MarkEnum mark) {
         boolean ret = false;
@@ -39,6 +45,11 @@ public class ApiRule implements Rule {
         return ret;
     }
 
+    @Override
+    public boolean api() {
+        return api;
+    }
+
     /**
      * 是否是一个文档解析对象
      * @param tags | 参数的描述 | 必须true/false | 的默认值
@@ -48,6 +59,12 @@ public class ApiRule implements Rule {
      * @since 1.0
      */
     public boolean classMark(List<String> tags) {
+        if(api){
+            if(TagEnum.isApi(tags)){
+                return TagEnum.isIgnore(tags);
+            }
+            return true;
+        }
         return TagEnum.isIgnore(tags);
     }
 

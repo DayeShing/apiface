@@ -23,6 +23,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
     private List<Path> doublePath = new ArrayList<Path>();
 
     private List<Definition> definitions = new ArrayList<Definition>(200);
+    private Set<String> useRefs = new HashSet<String>();
     private Map<String, ActionGroup> actions = new HashMap<>(200);
     private Map<String, FieldGroup> fields = new HashMap<>(200);
 
@@ -86,9 +87,12 @@ public class Swagger2 implements ApiTransform, JsonApi {
         JSONObject arr = new JSONObject();
         if (ObjectUtil.isNotEmpty(definitions)) {
             for (Definition property : definitions) {
-                arr.put(property.getName(), property.toJSON());
+                if(useRefs.contains(property.getName())){
+                    arr.put(property.getName(), property.toJSON());
+                }
             }
         }
+
         json.put("definitions", arr);
         json.put("apiface", "1");
         return json;
@@ -127,7 +131,12 @@ public class Swagger2 implements ApiTransform, JsonApi {
         Set<Propertie> ps = new HashSet<Propertie>();
         List<Field> fields = group.getFields();
         for (Field field : fields) {
-            ps.add(getPropertie(field));
+            if(field != null){
+                if(field.isIgnore() || field.isHidden()){
+                    continue;
+                }
+                ps.add(getPropertie(field));
+            }
         }
         return ps;
     }
@@ -246,6 +255,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         if(ObjectUtil.isNotEmpty(ref)){
             //存在该文档
             if (fields.containsKey(ref)) {
+                useRefs.add(ref);
                 return ref;
             }
             // 不存在将构建
@@ -253,6 +263,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
             if(group != null){
                 fields.put(ref,group);
                 definitions.add(getDefinition(group));
+                useRefs.add(ref);
                 return ref;
             }
         }

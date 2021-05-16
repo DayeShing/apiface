@@ -12,6 +12,7 @@ import io.github.dayeshing.apiface.core.resolver.tag.AuthorResolver;
 import io.github.dayeshing.apiface.core.swagger.v2.Swagger2;
 import io.github.dayeshing.apiface.core.util.GZIPUtil;
 import io.github.dayeshing.apiface.core.util.ObjectUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
 
@@ -23,6 +24,8 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -165,7 +168,10 @@ public class ApiMojo extends AbstractFaceMojo {
 
     @Override
     protected boolean isExecute() {
-        return ObjectUtil.equals(artifactId, project.getArtifactId());
+        if(ObjectUtil.isEmpty(artifactId)){
+            return true;
+        }
+        return artifactId.contains(project.getArtifactId());
     }
 
     @Override

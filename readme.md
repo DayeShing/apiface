@@ -19,15 +19,12 @@
 ![tag](https://img.shields.io/static/v1?label=&message=测试用例&color=ff69b4)
 ![tag](https://img.shields.io/static/v1?label=&message=APIs构建&color=9cf)
 
-# [apiface (一套由java开发的接口文档工具)](http://www.daysh.top/home/)
+# [apiface (一套由java开发的接口文档工具)](http://apiface.daysh.top/)
 ###### Tools that run in an operational or development environment
 
 ### 演示地址
 * 演示地址: <a href="https://dayeshing.github.io/apiface/apiface.html" target="_blank">apiface 静态（纯前端）</a>
-<a href="http://www.daysh.top/index/" target="_blank">apiface动态（包含后端）</a>
-超级管理员 账号：admin 密码：123456
-文档管理员 账号：manager 密码：123456
-文档使用者 账号：document 密码：123456
+<a href="http://apiface.daysh.top/index" target="_blank">apiface动态（包含后端）</a>
 
 ### 单纯使用环境（apiface的使用门槛）
 > * jdk6+ （支持java或类似kotlin等运行在jvm层的 “任意语言(开发中)” 使用 “任意框架” 编写的http协议的RESTFUL APIs接口）
@@ -310,7 +307,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.8.9-SNAPSHOT'
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.9.3-SNAPSHOT'
     }
 }
 
@@ -330,7 +327,7 @@ apiface {
     url='http://self.daysh.top'
     developer='Daye Shing|xuandeyu14@gmail.com'
     description='apiface让您的接口文档更丰富、更优雅'
-    version='1.8.9-SNAPSHOT'
+    version='1.9.3-SNAPSHOT'
     title='接口文档 APIs'
 }
 // 由于本人gradle不太熟练 ，所以要用下面的配合使用，必须
@@ -346,7 +343,7 @@ c.mustRunAfter(cp)
 // 其他的配置，无关api打包构建
 
 group = 'com.daysh.apiface'
-version = '1.8.9-SNAPSHOT'
+version = '1.9.3-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {

@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.8.9-SNAPSHOT'
+        classpath 'io.github.dayeshing:apiface-gradle-plugin:1.9.3-SNAPSHOT'
     }
 }
 
@@ -23,7 +23,7 @@ apiface {
     url='http://self.daysh.top'
     developer='Daye Shing|xuandeyu14@gmail.com'
     description='apiface让您的接口文档更丰富、更优雅'
-    version='1.8.9-SNAPSHOT'
+    version='1.9.3-SNAPSHOT'
     title='接口文档 APIs'
 }
 Task cp = task copyJars(type: Copy) {
@@ -37,7 +37,7 @@ c.mustRunAfter(cp)
 
 
 group = 'com.daysh.apiface'
-version = '1.8.9-SNAPSHOT'
+version = '1.9.3-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {

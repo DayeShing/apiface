@@ -28,7 +28,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -51,7 +50,7 @@ import java.util.*;
  * @Date： 2020-08-16 10:20
  * @since 标明该类模块的版本 ( 指定版本)
  */
-public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
+public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
     /**
@@ -404,6 +403,8 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
             if (md.getName().equals(method.getName()) && count == paramSize && paramSize == index) {
                 return md;
             }
+
+            // 方法重写
             if (md.getName().equals(method.getName()) && count == paramSize) {
                 List<ParamMark> params = method.getParams();
                 Class<?>[] parameterTypes = md.getParameterTypes();
@@ -422,7 +423,7 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
                 }
             }
         }
-        log.error("没有相关的方法:{}:{}", clazz.getName(),method.getName());
+        log.error("没有相关的方法:{}:{}", clazz.getName(), method.getName());
         throw new ApiException(String.format("【%s】 no such a method 【%s】 with param 【%s】", clazz.getName(), method.getName(), JSON.toJSONString(method.getParams())));
     }
 
@@ -459,89 +460,104 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
 
     /**
      * get方法的文档注释
-     * @param clazz |类
+     *
+     * @param clazz  |类
      * @param method |反射方法
-     * @param mark |方法描述
-     * @param p |属性描述
-     * @summary get方法的文档注释
-     * @method post,get
-     * @ignore
+     * @param mark   |方法描述
+     * @param p      |属性描述
      * @return io.github.dayeshing.apiface.core.api.meta.Field|描述
+     * @summary get方法的文档注释
+     * @method post, get
+     * @ignore
      * @author Daye Shing | 896379914@qq.com
      * @since 1.0
      */
     protected Field getField(Class clazz, Method method, MethodMark mark, PropertyDescriptor p) {
-        Field field = new Field();
-        field.setName(realName(method));
-        field.setDesc(method.getName());
-        if (mark != null) {
-            field.setDesc(mark.getDesc());
-        }
-        //简单返回类
-        Class<?> type = method.getReturnType();
-        // 泛型返回类
-        Type genericType = method.getGenericReturnType();
-        if(!ObjectUtil.equals(type.getName(),genericType.getTypeName())){
-            log.debug("包含泛型:{}:{}", genericType.getTypeName(),genericType.getClass().getName());
-            field.setGeneric(true);
-        }
+        try {
+            Field field = new Field();
+            field.setName(realName(method));
+            field.setDesc(method.getName());
+            if (mark != null) {
+                field.setDesc(mark.getDesc());
+            }
+            //简单返回类
+            Class<?> type = method.getReturnType();
+            // 泛型返回类
+            Type genericType = method.getGenericReturnType();
+            if (!ObjectUtil.equals(type.getName(), genericType.getTypeName())) {
+                log.info("包含泛型:{}:{}", genericType.getTypeName(), genericType.getClass().getName());
+                field.setGeneric(true);
+            }
 
-        VariableEnum of = VariableEnum.typeof(type);
+            VariableEnum of = VariableEnum.typeof(type);
 
-        field.setType(of.getType());
-        if (of.isBase()) {
             field.setType(of.getType());
-            field.setBase(true);
-            field.setFormat(of.getFormat());
-        } else if (of.isArray()) {
+            if (of.isBase()) {
+                field.setType(of.getType());
+                field.setBase(true);
+                field.setFormat(of.getFormat());
+            } else if (of.isArray()) {
 //            GenericArrayType
 //            System.err.println(type.getTypeName());
 //            Type gt = method.getGenericReturnType();
 //            System.err.println(gt.getTypeName());
 //            System.err.println(gt.getClass().getName());
-            field.setArray(true);
-            String array = type.getTypeName().replace("[]", "");
-            of = VariableEnum.of(array);
-            if (!of.isBase()) {
-                field.setType(VariableEnum.OBJECT.getType());
-                field.setRef(array);
-            }
-        } else if (of.isList()) {
-            field.setArray(true);
-            Class actualType;
-            Type gte = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            // 泛型中包含泛型
-            if(gte instanceof ParameterizedType){
-                actualType = (Class) ((ParameterizedType) gte).getRawType();
+                field.setArray(true);
+                String array = type.getTypeName().replace("[]", "");
+                of = VariableEnum.of(array);
+                if (!of.isBase()) {
+                    field.setType(VariableEnum.OBJECT.getType());
+                    field.setRef(array);
+                }
+            } else if (of.isList()) {
+                field.setArray(true);
+                Class actualType;
+                Type gte = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                // 泛型中包含泛型
+                if (gte instanceof ParameterizedType) {
+                    actualType = (Class) ((ParameterizedType) gte).getRawType();
 //                Type[] types = ((ParameterizedType) gte).getActualTypeArguments();
 //                for (Type actualTypeArgument : types) {
 //
 //                    System.err.println(actualTypeArgument.getTypeName());
 //                    System.err.println(actualTypeArgument.getClass().getName());
 //                }
-            }else{
-                actualType = (Class) gte;
-                field.setGeneric(false);
-            }
+                } else {
+//                    System.err.println(method);
+                    actualType = (Class) gte;
+                    // TODO: 2021/5/9 这里未知泛型有错
+                    field.setGeneric(false);
+                }
 
-            of = VariableEnum.typeof(actualType);
-            if (!of.isBase()) {
-                field.setType(VariableEnum.OBJECT.getType());
-                field.setRef(actualType.getTypeName());
+                of = VariableEnum.typeof(actualType);
+                if (!of.isBase()) {
+                    field.setType(VariableEnum.OBJECT.getType());
+                    field.setRef(actualType.getTypeName());
+                }
+            } else {
+                field.setRef(type.getName());
             }
-        } else {
-            field.setRef(type.getName());
-        }
-        if (field.isArray()) {
-            if (of.isBase()) {
-                field.setType(of.getType());
-                field.setBase(true);
-                field.setFormat(of.getFormat());
+            if (field.isArray()) {
+                if (of.isBase()) {
+                    field.setType(of.getType());
+                    field.setBase(true);
+                    field.setFormat(of.getFormat());
+                }
             }
+            field.setDeprecated(method.getAnnotation(Deprecated.class) != null);
+            field.setOnlyRead(p.getWriteMethod() == null);
+            return getField(field, mark);
+
+        } catch (Exception e) {
+            log.error("反射获取方法失败", e);
         }
-        field.setDeprecated(method.getAnnotation(Deprecated.class) != null);
-        field.setOnlyRead(p.getWriteMethod() == null);
-        return getField(field, mark);
+        Field field = new Field();
+        field.setName(realName(method));
+        if(mark!=null){
+            field.setDesc(mark.getDesc());
+        }
+        field.setType(VariableEnum.OBJECT.getType());
+        return field;
     }
 
     /**
@@ -564,8 +580,8 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
                 field.setExample(mark.getExample());
                 Class<?> type = f.getType();
                 Type genericType = f.getGenericType();
-                if(!ObjectUtil.equals(type.getName(),genericType.getTypeName())){
-                    log.debug("包含泛型:{}:{}", genericType.getTypeName(),genericType.getClass().getName());
+                if (!ObjectUtil.equals(type.getName(), genericType.getTypeName())) {
+                    log.info("包含泛型:{}:{}", genericType.getTypeName(), genericType.getClass().getName());
                     field.setGeneric(true);
                 }
                 VariableEnum of = VariableEnum.typeof(type);
@@ -586,9 +602,9 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
                     Class actualType;
                     Type gte = ((ParameterizedType) genericType).getActualTypeArguments()[0];
                     // 泛型中包含泛型
-                    if(gte instanceof ParameterizedType){
+                    if (gte instanceof ParameterizedType) {
                         actualType = (Class) ((ParameterizedType) gte).getRawType();
-                    }else{
+                    } else {
                         actualType = (Class) gte;
                         field.setGeneric(false);
                     }
@@ -612,8 +628,14 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
                 return getField(field, mark);
             }
         } catch (Exception e) {
+            log.error("反射获取属性失败", e);
         }
-        return null;
+        Field field = new Field();
+        field.setName(mark.getName());
+        field.setDesc(mark.getDesc());
+        field.setExample(mark.getExample());
+        field.setType(VariableEnum.OBJECT.getType());
+        return field;
     }
 
     protected List<Field> fields(Class clazz, ClassMark mark) {
@@ -636,6 +658,9 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
             PropertyDescriptor[] ps = info.getPropertyDescriptors();
             for (PropertyDescriptor p : ps) {
                 Method method = p.getReadMethod();
+                if (method == null) {
+                    continue;
+                }
                 String name = method.getName();
                 if ("getClass".equals(name)) {
                     continue;
@@ -677,7 +702,7 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
 
     protected List<String> refs(Class clazz) {
         List<String> as = new ArrayList<>();
-        if(clazz != null){
+        if (clazz != null) {
             Class[] interfaces = clazz.getInterfaces();
             for (Class anInterface : interfaces) {
                 as.add(anInterface.getName());
@@ -725,7 +750,7 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
     public FieldGroup getField(String ref) {
         try {
             Class clazz = Class.forName(ref, false, classLoader);
-            if(exclude(ref,clazz)){
+            if (exclude(ref, clazz)) {
                 return null;
             }
             BeanInfo info = Introspector.getBeanInfo(clazz);
@@ -756,13 +781,16 @@ public class ApiResolverImpl implements ApiResolver ,GetFieldGroupResolver{
 
     @Override
     public boolean exclude(String ref, Class clazz) {
-        if(ObjectUtil.equals("java.lang.Object",ref)){
+        if (ref != null && ref.startsWith("java.lang.")) {
             return true;
         }
-        if(Map.class.isAssignableFrom(clazz)){
+        if ("object".equals(ref)) {
             return true;
         }
-        log.debug("加载无文档注释MODEL：{}", ref);
+        if (Map.class.isAssignableFrom(clazz)) {
+            return true;
+        }
+        log.info("加载无文档注释MODEL：{}", ref);
         return false;
     }
 }

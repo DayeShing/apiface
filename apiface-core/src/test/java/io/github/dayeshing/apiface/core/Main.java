@@ -68,10 +68,20 @@ public class Main {
     public void scanDoc(){
         PATH += "\\io\\github\\dayeshing\\apiface\\core\\model";
         List<File> files = ScanUtil.scanResources(new File(PATH), SUFFIX, ROLE);
-        List<ClassMark> marks = new ResolverImpl(new ApiRule()).resolveResources(files);
+        List<ClassMark> marks = new ResolverImpl(new ApiRule(false)).resolveResources(files);
         System.err.println(JSON.toJSONString(marks, SerializerFeature.PrettyFormat));
     }
 
+    /**
+     * 生成apiface 格式的接口文档
+     */
+    @Test
+    public void scanApiface1(){
+        PATH += "\\io\\github\\dayeshing\\apiface\\core\\model";
+        List<File> files = ScanUtil.scanResources(new File(PATH), SUFFIX, ROLE);
+        List<ClassMark> marks = new ResolverImpl(new ApiRule(true)).resolveResources(files);
+        System.err.println(JSON.toJSONString(marks, SerializerFeature.PrettyFormat));
+    }
 
     /**
      * 生成apiface 格式的接口文档
@@ -80,7 +90,7 @@ public class Main {
     public void scanApiface(){
         PATH += "\\io\\github\\dayeshing\\apiface\\core\\model";
         List<File> files = ScanUtil.scanResources(new File(PATH), SUFFIX, ROLE);
-        List<ClassMark> marks = new ResolverImpl(new ApiRule()).resolveResources(files);
+        List<ClassMark> marks = new ResolverImpl(new ApiRule(false)).resolveResources(files);
         ApiResolver resolver = new ApiResolverImpl(Main.class.getClassLoader());
         resolver.resolver(marks);
         System.err.println(JSON.toJSONString(resolver.getFields(), SerializerFeature.PrettyFormat));
@@ -90,7 +100,7 @@ public class Main {
     public void scanSwagger(){
         PATH += "\\io\\github\\dayeshing\\apiface\\core\\model";
         List<File> files = ScanUtil.scanResources(new File(PATH), SUFFIX, ROLE);
-        List<ClassMark> marks = new ResolverImpl(new ApiRule()).resolveResources(files);
+        List<ClassMark> marks = new ResolverImpl(new ApiRule(false)).resolveResources(files);
         ApiResolver resolver = new ApiResolverImpl(Main.class.getClassLoader());
         resolver.resolver(marks);
         JSONObject transform = new Swagger2((ApiResolverImpl)resolver).transform(resolver.getActions(), resolver.getFields());

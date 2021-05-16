@@ -59,6 +59,7 @@ public class ImportUtil {
         if(type.contains(".")){
             return type;
         }
+        boolean all = false;
         for (ImportDeclaration anImport : imports) {
             String name = anImport.getName().toString();
             String end = name;
@@ -70,13 +71,21 @@ public class ImportUtil {
             if (end.equals(type)) {
                 return name;
             }
+            if(name.endsWith(".*;")){
+                all = true;
+            }
         }
         // 隐式导入
         if(HIDDEN.contains(type)){
             return type;
         }
+        //存在星星，不知道是那目录
+//        if(all){
+//            return type;
+//        }
         // 同级目录
-        return String.format("%s.%s",pack.getPackageName(),type);
+//        return String.format("%s.%s",pack.getPackageName(),type);
+        return type;
     }
     
     public static String fullType(String type, List<ImportDeclaration> imports, PackageDeclaration pack){

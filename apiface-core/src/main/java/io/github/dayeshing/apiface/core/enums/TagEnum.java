@@ -130,7 +130,19 @@ public enum TagEnum {
         }
         return false;
     }
-
+    public static boolean isApi(List<String> tags) {
+        if (ObjectUtil.isNotEmpty(tags)) {
+            for (String tag : tags) {
+                if (ACTION.getTagName().equalsIgnoreCase(tag)) {
+                    return true;
+                }
+                if (MODEL.getTagName().equalsIgnoreCase(tag)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public static boolean isAction(List<String> tags) {
         if (ObjectUtil.isNotEmpty(tags)) {
             for (String tag : tags) {

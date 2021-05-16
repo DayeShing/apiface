@@ -41,12 +41,18 @@ public class DocumentMojo extends AbstractFaceMojo {
     )
     private String rule;
 
+    @Parameter(
+            property = "api",
+            defaultValue = "true"
+    )
+    private boolean api;
+
     @Override
     protected byte[] process() {
         String[] suffix = new String[]{"java","kt","groovy","scala"};
         List<ClassMark> marks = new ArrayList<ClassMark>(180);
         getLog().info(String.format("----------->> 源码扫描路径：%s <<-----------", sourseDirectory.getParent(),mojo()));
-        marks.addAll(new ResolverImpl(new ApiRule()).resolveResources(ScanUtil.scanResources(sourseDirectory.getParentFile(), suffix , rule)));
+        marks.addAll(new ResolverImpl(new ApiRule(api)).resolveResources(ScanUtil.scanResources(sourseDirectory.getParentFile(), suffix , rule)));
         if(marks.size() == 0){
             return null;
         }
