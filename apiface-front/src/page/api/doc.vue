@@ -1,0 +1,383 @@
+/** * md页 * author:Daye Shing */
+<template>
+  <mavon-editor
+    class="view-main-data-info"
+    :class="{ 'not-body': notBody }"
+    :value="text"
+    defaultOpen="preview"
+    :subfield="false"
+    :ishljs="true"
+    :scrollStyle="false"
+    :boxShadow="false"
+    :toolbarsFlag="true"
+    :editable="false"
+    previewBackground="#fff"
+  ></mavon-editor>
+</template>
+
+<script>
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+export default {
+  data() {
+    return {
+      page: "page.index.",
+      text: "",
+      notBody: false,
+      // md 工具栏
+      toolbars: {
+        readmodel: true, // 沉浸式阅读
+        htmlcode: true, // 展示html源码
+        help: true, // 帮助
+        /* 1.3.5 */
+        /* 1.4.2 */
+        navigation: true, // 导航目录
+      },
+    };
+  },
+  components: {
+    "mavon-editor": mavonEditor,
+  },
+  props: {
+    data: {
+      type: Object,
+      default: function() {
+        return {};
+      },
+    },
+    path: {
+      type: String,
+      default: function() {
+        return "";
+      },
+    },
+  },
+  watch: {
+    path(val, oldVal) {
+      this.read();
+    },
+  },
+  mounted() {
+    this.read();
+  },
+  methods: {
+    $self(k) {
+      return this.$t(this.page + k);
+    },
+    feel() {
+      var blob = new Blob([this.text], { type: "text/plain;charset=utf-8" });
+      this.$emit("feelback", blob, "api.md");
+    },
+    read() {
+      var arr = [];
+      var data = this.deepClone(this.data);
+      for (var type in data.type) {
+        this.baseInfo(arr, data.type[type], type, data);
+        this.reqInfo(
+          arr,
+          this.parameters(data.type[type].parameters, this.path)
+        );
+        this.resInfo(arr, this.responses(data.type[type].responses));
+      }
+      this.text = arr.join("\r\n");
+    },
+
+    /**
+     * 基本信息
+     */
+    baseInfo(arr, type, md, data) {
+      // type: Object
+      var label = type.summary;
+      if (type.deprecated) {
+        label = "~~" + type.summary + "~~";
+      }
+      arr.push("## " + label);
+      arr.push("##### " + data.parent + "(" + data.parentDesc + ")");
+      arr.push("> " + type.description);
+      var addr = data.host + data.basePath + data.path;
+      arr.push(
+        "> ###### " + this.$self("addr") + " [" + addr + "](" + addr + ")"
+      );
+      var tags = this.$self("tags");
+      for (var i = 0; i < type.tags.length; i++) {
+        tags += " [";
+        tags += type.tags[i] + "](#) ";
+      }
+      var rt = this.$self("methods");
+      rt += " [";
+      rt += md + "](#) ";
+      var rp = this.$self("respm");
+      for (var i = 0; i < type.produces.length; i++) {
+        rp += " [";
+        rp += type.produces[i] + "](#) ";
+      }
+      arr.push(
+        "> ###### " +
+          tags +
+          "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+          rt +
+          "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+          rp
+      );
+      arr.push("-------");
+    },
+    /**
+     * 请求
+     */
+    reqInfo(arr, parameters) {
+      arr.push("## " + this.$self("label"));
+      arr.push(
+        this.$self("pt") +
+          (parameters.status.isBody ? this.$self("json") : this.$self("form"))
+      );
+      if (parameters.parameters && parameters.parameters.length > 0) {
+        if (parameters.status.isBody) {
+          for (var i = 0; i < parameters.parameters.length; i++) {
+            if (parameters.parameters[i].type == "json") {
+              arr.push("```bash");
+              arr.push(parameters.parameters[i].name + ":");
+              arr.push(
+                JSON.stringify(
+                  this.toJSONObject(parameters.parameters[i].schema.data),
+                  null,
+                  4
+                )
+              );
+              arr.push("```");
+            }
+          }
+        }
+        arr.push(this.title(true));
+        arr.push(":---:|:--:|:--:|:--:|:--:");
+        this.reqFor(parameters.parameters, arr, undefined);
+      } else {
+        arr.push(this.$self("noparam"));
+      }
+    },
+    title(flag) {
+      if (flag) {
+        return (
+          this.$self("param") +
+          "|" +
+          this.$self("desc") +
+          "|" +
+          this.$self("type") +
+          "|" +
+          this.$self("required") +
+          "|" +
+          this.$self("format")
+        );
+      }
+      return (
+        this.$self("param") +
+        "|" +
+        this.$self("desc") +
+        "|" +
+        this.$self("type") +
+        "|" +
+        this.$self("required") +
+        "|" +
+        this.$self("serial")
+      );
+    },
+    /**
+     * 循环遍历
+     */
+    reqFor(data, arr, args) {
+      for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var d = item.description ? item.description : "-/-";
+        var r = item.required ? this.$self("req") : this.$self("noreq");
+        var f = item.format ? item.format : "-/-";
+        arr.push(
+          (args != undefined ? "(" + args + ") -/- " + item.name : item.name) +
+            "|" +
+            (args != undefined ? "(" + args + ") -/- " + d : d) +
+            "|" +
+            item.type +
+            "|" +
+            r +
+            "|" +
+            f
+        );
+        if (item.child) {
+          this.reqFor(item.child, arr, item.name);
+        }
+      }
+    },
+    /**
+     * 响应项
+     */
+    resItemInfo(arr, name, desc, type, data) {
+      arr.push("-------");
+      arr.push("## " + this.$self("label2"));
+      arr.push(this.$self("respcode") + name + "(" + desc + ")");
+      if (type == "1") {
+        arr.push("```bash");
+        arr.push(data.demo);
+        arr.push("```");
+        arr.push(this.title(false));
+        arr.push(":---:|:--:|:--:|:--:|:--:");
+        this.reqFor(data.data.child, arr, undefined);
+      } else if (type == "2") {
+        arr.push(
+          "* " +
+            this.$self("base") +
+            ":(" +
+            data.type +
+            "-/-" +
+            data.format +
+            ")"
+        );
+      } else if (type == "3") {
+        arr.push(
+          "* " +
+            this.$self("nodata") +
+            ": { }/None/Null/null/undefined/Void/[ ]"
+        );
+      } else {
+        arr.push("* " + this.$self("nometa"));
+      }
+    },
+    /**
+     * 响应
+     */
+    resInfo(arr, responses) {
+      for (var key in responses) {
+        var val = responses[key];
+        var type = "";
+        if (val.schema && val.schema.$ref) {
+          type = "1";
+        } else if (val.schema && val.schema.type == "object") {
+          type = "3";
+        } else if (val.schema && val.schema.type) {
+          type = "2";
+        }
+        this.resItemInfo(arr, key, val.description, type, val.schema);
+      }
+    },
+  },
+};
+</script>
+
+<style lang="less">
+.markdown-body {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    font-weight: 600 !important;
+  }
+  h2 {
+    padding-bottom: 0px !important;
+    line-height: normal !important;
+    font-size: 22px !important;
+    color: #555;
+    border-bottom: none !important;
+  }
+  h5 {
+    font-size: 14px !important;
+    color: #999;
+    margin-bottom: 8px !important;
+    line-height: normal !important;
+  }
+  h6 {
+    line-height: 25px !important;
+  }
+  blockquote {
+    padding: 10px !important;
+    color: #6a737d;
+    border-left: 0.25em solid #50bfff !important;
+    background: #f7f7fc;
+    border-radius: 5px;
+    margin-left: 6px !important;
+    margin-bottom: 0px !important;
+    p {
+      font-size: 14px;
+      color: #5893c2;
+      font-weight: 600;
+      margin-bottom: 5px !important;
+    }
+  }
+  ul {
+    padding-left: 0px !important;
+    li {
+      width: 100%;
+      display: block;
+      line-height: 100px;
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      background-color: rgba(27, 31, 35, 0.05);
+      border-radius: 3px;
+    }
+  }
+  hr {
+    height: 1px !important;
+    margin: 13px 0 !important;
+  }
+  table {
+    display: block;
+    margin-bottom: 0px !important;
+    thead {
+      color: #909399;
+      font-weight: 500;
+      width: 100%;
+      display: inline-table;
+    }
+    tbody {
+      width: 100%;
+      display: inline-table;
+    }
+    tr {
+      border-color: #ebf0f7 !important;
+      &:hover td {
+        background-color: #f3fdf9 !important;
+      }
+    }
+    td {
+      width: 20%;
+      line-height: 31px !important;
+      padding: 0px 6px !important;
+      color: #666666 !important;
+      font-size: 12px !important;
+    }
+    th {
+      width: 20%;
+      color: #4d4d4d !important;
+      font-size: 12px !important;
+      font-weight: bold !important;
+      line-height: 31px !important;
+      padding: 0px 6px !important;
+      background-color: #e5e9ee !important;
+    }
+  }
+  pre {
+    margin-bottom: 0px !important;
+    padding: 10px !important;
+  }
+}
+
+.view-main-data-info {
+  &.v-note-wrapper {
+    border: none !important;
+    height: auto !important;
+    z-index: 0 !important;
+    .v-note-panel .v-note-show .v-show-content,
+    .v-note-panel .v-note-show .v-show-content-html {
+      padding: 0px 10px 0px 10px !important;
+      overflow-y: visible !important;
+    }
+    .v-note-panel {
+      overflow: visible !important;
+      .v-note-show {
+        overflow-y: visible !important;
+      }
+    }
+  }
+}
+</style>

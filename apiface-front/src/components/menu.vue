@@ -26,13 +26,23 @@
           {{ $self("nodata") }}
         </div>
         <el-submenu :index="item.key" v-for="item in menus" :key="item.label">
-          <template slot="title">{{ item.label }}</template>
+          <template slot="title"
+            ><i class="el-icon-collection" /> {{ item.label }}</template
+          >
           <el-menu-item
             :index="item.key + '-' + it.key"
             v-for="it in item.child"
             :key="item.key + '-' + it.key"
-            >{{ it.label[0] }}</el-menu-item
           >
+            {{ it.label[0] }}
+
+            <el-tooltip effect="light" placement="right" :open-delay="500">
+              <div slot="content">
+                <span> API : {{ it.path }}</span>
+              </div>
+              <i class="fa fa-info-circle info-btn"></i>
+            </el-tooltip>
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
@@ -57,10 +67,11 @@ export default {
     $self(k) {
       return this.$t(this.page + k);
     },
-    loadMenus(path, menus) {
+    loadMenus(group, path, menus) {
       this.menus = menus;
-      this.path = path;
+      this.path = group + "-" + path;
       this.oldActive = "";
+      this.$emit("selectMenu", group, path);
     },
     search(value) {
       if (!this.searchFlag) {
@@ -79,8 +90,11 @@ export default {
             var top = { label: this.all[i].label, key: this.all[i].key };
             var tmp = [];
             for (var j = 0; j < this.all[i].child.length; j++) {
-              if (this.all[i].child[j].label.indexOf(value) != -1) {
-                tmp.push(this.all[i].child[j]);
+              for (var k = 0; k < this.all[i].child[j].label.length; k++) {
+                if (this.all[i].child[j].label[k].indexOf(value) != -1) {
+                  tmp.push(this.all[i].child[j]);
+                  break;
+                }
               }
             }
             if (tmp.length > 0) {
@@ -167,16 +181,41 @@ export default {
     &::-webkit-scrollbar {
       width: 0px !important;
     }
+
     .el-menu {
       width: 99%;
       min-height: 100%;
       border-right: solid 0px #e6e6e6 !important;
+      .el-submenu [class^="el-icon-"] {
+        margin-right: 0px !important;
+        margin-left: 5px;
+      }
+      .el-submenu .el-menu-item {
+        padding-right: 35px !important;
+        padding-left: 32px !important;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        position: relative;
+        .info-btn {
+          position: absolute;
+          right: 10px;
+          top: 14px;
+          &:hover {
+            color: aliceblue;
+          }
+        }
+      }
       .el-menu-item-group__title,
       .el-menu-item,
       .el-submenu__title {
         font-size: 14px !important;
         height: 38px !important;
         line-height: 38px !important;
+        padding: 0px !important;
+        .el-submenu__icon-arrow {
+          right: 12px !important;
+        }
       }
       .el-menu-item.is-active {
         background-color: rgb(67, 74, 80) !important;

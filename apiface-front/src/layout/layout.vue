@@ -22,8 +22,14 @@
       </div>
       <!-- 内容层 -->
       <div class="view-main" :class="{ 'not-show-left-body': isShowLeft }">
-        <!-- 具体页面 -->
-        <index-view ref="view" @submit="submit" />
+        <index-view
+          :scrollTop="scrollTop"
+          :error="error"
+          :feelbackId="feelbackId"
+          ref="view"
+          @submit="submit"
+          @feelback="feelback"
+        />
         <transition name="el-fade-in">
           <div class="page-up" @click="scrollToTop" v-show="toTopShow">
             <i class="el-icon-caret-top"></i>
@@ -51,17 +57,24 @@
 <script type="cs6">
 import InfoDialog from "dialog/infoDialog";
 import ConfigDialog from "dialog/configDialog";
-import IndexView from "page/index";
+import IndexView from "page/api/index";
 import MenuTree from "components/menu";
 import Toolbox from "components/toolbox/toolbox";
+import { inter } from "api/interface";
+import { permitted } from "api/permitted";
+import Qs from "qs";
 export default {
   data() {
     return {
       page: "layout.layout.",
       isShowLeft: true,
+      disableLeft: false,
       menus: [],
       blank: false,
-      toTopShow:false,
+      toTopShow: false,
+      scrollTop: 0,
+      error: false,
+      feelbackId: "",
       data: {
         swagger: "", //版本信息
         host: "", //主机
@@ -72,7 +85,6 @@ export default {
       addr: "",
       index: 0,
       heads: [],
-
       auth: {
         use: false,
         type: "none",
@@ -80,79 +92,138 @@ export default {
         token: "",
         user: "",
         password: ""
-      }
+      },
+      loading: null
     };
   },
   components: {
-    Toolbox,MenuTree,IndexView,InfoDialog,ConfigDialog,
-    Blank: resolve => require(["../page/blank.vue"], resolve)
+    Toolbox,
+    MenuTree,
+    IndexView,
+    InfoDialog,
+    ConfigDialog,
+    Blank: resolve => require(["page/api/blank.vue"], resolve)
   },
-
+  props: {
+    mode: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    }
+  },
   mounted() {
     this.loadConfig();
     this.$nextTick(() => {
-      window.addEventListener('scroll', this.handleScroll,true);// 取消事件冒泡，防止绑定失败
+      window.addEventListener("scroll", this.handleScroll, true); // 取消事件冒泡，防止绑定失败
     });
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll,true);// 取消事件冒泡
+    window.removeEventListener("scroll", this.handleScroll, true); // 取消事件冒泡
+  },
+  watch: {
+    mode(val, oldVal) {
+      this.disableLeft = oldVal;
+      this.isShowLeft = val;
+      this.error = oldVal;
+      this.$refs.view.resize();
+    }
   },
   methods: {
+    feelback() {
+      this.$refs.view.feel(this.heads, "head");
+      this.$refs.view.feel(this.auth, "auth");
+    },
     scrollToTop() {
-        let timer = null;
-        let _this = this;
-        cancelAnimationFrame(timer);
-        timer = requestAnimationFrame(function fn() {
-          if (_this.scrollTop > 5000) {
-            _this.scrollTop -= 200;
-            document.getElementsByClassName("view-main")[0].scrollTop =
-                _this.scrollTop;
-            timer = requestAnimationFrame(fn);
-          } else if (_this.scrollTop > 1000 && _this.scrollTop <= 5000) {
-            _this.scrollTop -= 100;
-            document.getElementsByClassName("view-main")[0].scrollTop =
-                _this.scrollTop;
-            timer = requestAnimationFrame(fn);
-          } else if (_this.scrollTop > 200 && _this.scrollTop <= 1000) {
-            _this.scrollTop -= 20;
-            document.getElementsByClassName("view-main")[0].scrollTop =
-                _this.scrollTop;
-            timer = requestAnimationFrame(fn);
-          } else if (_this.scrollTop > 0 && _this.scrollTop <= 200) {
-            _this.scrollTop -= 10;
-            document.getElementsByClassName("view-main")[0].scrollTop =
-                _this.scrollTop;
-            timer = requestAnimationFrame(fn);
-          } else {
-            cancelAnimationFrame(timer);
-            _this.toTopShow = false;
-          }
-        });
+      let timer = null;
+      let _this = this;
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        if (_this.scrollTop > 5000) {
+          _this.scrollTop -= 200;
+          document.getElementsByClassName("view-main")[0].scrollTop =
+            _this.scrollTop;
+          timer = requestAnimationFrame(fn);
+        } else if (_this.scrollTop > 1000 && _this.scrollTop <= 5000) {
+          _this.scrollTop -= 100;
+          document.getElementsByClassName("view-main")[0].scrollTop =
+            _this.scrollTop;
+          timer = requestAnimationFrame(fn);
+        } else if (_this.scrollTop > 200 && _this.scrollTop <= 1000) {
+          _this.scrollTop -= 20;
+          document.getElementsByClassName("view-main")[0].scrollTop =
+            _this.scrollTop;
+          timer = requestAnimationFrame(fn);
+        } else if (_this.scrollTop > 0 && _this.scrollTop <= 200) {
+          _this.scrollTop -= 10;
+          document.getElementsByClassName("view-main")[0].scrollTop =
+            _this.scrollTop;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+          _this.toTopShow = false;
+        }
+      });
     },
     handleScroll() {
-      let dom =document.getElementsByClassName('view-main')[0];
+      let dom = document.getElementsByClassName("view-main")[0];
       this.scrollTop = dom.scrollTop;
       if (this.scrollTop > 200) {
         this.toTopShow = true;
-      }else {
+      } else {
         this.toTopShow = false;
       }
     },
     loadConfig() {
-      this.$fetch("conf.json", "get",{},
-      {"Pragma": "no-cache",
-        "Cache-Control": "no-cache"})
+      if (this.mode) {
+        this.$getch(
+          "conf.json",
+          "get",
+          {},
+          { Pragma: "no-cache", "Cache-Control": "no-cache" }
+        )
           .then(res => {
             this.init(res);
           })
           .catch(err => {});
+      }
     },
     commit(heads, auth) {
       this.auth = auth;
       this.heads = heads;
     },
+    loadFeelback(id) {
+      var u = inter.back.document.replace(/\$\{resourceId\}/g, id);
+      this.$fetch(u).then(res => {
+        if (
+          res &&
+          res.data &&
+          res.status &&
+          res.response &&
+          res.request &&
+          res.demo
+        ) {
+          this.$refs.view.loadFeelback(
+            res.data,
+            res.status,
+            res.demo,
+            res.request,
+            res.response
+          );
+          this.feelbackId = id;
+          if (res.head) {
+          }
+          if (res.cookie) {
+          }
+          if (res.auth) {
+          }
+          return;
+        }
+        this.calcMenu(undefined);
+      });
+    },
     _fetch(url, method, heads, data, ret) {
-      const loading = this.openLoad(this.$self("loading"));
+      this.openLoad(this.$self("loading"));
       var h = {};
       for (var i = 0; i < this.heads.length; i++) {
         h[this.heads[i].name] = this.heads[i].content;
@@ -181,7 +252,10 @@ export default {
         }
       }
       var _url = url;
-      if (this.$store.state.proxy) {
+      if (this.$store.state.app) {
+        _url = inter.proxy;
+        h["Self-Agent-Address"] = url;
+      } else if (this.$store.state.proxy) {
         _url = this.$store.state.proxy;
         h["Self-Agent-Address"] = url;
       }
@@ -199,14 +273,14 @@ export default {
         ret
       )
         .then(res => {
-          this.closeLoad(loading);
+          this.closeLoad();
           if (res) {
             console.log(res, "response info");
             this.$refs.view.fetch(res);
           }
         })
         .catch(err => {
-          this.closeLoad(loading);
+          this.closeLoad();
           this.$message({
             type: "error",
             message: this.$t("code.fetchError")
@@ -226,7 +300,7 @@ export default {
         return;
       }
       if (value == "dribbble") {
-        if (!this.mode || this.$store.state.mode != 'single') {
+        if (!this.mode || this.$store.state.mode != "single") {
           this.$message({ type: "warning", message: this.$self("tips") });
           return;
         }
@@ -270,10 +344,11 @@ export default {
       this._fetch(meta.url, meta.method, meta.heads, data, meta.ret);
     },
     toggleLeft() {
-      this.isShowLeft = !this.isShowLeft;
-      if (this.isShowLeft) {
-        this.$refs.view.resize();
+      if (this.disableLeft) {
+        return;
       }
+      this.isShowLeft = !this.isShowLeft;
+      this.$refs.view.resize();
     },
     /**
      * 计算菜单
@@ -284,19 +359,18 @@ export default {
         return;
       }
       this.blank = false;
-      this.$store.commit("setTitle", info.info && info.info.title?info.info.title:'');
+      this.$store.commit(
+        "setTitle",
+        info.info && info.info.title ? info.info.title : ""
+      );
       this.$store.commit("setModels", info.definitions);
       var menus = [];
-      var tmp = [];
+
       for (var j = 0; j < info.tags.length; j++) {
         menus.push({
           name: info.tags[j].name,
           key: j + "",
           desc: info.tags[j].description
-        });
-        tmp.push({
-          label: info.tags[j].name,
-          key: j + ""
         });
       }
       var protocol = info.protocol;
@@ -322,46 +396,68 @@ export default {
         var tags = undefined;
         // 获取内容和标题，请求类型信息 type
         for (var req in info.paths[path]) {
-
           var md = info.paths[path][req];
           if (!tags) {
             tags = md.tags;
           }
           var lb = true;
-          for(var i = 0; i < label.length; i++){
-            if(label[i] == md.summary){
+          for (var i = 0; i < label.length; i++) {
+            if (label[i] == md.summary) {
               lb = false;
             }
           }
-          if(lb){
+          if (lb) {
             label.push(md.summary);
           }
         }
-        if(!tags){
+        if (!tags) {
           continue;
         }
         // 获取父类数据
-        var data = {type: info.paths[path], path: path};
+        var data = { type: info.paths[path], path: path };
         for (var i = 0; i < tags.length; i++) {
           for (var j = 0; j < menus.length; j++) {
             if (tags[i] == menus[j].name) {
               if (menus[j].child && menus[j].child.length > 0) {
                 data.key = menus[j].child.length + "";
                 menus[j].child.push(data);
-                tmp[j].child.push({ label: label, key: data.key });
               } else {
                 data.key = "0";
                 menus[j].child = [data];
-                tmp[j].child = [{ label: label, key: data.key }];
               }
               break;
             }
           }
         }
       }
+      var tmp = [];
+      for (var j = 0; j < menus.length; j++) {
+        if(menus[j].child && menus[j].child.length > 0){
+          var m = {
+            label: menus[j].name,
+            key: j + "",
+            child:[]
+          }
+          for (var k = 0; k < menus[j].child.length; k++) {
+            var lbs = [];
+            for (var req in menus[j].child[k].type) {
+              lbs.push(menus[j].child[k].type[req].summary);
+            }
+            m.child.push({ label: lbs, key: "" + k,path: menus[j].child[k].path});
+          }
+          m.child.sort(function (obj1, obj2) {
+            return obj1.path.localeCompare(obj2.path);
+          });
+          tmp.push(m);
+        }
+      }
+
+      tmp.sort(function (obj1, obj2) {
+        return obj1.label.localeCompare(obj2.label,'zh-CN');
+    });
+
       this.menus = menus;
-      this.loadData(menus[0].key, menus[0].child[0].key);
-      this.$refs.menus.loadMenus(tmp[0].key + "-" + tmp[0].child[0].key, tmp);
+      this.$refs.menus.loadMenus(tmp[0].key ,tmp[0].child[0].key, tmp);
       this.data.total = total;
     },
 
@@ -369,106 +465,201 @@ export default {
      * 加载动画
      */
     openLoad(tips) {
-      return this.$loading({
-        lock: true,
-        text: tips,
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.3)"
+      if (this.loading == null) {
+        this.loading = this.$loading({
+          lock: true,
+          text: tips,
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.3)"
+        });
+      }
+    },
+    closeLoad() {
+      if (this.loading != null) {
+        this.loading.close();
+        this.loading = null;
+      }
+    },
+    getUserInfo() {
+      this.$fetch(inter.auth.getCurrentUser).then(res => {
+        if (res && res.success) {
+          this.$store.commit("setUser", res.data);
+        }
       });
     },
-    closeLoad(loading){
-      loading.close();
+    getPermitted() {
+      this.$fetch(
+        inter.auth.hasPermissions,
+        Qs.stringify(
+          { module: inter.moduleNames.center, permissions: permitted },
+          { arrayFormat: "repeat" }
+        ),
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      ).then(res => {
+        if (res && res.success) {
+          this.$store.commit("setPermitteds", res.data);
+        } else {
+          this.msg(res);
+        }
+      });
+    },
+    loadApi(load = true) {
+      this.$fetch(inter.api.docs)
+        .then(res => {
+          if (res && res.success) {
+            this.options(res.data, undefined, load);
+            return;
+          }
+          this.$message.error(res.message);
+          return;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    options(docs, addr = undefined, load = true) {
+      if (docs && docs.length > 0) {
+        if (addr == undefined && docs[0].options.length > 0) {
+          addr = docs[0].options[0].addr;
+          if (docs[0].options[0].docId) {
+            addr = docs[0].options[0].mapping
+              ? docs[0].options[0].addr
+              : docs[0].options[0].docId;
+          }
+        }
+        this.$emit("docs", docs, load ? addr : undefined);
+        if (load) {
+          if (addr) {
+            this.getApis(addr);
+            return;
+          }
+          this.calcMenu(undefined);
+        }
+      }
     },
     /**
      * 请求获取APIs 加载APIs内容
      */
     getApis(url) {
-      const loading = this.openLoad(this.$self("loading"));
-      var h = {
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache"
-      };
-      for (var i = 0; i < this.heads.length; i++) {
-        h[this.heads[i].name] = this.heads[i].content;
-      }
-      if (this.auth.type == "bearer" && this.auth.use) {
-        var token = this.auth.header + "=" + this.auth.token;
-        if (url.indexOf("?") != -1) {
-          url += "&" + token;
-        } else {
-          url += "?" + token;
+      this.openLoad(this.$self("loading"));
+      var reg = new RegExp("^[0-9]*$");
+      var idUrl = reg.test(url);
+      var baseUrl = url.startsWith(inter.ContextPath);
+      if (idUrl || baseUrl) {
+        var u = url;
+        if (idUrl) {
+          this.$store.commit("setDocId", url);
+          u = inter.api.document.replace(/\$\{resourceId\}/g, url);
         }
-      } else if (this.auth.type == "bearer" && !this.auth.use) {
-        h[this.auth.header] = this.auth.token;
-      }
-      var _url = url;
-      if (this.$store.state.proxy != "") {
-        _url = this.$store.state.proxy;
-        h["Self-Agent-Address"] = url;
-      }
-      this.$req(
-        _url,
-        "get",
-        {},
-        h,
-        this.auth.type == "basic"
-          ? {
-              username: this.auth.user,
-              password: this.auth.password
-            }
-          : undefined,
-        false
-      )
-        .then(res => {
-          this.closeLoad(loading);
-          if (res.code == 200) {
-            this.calcMenu(res.result);
-          } else {
+        this.$fetch(u)
+          .then(res => {
+            this.calcMenu(res);
+            this.closeLoad();
+            return;
+          })
+          .catch(err => {
+            this.closeLoad();
             this.calcMenu(undefined);
-          }
-        })
-        .catch(err => {
-          console.log(err)
-          this.closeLoad(loading);
-          this.$message({
-            type: "error",
-            message: this.$t("code.fetchError")
+            console.log(err);
           });
-          this.calcMenu(undefined);
-        });
+        return;
+      }
+      //验证Email地址：/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      if (url.startsWith("http")) {
+        var h = {
+          Pragma: "no-cache",
+          "Cache-Control": "no-cache"
+        };
+        for (var i = 0; i < this.heads.length; i++) {
+          h[this.heads[i].name] = this.heads[i].content;
+        }
+        if (this.auth.type == "bearer" && this.auth.use) {
+          var token = this.auth.header + "=" + this.auth.token;
+          if (url.indexOf("?") != -1) {
+            url += "&" + token;
+          } else {
+            url += "?" + token;
+          }
+        } else if (this.auth.type == "bearer" && !this.auth.use) {
+          h[this.auth.header] = this.auth.token;
+        }
+        var _url = url;
+        // 单独应用
+        if (this.$store.state.app) {
+          _url = inter.proxy;
+          h["Self-Agent-Address"] = url;
+        } else if (this.$store.state.proxy != "") {
+          _url = this.$store.state.proxy;
+          h["Self-Agent-Address"] = url;
+        }
+        this.$req(
+          _url,
+          "get",
+          {},
+          h,
+          this.auth.type == "basic"
+            ? {
+                username: this.auth.user,
+                password: this.auth.password
+              }
+            : undefined,
+          false
+        )
+          .then(res => {
+            this.closeLoad();
+            if (res.code == 200) {
+              this.calcMenu(res.result);
+            } else {
+              this.calcMenu(undefined);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            this.closeLoad();
+            this.$message({
+              type: "error",
+              message: this.$t("code.fetchError")
+            });
+            this.calcMenu(undefined);
+          });
+        return;
+      }
     },
     /**
      * 初始化配置
      */
     init(conf) {
       if (conf) {
-        var addr = "";
-        var options = [];
         this.$store.commit("setConfig", conf);
-        if (conf.mode == "single") {
-          if(conf.docs && conf.docs.length > 0){
-            addr = conf.docs[0].options[0].addr;
-            options = conf.docs;
-          }
-        } else {
-          addr = window.location.protocol + "//" + window.location.host;
-          if (!conf.api.startsWith("/")) {
-            addr += "/";
-          }
-          addr += conf.api;
-          options.push({
-              group: this.$self("vm"),
-              options: [
-                {
-                  name: this.$self("addr1"),
-                  addr: addr
-                }
-              ]
-            });
+        if (this.$store.state.app) {
+          this.getUserInfo();
+          this.getPermitted();
+          this.loadApi();
+          return;
         }
-        this.$emit("docs",options,addr);
-        this.getApis(addr);
+        if (this.$store.state.mode == "single") {
+          this.options(conf.docs);
+          return;
+        }
+        var options = [];
+        var addr = window.location.protocol + "//" + window.location.host;
+        if (!conf.api.startsWith("/")) {
+          addr += "/";
+        }
+        addr += conf.api;
+        var options = {
+          group: this.$self("vm"),
+          options: [
+            {
+              name: this.$self("addr1"),
+              addr: addr
+            }
+          ]
+        };
+        this.options(options, addr);
+        return;
       }
+      this.calcMenu(undefined);
     }
   }
 };

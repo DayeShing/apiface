@@ -8,7 +8,8 @@
     class="datagrid"
     :data="data"
     :row-key="rowkey"
-    default-expand-all
+    :default-expand-all="expand"
+    @expand-change="expandChange"
     :tree-props="{ children: 'child', hasChildren: 'isLeft' }"
     border
     stripe
@@ -24,6 +25,12 @@ export default {
     return {};
   },
   props: {
+    expand: {
+      type: Boolean,
+      default: function() {
+        return true;
+      },
+    },
     rowkey: {
       //从父组件传入的数据
       type: String,
@@ -43,6 +50,9 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    expandChange(row, status) {
+      this.$emit("expandRow", row, status);
+    },
     // rowkey(row) {
     //   var key = row[this.rowkey];
     //   if (key) {
@@ -55,9 +65,9 @@ export default {
 </script>
 <style lang="less">
 .datagrid {
-  border-width: 1px 1px 0 1px;
-  border-style: solid;
-  border-color: #dddddd;
+  // border-width: 1px 1px 0 1px;
+  // border-style: solid;
+  // border-color: #dddddd;
   .el-table__body {
     tr.hover-row {
       td {

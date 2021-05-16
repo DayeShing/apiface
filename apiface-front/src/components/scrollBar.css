@@ -1,0 +1,84 @@
+/* 滚动条的样式 */
+/* 纵向滚动条 */
+.scrollUp,.scrollHandle,.scrollDown{
+	overflow:hidden;
+}
+.scrollBar{
+	height:calc(100% - 6px);
+	width:6px;
+	overflow:hidden;
+	position:absolute;
+	right:1px;
+	top:0;
+	z-index:111;
+}
+.scrollUp,.scrollDown{
+	height:4px;
+	cursor:pointer;
+	position:absolute;
+	left:0;
+	cursor:pointer;
+}
+.scrollUp,.scrollHandle,.scrollDown{
+	width:6px;
+	position:absolute;
+}
+.scrollHandle{
+    left: 0;
+    top: 0;
+    cursor: pointer;
+	border-radius: 3px;
+	background-color: rgba(151, 168, 190, .3);
+	transition: .3s background-color;
+}
+.scrollHandle:hover{
+	background-color: rgba(151, 168, 190, .5)
+}
+.scrollUp{
+	top:0;
+}
+.scrollDown{
+	bottom:0;
+}
+
+/* 横向滚动条 */
+.scrollLeft,.scrollHandleH,.scrollRight{
+	overflow:hidden;
+}
+.scrollBarH{
+	height:6px;
+	width:calc(100% - 6px);
+	overflow:hidden;
+	position:absolute;
+	left:0;
+	bottom:0;
+	z-index:110
+}
+.scrollLeft,.scrollRight{
+	width:4px;
+	cursor:pointer;
+	position:absolute;
+	top:0;
+	cursor:pointer;
+}
+.scrollLeft,.scrollHandleH,.scrollRight{
+	height:6px;
+	position:absolute;
+}
+.scrollHandleH{
+    left: 0;
+    top: 0;
+    cursor: pointer;
+	border-radius: 3px;
+	background-color: rgba(151, 168, 190, .3);
+	transition: .3s background-color;
+}
+.scrollHandleH:hover {
+  background-color: rgba(151, 168, 190, .5)
+}
+.scrollLeft{
+	left:0;
+}
+.scrollRight{
+	right:0;
+}

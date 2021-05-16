@@ -18,15 +18,15 @@
           <p>{{ $t("page.v.s") }}</p>
           <p>
             {{ $t("page.v.teams") }} :
-            <el-link type="primary" href="mailto:896379914@qq.com">
-              {{ $t("page.v.self") }}
-            </el-link>
+            <el-link type="primary" href="mailto:896379914@qq.com">{{
+              $t("page.v.self")
+            }}</el-link>
           </p>
         </div>
         <div class="suggest">
-          <el-divider content-position="left">
-            {{ $t("page.v.feel") }}
-          </el-divider>
+          <el-divider content-position="left">{{
+            $t("page.v.feel")
+          }}</el-divider>
           <el-form
             ref="form"
             :model="suggest"
@@ -69,6 +69,7 @@
   </div>
 </template>
 <script>
+import { inter } from "api/interface";
 export default {
   data() {
     return {
@@ -129,16 +130,17 @@ export default {
     },
     submit() {
       this.btnState = true;
-      var u = "http://self.daysh.top:8102/app/auth/discuss/save";
-      this.$fetch(
-        this.$store.state.proxy != "" ? this.$store.state.proxy : u,
-        "post",
-        this.suggest,
-        {
+      var u = inter.auth.discuss.save;
+      var pro = !this.$store.state.app && this.$store.state.proxy != "";
+      if (pro) {
+        u = "http://apiface.daysh.top" + u;
+      }
+      this.$fetch(pro ? this.$store.state.proxy : u, this.suggest, {
+        headers: {
           "Content-Type": "application/json",
           "Self-Agent-Address": u,
-        }
-      )
+        },
+      })
         .then((res) => {
           this.btnState = false;
           this.$message({

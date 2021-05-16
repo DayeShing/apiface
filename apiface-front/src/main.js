@@ -6,10 +6,10 @@ import store from "./store";
 import "./styles/reset.css";
 import "./styles/common.less";
 import "font-awesome/css/font-awesome.css";
-import './font/iconfont/iconfont.css';
+import "./font/iconfont/iconfont.css";
 import "./font/iconfont/iconfont.js";
 
-import util from "./script/util";
+import util from "script/util";
 Vue.use(util);
 
 // 国际化 必须先引用再初始化
@@ -36,19 +36,22 @@ Vue.config.productionTip = false;
 // 事件总线
 Vue.prototype.$bus = new Vue();
 
-// Vue.directive("loadmore", {
-//   bind(el, binding) {
-//     const selectWrap = el.querySelector(".el-table__body-wrapper");
-//     selectWrap.addEventListener("scroll", function () {
-//       let sign = 20;
-//       const scrollDistance =
-//         this.scrollHeight - this.scrollTop - this.clientHeight;
-//       if (scrollDistance <= sign) {
-//         binding.value();
-//       }
-//     });
-//   }
-// });
+// 滚动加载
+import InfiniteScroll from "vue-infinite-scroll";
+Vue.use(InfiniteScroll);
+Vue.directive("loadmore", {
+  bind(el, binding) {
+    const selectWrap = el.querySelector(".el-table__body-wrapper");
+    selectWrap.addEventListener("scroll", function () {
+      let sign = 20;
+      const scrollDistance =
+        this.scrollHeight - this.scrollTop - this.clientHeight;
+      if (scrollDistance <= sign) {
+        binding.value();
+      }
+    });
+  }
+});
 
 new Vue({
   router,

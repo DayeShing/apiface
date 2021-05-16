@@ -1,0 +1,217 @@
+.hiddenCheckBox {
+  .is-disabled {
+    display: none;
+  }
+}
+
+.u-tree {
+  overflow: hidden;
+  height: 100%;
+
+  .i-right {
+    margin-right: 5px;
+  }
+
+  .div-search {
+    //搜索框的样式
+    width: 90%;
+    height: 30px;
+    margin: 10px 5%;
+    border-bottom: 1px solid #fff;
+    position: relative;
+
+    .input-search-width {
+      width: calc(~"100% - 50px") !important;
+    }
+
+    .input-search {
+      width: calc(~"100% - 30px");
+      height: 30px;
+      font-size: 14px;
+      border: none;
+      box-sizing: border-box;
+      outline: none;
+      text-align: left;
+      position: absolute;
+      z-index: 99;
+      background: none;
+      color: #fff;
+      padding-left: 5px;
+    }
+
+    label {
+      position: absolute;
+      text-align: center;
+      height: 18px;
+      line-height: 18px;
+      top: 6px;
+      left: 5px;
+      z-index: 98;
+      opacity: 0.6;
+      font-size: 12px
+    }
+
+    .tree-search-btn {
+      position: absolute;
+      right: 0px;
+    }
+
+    .tree-search-btn .btn {
+      font-size: 16px;
+      padding: 6px 2px;
+      margin-left: 0px;
+      background: none;
+      border: none;
+    }
+  }
+
+  //树内容宽高区
+  .tree_content {
+    height: calc(~"100% - 64px");
+  }
+
+  .tree_warp {
+    //树的样式
+    height: calc(~"100% + 17px");
+
+    .el-scrollbar__bar {
+      bottom: 17px;
+    }
+
+    .el-scrollbar__wrap {
+      height: 100%;
+    }
+
+    .filter-tree {
+      width: fit-content;
+      min-width: 100%;
+
+      .el-tree-node>.el-tree-node__children {
+        overflow: inherit;
+      }
+
+      .el-tree-node__content {
+        height: 30px;
+        line-height: 30px;
+      }
+
+      .el-tree-node__content:hover {
+        background-color: #7c9cc4;
+        color: #fff;
+      }
+
+      .el-tree-node__label {
+        font-size: 12px;
+        display: inline-block;
+        width: calc(~"100% - 25px");
+        position: relative;
+      }
+
+      .right_menu {
+        visibility: hidden;
+        position: absolute;
+        right: 10px;
+        top: 0px;
+
+        i {
+          color: #999999;
+          font-size: 12px;
+          margin-left: 10px;
+
+          &:first-child {
+            margin-left: 0;
+          }
+
+          &:hover {
+            color: #1177E2;
+          }
+        }
+      }
+
+      .el-tree-node__expand-icon.is-leaf {
+        border-color: transparent;
+        cursor: default;
+      }
+    }
+  }
+}
+
+//主题样式  背景为白色
+.white {
+  background: #fff;
+
+  .tree-search-btn .btn {
+    color: #555;
+  }
+
+  .div-search,
+  .el-tree {
+    color: #555;
+    border: none;
+  }
+
+  .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #4b71a4 !important;
+    color: #ffffff;
+  }
+
+  .div-search {
+    border-bottom: 1px solid #ccc;
+    color: #555;
+
+    .input-search {
+      color: #555;
+    }
+  }
+
+  .el-tree-node__expand-icon {
+    border-left-color: #555;
+  }
+}
+
+//主题样式  背景为黑色
+.black {
+  background-color: rgba(49, 63, 96, 0.4);
+
+  .tree-search-btn .btn {
+    color: #333;
+  }
+
+  .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #4b71a4 !important;
+    color: #ffffff;
+  }
+
+  .el-tree {
+    background: none;
+    border: none;
+    color: #fff;
+  }
+
+  .div-search {
+    color: #fff;
+  }
+
+  .el-tree-node__expand-icon {
+    border-left-color: #fff;
+  }
+}
+
+.drag-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 30px;
+  padding: 5px 10px;
+  line-height: 20px;
+  font-size: 12px;
+  color: #4b71a4;
+  border: 1px solid #4b71a4;
+  background-color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  z-index: 99999;
+}

@@ -137,7 +137,54 @@ util.install = function (Vue, options) {
     else
       return null;
   }
-  Vue.prototype.$fetch = function (
+  // 4. 添加实例方法
+  Vue.prototype.$fetch = function (url, params, config) {
+    config = config ? config : {};
+    config.headers = config.headers ? config.headers : {};
+    var crsfToken = "";
+    if (this.getCookie("Csrf-Token")) {
+      crsfToken = this.getCookie("Csrf-Token")
+    }
+    config.headers['Csrf-Token'] = crsfToken
+    return new Promise((resolve, reject) => {
+      axios.post(url, params, config)
+        .then(res => {
+          if (!res.data.success) {
+            if (res.data.code === '107') {
+              this.$router.push('/login');
+            } else {
+              resolve(res.data);
+            }
+          } else {
+            resolve(res.data);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        })
+    })
+  }
+  Vue.prototype.$catch = function (url, params) {
+    params = params ? params : {}
+    params.headers = params.headers ? params.headers : {}
+
+    var crsfToken = "";
+    if (this.getCookie("Csrf-Token")) {
+      crsfToken = this.getCookie("Csrf-Token")
+    }
+    params.headers['Csrf-Token'] = crsfToken
+
+    return new Promise((resolve, reject) => {
+      axios.get(url, params)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        })
+    })
+  }
+  Vue.prototype.$getch = function (
       $url,
       $method,
       $data,
@@ -193,6 +240,25 @@ util.install = function (Vue, options) {
         })
       })
     }
+  Vue.prototype.msg = function (res) {
+    if (res.code && res.code == '101') {
+      throw new Error('错误代码：101:')
+      return;
+    }
+    if (res.success) {
+      if (res.message === undefined)
+        res.message = "成功";
+      var type = 'info';
+    } else {
+      if (res.message === undefined)
+        res.message = "失败";
+      var type = 'error';
+    }
+    this.$message({
+      type: type,
+      message: res.message
+    });
+  }
   //================ 网络类操作 - 结束 ================
 
   //================ swagger操作 - 结束 ================
@@ -359,7 +425,7 @@ util.install = function (Vue, options) {
       return undefined;
     }
   }
-  Vue.prototype.parameters = function (parameters, path) {
+  Vue.prototype.parameters = function (parameters, path, excludes = []) {
     var isBody = false;
     //表单
     var $in = "form";
@@ -368,9 +434,9 @@ util.install = function (Vue, options) {
     var indeterminate = true;
     var checkNum = 0;
     if (parameters) {
-      for (var i = 0; i < parameters.length; i++) {
-        //       this.index = 0;
+      for (var i = parameters.length - 1; i > -1; i--) {
         var tmp = parameters[i];
+        var hidden = false;
         var value = "";
         var example = "";
         var enable = tmp.required;
@@ -378,7 +444,23 @@ util.install = function (Vue, options) {
         if (tmp["in"] == "body") {
           $in = "body";
         }
-
+        var excludeChilds = [];
+        for (var g = 0; g < excludes.length; g++) {
+          var excludeChild = parameters[i].name + ".";
+          if (excludes[g].startsWith(excludeChild)) {
+            excludeChilds.push(excludes[g].substring(excludeChild.length));
+            continue;
+          }
+          if (excludes[g] == parameters[i].name) {
+            hidden = true;
+            break;
+          }
+        }
+        if (hidden) {
+          console.log("忽略参数：", parameters[i].name);
+          parameters.splice(i, 1);
+          break;
+        }
         // 这里有问题，有毛病
         if (tmp.schema) {
           enable = true;
@@ -388,7 +470,8 @@ util.install = function (Vue, options) {
             }
             parameters[i].schema.data = this.transf(
               this.$store.state.models,
-              tmp.schema.$ref
+              tmp.schema.$ref,
+              excludeChilds
             );
             parameters[i].type = "json";
           } else if (arr && tmp.schema.items.$ref) {
@@ -397,7 +480,8 @@ util.install = function (Vue, options) {
             }
             parameters[i].schema.data = this.transf(
               this.$store.state.models,
-              tmp.schema.items.$ref
+              tmp.schema.items.$ref,
+              excludeChilds
             );
             parameters[i].type = "json";
           } else if (arr) {
@@ -443,6 +527,7 @@ util.install = function (Vue, options) {
     } else {
       parameters = [];
     }
+    //删除参数
     var ret = {
       parameters: parameters,
       status: {
@@ -491,7 +576,13 @@ util.install = function (Vue, options) {
    * @param {*} ref
    * @param {*} data
    */
-  Vue.prototype.transf = function (data, ref) {
+  Vue.prototype.transf = function (data, ref, excludes = [], lev = 0, top = undefined, times = 0) {
+    if (ref == top) {
+      if (times == 1) {
+        return undefined;
+      }
+      times++;
+    }
     var key = "";
     if (ref) {
       key = ref.replace("#/definitions/", "");
@@ -510,6 +601,24 @@ util.install = function (Vue, options) {
       var requireds = data[key].required;
       var index = 0;
       for (var propertie in data[key].properties) {
+        var excludeChilds = [];
+        var hidden = false;
+        for (var g = 0; g < excludes.length; g++) {
+          var excludeChild = propertie + ".";
+          if (excludes[g].startsWith(excludeChild)) {
+            excludeChilds.push(excludes[g].substring(excludeChild.length));
+            continue;
+          }
+          if (excludes[g] == propertie) {
+            hidden = true;
+            break;
+          }
+        }
+        if (hidden) {
+          console.log("忽略参数：", propertie);
+          continue;
+        }
+
         var p = data[key].properties[propertie];
         var description = p.description;
         var required = false;
@@ -523,13 +632,18 @@ util.install = function (Vue, options) {
             }
           }
         }
+
         var example = this.exampleValue(p.type, p.format);
         if (p.type == "array" && p.items && p.items.$ref) {
-          item = this.transf(data, p.items.$ref);
-          item.format = "child";
+          item = this.transf(data, p.items.$ref, excludeChilds, ++lev, ref, times);
+          if (item) {
+            item.format = "child";
+          }
         } else if (p.type == "object" && p.items && p.items.$ref) {
-          item = this.transf(data, p.items.$ref);
-          item.format = "child";
+          item = this.transf(data, p.items.$ref, excludeChilds, ++lev, ref, times);
+          if (item) {
+            item.format = "child";
+          }
         } else if (p.type == "array" && p.items && p.items.type) {
           format = p.items.type;
           example = this.exampleValue(format, null);
@@ -548,7 +662,8 @@ util.install = function (Vue, options) {
             format: format
           };
         }
-        item.key = key + (index++);
+        item.key = key + (index++) + lev;
+
         child.push(item);
       }
       if (child.length > 0) {
