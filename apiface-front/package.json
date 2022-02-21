@@ -2,6 +2,7 @@
   "name": "apiface-front",
   "version": "3.0.0",
   "private": false,
+  "author":"Daye Shing",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

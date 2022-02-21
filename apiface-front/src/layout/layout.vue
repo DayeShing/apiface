@@ -252,12 +252,13 @@ export default {
         }
       }
       var _url = url;
+      h["Self-Agent-Address"] = url;
       if (this.$store.state.app) {
+        // 使用服务端的代理
         _url = inter.proxy;
-        h["Self-Agent-Address"] = url;
       } else if (this.$store.state.proxy) {
+        // 使用自定义代理
         _url = this.$store.state.proxy;
-        h["Self-Agent-Address"] = url;
       }
       this.$req(
         _url,
@@ -318,7 +319,7 @@ export default {
           "PATCH",
           "HEAD",
           "TRACE",
-          "CONNECT"
+          "CONNECT",
         ];
         for (var i = 0; i < methons.length; i++) {
           for (var m in arr) {
@@ -333,6 +334,7 @@ export default {
     loadData(menu, child) {
       var m = this.menus[parseInt(menu)];
       var data = this.deepClone(m.child[parseInt(child)]);
+      data.ignoreHost = this.data.ignoreHost;
       data.host = this.data.protocol + this.data.host;
       data.basePath = this.data.basePath;
       data.parent = m.name;
@@ -387,7 +389,8 @@ export default {
         host: info.host,
         basePath: info.basePath,
         info: info.info,
-        protocol: protocol
+        protocol: protocol,
+        ignoreHost: info.ignoreHost
       };
       var total = 0;
       for (var path in info.paths) {
@@ -541,6 +544,13 @@ export default {
      * 请求获取APIs 加载APIs内容
      */
     getApis(url) {
+      if(!url.startsWith("http")){
+        if(!url.startsWith("/")){
+          url += "/";
+        }
+        url = window.location.origin + url;
+      }
+
       this.openLoad(this.$self("loading"));
       var reg = new RegExp("^[0-9]*$");
       var idUrl = reg.test(url);

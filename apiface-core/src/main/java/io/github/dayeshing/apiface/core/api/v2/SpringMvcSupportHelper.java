@@ -56,7 +56,7 @@ public class SpringMvcSupportHelper {
         if(ObjectUtil.isNotEmpty(action.getUri())){
             name.addAll(action.getUri());
         }
-        action.setUri(name);
+        action.setUri(new ArrayList<>(name));
         return action;
     }
 

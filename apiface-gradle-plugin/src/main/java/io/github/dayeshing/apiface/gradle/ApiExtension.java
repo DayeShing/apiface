@@ -38,6 +38,8 @@ public class ApiExtension {
 
     private String title = "接口文档 APIs";
 
+    protected boolean ignoreHost;
+
     public boolean isGzip() {
         return gzip;
     }
@@ -140,5 +142,13 @@ public class ApiExtension {
 
     public void setApi(boolean api) {
         this.api = api;
+    }
+
+    public boolean isIgnoreHost() {
+        return ignoreHost;
+    }
+
+    public void setIgnoreHost(boolean ignoreHost) {
+        this.ignoreHost = ignoreHost;
     }
 }

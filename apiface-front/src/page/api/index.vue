@@ -37,9 +37,13 @@
               :class="{
                 'title-deprecated': data.type[data.defaultType].deprecated,
               }"
-            >{{ data.type[data.defaultType].summary }}</span>
+            >{{ data.type[data.defaultType].summary||data.path }}</span>
             <br />
-            <span class="subtitle-article">{{ data.parent }}({{ data.parentDesc }})</span>
+            <span class="subtitle-article">{{ data.parent }}
+              <template v-if="data.parentDesc">
+                ({{ data.parentDesc }})
+              </template>
+            </span>
             <br />
           </div>
           <div class="author-info" v-if="data.type[data.defaultType].author">
@@ -91,7 +95,11 @@
             <div class="blog-addr-box blog-tags-box">
               <div>
                 <span class="label">{{ $self("addr") }}</span>
-                <span class="path tag-link">{{ data.host }}{{ data.basePath }}{{ data.path }}</span>
+                <span class="path">
+                  <input 
+                  type="text" v-model="url"  v-on:input="changeLen" :style="{width:urlen}"/>
+                </span>
+                <!-- <span class="path tag-link" id="api">{{ url }}</span> -->
                 <span class="path tag-link">{{ data.basePath }}{{ data.path }}</span>
                 <span class="path tag-link">{{ data.path }}</span>
               </div>
@@ -145,7 +153,7 @@
     <!-- 版权信息 -->
     <div class="tip-foot">
       <el-link
-        href="http://self.daysh.top"
+        href="https://daysh.top"
         type="info"
         :underline="false"
         target="_blank"
@@ -187,6 +195,9 @@ export default {
       status: {
         path: ""
       },
+      uri:"",
+      url:"",
+      urlen:"100px",
       data: {
         path: "",
         type: undefined,
@@ -242,6 +253,11 @@ export default {
     }
   },
   computed: {
+  //   text () {
+  //   return function (value) {
+  //     return value
+  //   }
+  // },
     parameter() {
       if (this.error) {
         return this.errorData.request;
@@ -250,7 +266,8 @@ export default {
         var ret = this.parameters(
           this.deepClone(this.data.type[this.data.defaultType].parameters),
           this.data.path,
-          this.data.type[this.data.defaultType].excludes || []
+          this.data.type[this.data.defaultType].excludes || [],
+          this.data.type[this.data.defaultType].groups || []
         );
         this.status = ret.status;
         console.log(ret.parameters, "parameters");
@@ -343,7 +360,7 @@ export default {
       window.location.reload();
     },
     submit(data, meta) {
-      var p = this.data.path;
+      var p = this.url;
       for (var uri in meta.path) {
         var tmp = "{" + uri + "}";
         var u = p.replace(tmp, meta.path[uri]);
@@ -375,8 +392,14 @@ export default {
       for (var h in meta.head) {
         heads.push({ name: h, content: meta.head[h] });
       }
+      if(!p.startsWith("http")){
+        if(!p.startsWith("/")){
+          p += "/";
+        }
+        p = window.location.origin + p;
+      }
       var metadata = {
-        url: this.data.host + this.data.basePath + p,
+        url: p,
         method: this.data.defaultType,
         heads: heads,
         ret: true
@@ -404,6 +427,20 @@ export default {
       console.log(data, "api info");
       this.responseInfo.show = false;
       this.data = data;
+      if(data.ignoreHost){
+        this.url = data.basePath + data.path;
+      }else{
+        this.url = data.host + data.basePath + data.path;
+      }
+      this.changeLen();
+    },
+    changeLen(){
+        var len = String(this.url).length * 0.42;
+        if(len < 12){
+          this.urlen = "12rem";
+          return;
+        }
+        this.urlen = len + 'rem';
     }
   }
 };
@@ -538,6 +575,16 @@ export default {
             display: -ms-flexbox;
             display: flex;
             font-size: 13px;
+            input{
+              // width: 400px;
+              height: 22px;
+              border-radius: 4px;
+              padding: 0px 3px;
+              border: 1px solid #eaeaef;
+              outline: none;
+              color: #5094d5;
+              margin-right: 5px;
+            }
             span.label {
               display: inline-block;
               color: #999aaa;

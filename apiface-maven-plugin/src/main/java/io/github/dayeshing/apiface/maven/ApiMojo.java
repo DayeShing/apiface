@@ -142,6 +142,7 @@ public class ApiMojo extends AbstractFaceMojo {
         transform.put("swagger", owner);
         transform.put("apiface", "1");
         transform.put("host", host);
+        transform.put("ignoreHost", ignoreHost);
         transform.put("basePath", basePath);
 
         JSONObject info = new JSONObject();
@@ -230,4 +231,9 @@ public class ApiMojo extends AbstractFaceMojo {
     )
     private String title;
 
+    @Parameter(
+            property = "ignoreHost",
+            defaultValue = "false"
+    )
+    protected boolean ignoreHost;
 }

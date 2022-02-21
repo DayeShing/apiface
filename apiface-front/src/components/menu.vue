@@ -22,23 +22,21 @@
         :default-openeds="openeds"
         @select="menuSelect"
       >
-        <div class="no-menu" v-if="menus.length == 0">
-          {{ $self("nodata") }}
-        </div>
+        <div class="no-menu" v-if="menus.length == 0">{{ $self("nodata") }}</div>
         <el-submenu :index="item.key" v-for="item in menus" :key="item.label">
-          <template slot="title"
-            ><i class="el-icon-collection" /> {{ item.label }}</template
-          >
+          <template slot="title">
+            <i class="el-icon-collection" />
+            {{ item.label }}
+          </template>
           <el-menu-item
             :index="item.key + '-' + it.key"
             v-for="it in item.child"
             :key="item.key + '-' + it.key"
           >
-            {{ it.label[0] }}
-
+            {{ it.label[0]||it.path }}
             <el-tooltip effect="light" placement="right" :open-delay="500">
               <div slot="content">
-                <span> API : {{ it.path }}</span>
+                <span>API : {{ it.path }}</span>
               </div>
               <i class="fa fa-info-circle info-btn"></i>
             </el-tooltip>
@@ -60,7 +58,7 @@ export default {
       menus: [],
       searchFlag: false,
       openeds: [],
-      page: "menu.",
+      page: "menu."
     };
   },
   methods: {
@@ -129,8 +127,8 @@ export default {
         var paths = key.split("-", 2);
         this.$emit("selectMenu", paths[0], paths[1]);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -197,7 +195,13 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
         position: relative;
+        &.is-active,&:hover {
+          .info-btn {
+            display: initial !important;
+          }
+        }
         .info-btn {
+          display: none;
           position: absolute;
           right: 10px;
           top: 14px;

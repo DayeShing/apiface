@@ -14,9 +14,8 @@
 
 # generated files
 bin/
-/bin/
 gen/
-/gen/
+
 # Eclipse project files
 .classpath
 .project
@@ -24,11 +23,9 @@ gen/
 
 .DS_Store
 node_modules/
-/node_modules/
-/.history/
-.history/
 /dist/
 dist/
+.history/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -53,6 +50,7 @@ target/
 logs/
 .svn/
 tmps/
+db/
 
 .metadata/
 .recommenders/

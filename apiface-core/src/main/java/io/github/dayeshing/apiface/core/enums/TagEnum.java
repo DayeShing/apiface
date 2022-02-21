@@ -22,7 +22,6 @@ public enum TagEnum {
     ACTION("@action", new GroupResolver()),
     /**
      * 参数
-
      */
     PARAM("@param", new ParamResoler()),
     /**
@@ -85,7 +84,11 @@ public enum TagEnum {
     /**
      * 要求
      */
-    REQUIRED("@required", null),
+    REQUIRED("@required", new GroupResolver()),
+    /**
+     * 参数分组 和 @required(dd,ff) 配合使用
+     */
+    GROUP("@group", new GroupResolver()),
     /**
      * 忽略
      */

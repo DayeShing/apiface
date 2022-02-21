@@ -63,9 +63,14 @@ public class Action implements Meta, Api, Anno, Serializable {
     private String version;
 
     /**
+     * 参数分组
+     */
+    private List<String> group;
+
+    /**
      * 访问uri
      */
-    private Set<String> uri;
+    private List<String> uri;
 
     private List<String> methods;
 
@@ -94,6 +99,11 @@ public class Action implements Meta, Api, Anno, Serializable {
     private String date;
 
     private Map<String, Annotation> annos;
+
+    @Override
+    public boolean isExists() {
+        return true;
+    }
 
     public Return getRet() {
         return ret;
@@ -166,12 +176,12 @@ public class Action implements Meta, Api, Anno, Serializable {
     }
 
     @Override
-    public Set<String> getUri() {
+    public List<String> getUri() {
         return uri;
     }
 
     @Override
-    public void setUri(Set<String> uri) {
+    public void setUri(List<String> uri) {
         this.uri = uri;
     }
 
@@ -300,5 +310,13 @@ public class Action implements Meta, Api, Anno, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getUri());
+    }
+
+    public List<String> getGroup() {
+        return group;
+    }
+
+    public void setGroup(List<String> group) {
+        this.group = group;
     }
 }

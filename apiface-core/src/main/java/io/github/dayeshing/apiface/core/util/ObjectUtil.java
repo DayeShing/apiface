@@ -68,6 +68,13 @@ public class ObjectUtil {
             }
         }
     }
+    public static String toUpperCase(String target){
+        if(isNotEmpty(target)){
+            target = target.trim();
+            return target.toUpperCase();
+        }
+        return target;
+    }
 
     public static void write(File target, byte[] bytes) {
         FileOutputStream out = null;

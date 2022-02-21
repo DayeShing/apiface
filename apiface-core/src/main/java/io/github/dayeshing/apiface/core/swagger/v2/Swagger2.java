@@ -107,11 +107,32 @@ public class Swagger2 implements ApiTransform, JsonApi {
         // 这里只有两种可能 arr,object
         definition.setType(VariableEnum.OBJECT.getType());
 
-        Set<Propertie> ps = new HashSet<Propertie>();
-        ps.addAll(getChildProperties(group));
-        ps.addAll(getProperties(group));
+        Set<Propertie> ps = getProperties(new HashSet<Propertie>(), getChildProperties(group), getProperties(group));
         definition.setProperties(ps);
         return definition;
+    }
+
+    public Set<Propertie> getProperties(Set<Propertie> ps,Set<Propertie> ... properties){
+        for (Set<Propertie> property : properties) {
+            if(ObjectUtil.isNotEmpty(property)){
+                for (Propertie propertie : property) {
+                    boolean contains = ps.contains(propertie);
+                    // 存在注释文档优先级更高
+                    if(propertie.isExists()){
+                        if(contains){
+                            ps.remove(propertie);
+                        }
+                        ps.add(propertie);
+                        continue;
+                    }
+                    // 不存在注释文档优先级较低
+                    if(!contains){
+                        ps.add(propertie);
+                    }
+                }
+            }
+        }
+        return ps;
     }
 
     protected Set<Propertie> getChildProperties(FieldGroup group) {
@@ -120,8 +141,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         for (String ref : group.getRef()) {
             FieldGroup child = fields.get(ref);
             if (child != null) {
-                ps.addAll(getChildProperties(child));
-                ps.addAll(getProperties(child));
+                getProperties(ps, getChildProperties(child),getProperties(child));
             }
         }
         return ps;
@@ -132,9 +152,6 @@ public class Swagger2 implements ApiTransform, JsonApi {
         List<Field> fields = group.getFields();
         for (Field field : fields) {
             if(field != null){
-                if(field.isIgnore() || field.isHidden()){
-                    continue;
-                }
                 ps.add(getPropertie(field));
             }
         }
@@ -150,8 +167,10 @@ public class Swagger2 implements ApiTransform, JsonApi {
         p.setFormat(f.getFormat());
         p.setExample(f.getExample());
         p.setRequired(f.isRequired());
+        p.setGroups(f.getGroups());
         p.setIgnore(f.isIgnore());
         p.setOnlyRead(f.isOnlyRead());
+        p.setExists(f.isExists());
         p.setType(f.getType());
         // 这里有问题
 //        p.setRef(f.getRef());
@@ -199,6 +218,7 @@ public class Swagger2 implements ApiTransform, JsonApi {
         }
         path.setDate(action.getDate());
         path.setError(action.getError());
+        path.setGroups(action.getGroup());
         path.setAuthor(action.getAuthor() == null ? group.getAuthor() : action.getAuthor());
         path.setVersion(ObjectUtil.isEmpty(action.getVersion()) ? group.getVersion() : action.getVersion());
         path.setMethods(ObjectUtil.isEmpty(action.getMethods()) ? group.getMethods() : action.getMethods());
@@ -214,10 +234,10 @@ public class Swagger2 implements ApiTransform, JsonApi {
         this.action.add(path);
     }
     protected void getAction(ActionGroup group, Action action) {
-        Set<String> actionUri = action.getUri();
+        List<String> actionUri = action.getUri();
         if(ObjectUtil.isNotEmpty(actionUri)){
             for (String au : actionUri) {
-                Set<String> uri = group.getUri();
+                List<String> uri = group.getUri();
                 if(ObjectUtil.isNotEmpty(uri)){
                     for (String groupUri : uri) {
                         getAction(group,action,uri(groupUri,au));

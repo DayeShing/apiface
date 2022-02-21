@@ -2,14 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>apiface</artifactId>
-        <groupId>io.github.dayeshing</groupId>
-        <version>1.9.3-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
     <artifactId>apiface-proxy</artifactId>
+    <groupId>io.github.dayeshing</groupId>
+    <version>2.1.5-SNAPSHOT</version>
+
+    <properties>
+        <scope>compile</scope>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.compiler.version>1.6</jdk.compiler.version>
+        <maven.compiler.veriosn>2.3.2</maven.compiler.veriosn>
+        <maven.resource.version>2.7</maven.resource.version>
+
+        <maven.surefire.plugin.version>2.5</maven.surefire.plugin.version>
+        <nexus.staging.maven.plugin>1.6.7</nexus.staging.maven.plugin>
+        <maven.surefire.plugin.version>2.5</maven.surefire.plugin.version>
+        <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
+        <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
+
+        <junit.version>4.12</junit.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -22,66 +36,97 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
+
+        <!-- 单元测试-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-<!--    <build>-->
-<!--        <finalName>apiface</finalName>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-clean-plugin</artifactId>-->
-<!--                <version>3.1.0</version>-->
-<!--                <configuration>-->
-<!--                    <filesets>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/static</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/css</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/js</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/img</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/fonts</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>${project.basedir}/src/main/webapp/demo</directory>-->
-<!--                        </fileset>-->
-<!--                    </filesets>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-resources-plugin</artifactId>-->
-<!--                <version>${maven.resource.version}</version>-->
-<!--                <configuration>-->
-<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy</id>-->
-<!--                        <phase>process-sources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-resources</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            &lt;!&ndash; 复制前端打包文件到这里 &ndash;&gt;-->
-<!--                            <outputDirectory>${project.basedir}/src/main/webapp</outputDirectory>-->
-<!--                            <overwrite>true</overwrite>-->
-<!--                            <resources>-->
-<!--                                <resource>-->
-<!--                                    <directory>${project.parent.basedir}/apiface-front/dist</directory>-->
-<!--                                </resource>-->
-<!--                            </resources>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.veriosn}</version>
+                <configuration>
+                    <source>${jdk.compiler.version}</source>
+                    <target>${jdk.compiler.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resource.version}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <!--    <build>-->
+    <!--        <finalName>apiface</finalName>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-clean-plugin</artifactId>-->
+    <!--                <version>3.1.0</version>-->
+    <!--                <configuration>-->
+    <!--                    <filesets>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/static</directory>-->
+    <!--                        </fileset>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/css</directory>-->
+    <!--                        </fileset>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/js</directory>-->
+    <!--                        </fileset>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/img</directory>-->
+    <!--                        </fileset>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/fonts</directory>-->
+    <!--                        </fileset>-->
+    <!--                        <fileset>-->
+    <!--                            <directory>${project.basedir}/src/main/webapp/demo</directory>-->
+    <!--                        </fileset>-->
+    <!--                    </filesets>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-resources-plugin</artifactId>-->
+    <!--                <version>${maven.resource.version}</version>-->
+    <!--                <configuration>-->
+    <!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
+    <!--                </configuration>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <id>copy</id>-->
+    <!--                        <phase>process-sources</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>copy-resources</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            &lt;!&ndash; 复制前端打包文件到这里 &ndash;&gt;-->
+    <!--                            <outputDirectory>${project.basedir}/src/main/webapp</outputDirectory>-->
+    <!--                            <overwrite>true</overwrite>-->
+    <!--                            <resources>-->
+    <!--                                <resource>-->
+    <!--                                    <directory>${project.parent.basedir}/apiface-front/dist</directory>-->
+    <!--                                </resource>-->
+    <!--                            </resources>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 
 </project>

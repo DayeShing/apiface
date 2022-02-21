@@ -20,6 +20,7 @@ public class Parameter implements JsonApi {
     private ParamEnum in = ParamEnum.FORM;
     private String description;
     private boolean required;
+
     private String type;
 
     //default

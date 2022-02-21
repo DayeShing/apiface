@@ -312,6 +312,7 @@ util.install = function (Vue, options) {
       head: {},
       cookie: {}
     };
+    console.log(data,"dddddd")
     if (data && data.length > 0) {
       var tmp = {};
       for (var i = 0; i < data.length; i++) {
@@ -347,7 +348,7 @@ util.install = function (Vue, options) {
             ret.field = field;
             return ret;
           }
-        } else if (data[i].schema.items) {
+        } else if (data[i].schema && data[i].schema.items) {
           if (v == '' && data[i].required) {
             return {
               data: {},
@@ -425,7 +426,7 @@ util.install = function (Vue, options) {
       return undefined;
     }
   }
-  Vue.prototype.parameters = function (parameters, path, excludes = []) {
+  Vue.prototype.parameters = function (parameters, path, excludes = [],groups = []) {
     var isBody = false;
     //表单
     var $in = "form";
@@ -469,6 +470,7 @@ util.install = function (Vue, options) {
               isBody = true;
             }
             parameters[i].schema.data = this.transf(
+              true,groups,
               this.$store.state.models,
               tmp.schema.$ref,
               excludeChilds
@@ -479,6 +481,7 @@ util.install = function (Vue, options) {
               isBody = true;
             }
             parameters[i].schema.data = this.transf(
+              true,groups,
               this.$store.state.models,
               tmp.schema.items.$ref,
               excludeChilds
@@ -546,6 +549,7 @@ util.install = function (Vue, options) {
       var item = responses[key];
       if (item.schema && item.schema.$ref) {
         item.schema.data = this.transf(
+          false,[],
           this.$store.state.models,
           item.schema.$ref
         );
@@ -558,6 +562,8 @@ util.install = function (Vue, options) {
       }
       if (item.schema && item.schema.items && item.schema.items.$ref) {
         item.schema.data = this.transf(
+          false,
+          [],
           this.$store.state.models,
           item.schema.items.$ref
         );
@@ -576,7 +582,7 @@ util.install = function (Vue, options) {
    * @param {*} ref
    * @param {*} data
    */
-  Vue.prototype.transf = function (data, ref, excludes = [], lev = 0, top = undefined, times = 0) {
+  Vue.prototype.transf = function (request,groups =[],data, ref, excludes = [], lev = 0, top = undefined, times = 0) {
     if (ref == top) {
       if (times == 1) {
         return undefined;
@@ -598,9 +604,14 @@ util.install = function (Vue, options) {
         key: key
       };
       var child = [];
-      var requireds = data[key].required;
+
+      // var requireds = data[key].required;
+
       var index = 0;
       for (var propertie in data[key].properties) {
+        if(request && data[key].properties[propertie].ignore){
+          continue;
+        }
         var excludeChilds = [];
         var hidden = false;
         for (var g = 0; g < excludes.length; g++) {
@@ -615,7 +626,6 @@ util.install = function (Vue, options) {
           }
         }
         if (hidden) {
-          console.log("忽略参数：", propertie);
           continue;
         }
 
@@ -624,23 +634,30 @@ util.install = function (Vue, options) {
         var required = false;
         var format = p.format;
         var item = undefined;
-        if (requireds) {
-          for (var i = 0; i < requireds.length; i++) {
-            if (propertie == requireds[i]) {
-              required = true;
-              break;
+
+        if (request) {
+          if(groups.length == 0 || !data[key].properties[propertie].groups || data[key].properties[propertie].groups.length == 0){
+            required = data[key].properties[propertie].required;
+          } else {
+            for (var i = 0; i < data[key].properties[propertie].groups.length; i++) {
+              for (var j = 0; j < groups.length; j++) {
+                if (data[key].properties[propertie].groups[i] == groups[j]) {
+                  required = true;
+                  break;
+                }
+              }
             }
           }
         }
 
         var example = this.exampleValue(p.type, p.format);
         if (p.type == "array" && p.items && p.items.$ref) {
-          item = this.transf(data, p.items.$ref, excludeChilds, ++lev, ref, times);
+          item = this.transf(request,groups,data, p.items.$ref, excludeChilds, ++lev, ref, times);
           if (item) {
             item.format = "child";
           }
         } else if (p.type == "object" && p.items && p.items.$ref) {
-          item = this.transf(data, p.items.$ref, excludeChilds, ++lev, ref, times);
+          item = this.transf(request,groups,data, p.items.$ref, excludeChilds, ++lev, ref, times);
           if (item) {
             item.format = "child";
           }

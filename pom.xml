@@ -7,7 +7,7 @@
     <groupId>io.github.dayeshing</groupId>
     <artifactId>apiface</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>2.1.5-SNAPSHOT</version>
 
     <description>
         A set of interface documentation tools developed by java,
@@ -20,12 +20,6 @@
         <module>apiface-core</module>
         <module>apiface-maven-plugin</module>
         <module>apiface-gradle-plugin</module>
-
-        <module>apiface-proxy</module>
-        <module>apiface-example</module>
-
-        <module>apiface-front</module>
-        <module>apiface-font</module>
     </modules>
 
     <properties>
@@ -41,7 +35,6 @@
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
-
         <junit.version>4.12</junit.version>
     </properties>
 

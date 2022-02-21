@@ -2,6 +2,7 @@
 <template>
   <div class="postman-mian">
     <div class="base-toolbar">
+      <div class="base-toolbar-url">
       <el-select v-model="method" placeholder="Select item">
         <el-option
           v-for="item in methodes"
@@ -15,7 +16,7 @@
         v-model="url"
         placeholder="Enter requset URL"
       ></el-input>
-
+</div>
       <el-button type="primary" class="fr" :disabled="btnState" @click="submit"
         >Save</el-button
       >
@@ -202,8 +203,14 @@ export default {
   .base-toolbar {
     padding-top: 2px;
     padding-bottom: 5px;
+    .base-toolbar-url{
+      width: calc(~"100% - 132px");
+      float: left;
+          border: 1px solid #DCDCDC;
+          background-color: #F0F0F0;
+    }
     .req-base-url {
-      width: calc(~"100% - 242px");
+      width: calc(~"100% - 110px");
     }
     .el-button + .el-button {
       margin-right: 6px;
@@ -218,18 +225,27 @@ export default {
         font-weight: 700;
       }
     }
+    
     .el-input {
       height: 33px;
     }
     .el-input__suffix {
       line-height: 33px;
+      
+    }
+    .is-focus{
+      .el-input__inner {
+      background-color: #FAFAFA;
+      }
     }
     .el-input__inner {
+          background-color: transparent !important;
       height: 33px;
       line-height: 33px;
       border-radius: 0px !important;
       border: none !important;
     }
+      
   }
 }
 </style>

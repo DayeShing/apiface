@@ -52,6 +52,17 @@ public class FieldGroup implements Meta, Serializable {
 
     private boolean hidden;
 
+    private boolean exists;
+
+    @Override
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
+    }
+
     @Override
     public boolean isHidden() {
         return hidden;

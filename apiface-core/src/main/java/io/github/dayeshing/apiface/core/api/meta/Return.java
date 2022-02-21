@@ -65,6 +65,11 @@ public class Return implements Meta, Serializable {
      */
     private boolean array;
 
+    @Override
+    public boolean isExists() {
+        return true;
+    }
+
     public Return() {
     }
 

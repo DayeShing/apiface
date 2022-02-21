@@ -3,7 +3,9 @@ package io.github.dayeshing.apiface.core.resolver.tag;
 import io.github.dayeshing.apiface.core.resolver.TagResolver;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description: <p> TODO </p>
@@ -15,7 +17,7 @@ public class GroupResolver implements TagResolver {
 
     @Override
     public List<String> resolver(List<String> contents) {
-        List<String> ret = new ArrayList<String>();
+        Set<String> ret = new HashSet<String>();
         for (String content : contents) {
             if(content != null && !"".equals(content)){
                 String[] split = content.split(",");
@@ -23,9 +25,8 @@ public class GroupResolver implements TagResolver {
                     ret.add(s.trim());
                 }
             }
-
         }
-        return ret;
+        return new ArrayList<>(ret);
     }
 
 }

@@ -132,6 +132,7 @@ public class ApiTask extends AbstractFaceTask {
         transform.put("apiface", "1");
         transform.put("host", apiExtension.getHost());
         transform.put("basePath", apiExtension.getBasePath());
+        transform.put("ignoreHost", apiExtension.isIgnoreHost());
 
         JSONObject info = new JSONObject();
         JSONObject license = new JSONObject();

@@ -14,6 +14,7 @@ export default new Vuex.Store({
     mode: "single",
     api: "/base/api/api-docs",
     proxy: "/proxy/agent/api",
+    plugin:false,
     subtitle: "",
     app: false,
     models: {},

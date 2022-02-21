@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.dayeshing.apiface.core.enums.VariableEnum;
 import io.github.dayeshing.apiface.core.util.ObjectUtil;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,11 @@ public class Propertie implements JsonApi {
     private boolean required;
 
     /**
+     * 需要组
+     */
+    private List<String> groups;
+
+    /**
      * 忽视
      */
     private boolean ignore;
@@ -45,6 +51,11 @@ public class Propertie implements JsonApi {
      * 是否过期，通过计算获取
      */
     private boolean deprecated;
+
+    /**
+     * 带有注释的
+     */
+    private boolean exists;
 
     /**
      * 只读
@@ -143,6 +154,22 @@ public class Propertie implements JsonApi {
         this.array = array;
     }
 
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -165,6 +192,7 @@ public class Propertie implements JsonApi {
         json.put("description", description);
         json.put("example", example);
         json.put("required", required);
+        json.put("groups", groups);
         json.put("ignore", ignore);
         json.put("deprecated", deprecated);
         json.put("onlyRead", onlyRead);

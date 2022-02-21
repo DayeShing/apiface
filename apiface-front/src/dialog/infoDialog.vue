@@ -111,7 +111,7 @@ export default {
       page: "dialog.info.",
       params: {
         title: "",
-        width: "600px",
+        width: "860px",
         height: "540px",
         visible: false
       },

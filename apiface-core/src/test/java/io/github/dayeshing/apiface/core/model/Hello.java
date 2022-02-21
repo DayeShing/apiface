@@ -20,6 +20,8 @@ public class Hello {
 
     /**
      * 哩视就
+     * @hidden
+     * @required(Hello)
      */
     private List<Hi> his;
 

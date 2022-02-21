@@ -45,9 +45,9 @@ public class Main {
      */
     private static String[] SUFFIX = {"java"};
     /**
-     * 路径
+     * 路径 C:\Users\DayeShing\code\WorkSpace-2.0\apiface\apiface-core\src\test\java\io\github\dayeshing\apiface\core\model
      */
-    private static String PATH = "C:\\code\\WorkSpace-2.0\\apiface\\apiface-core\\src\\test\\java";
+    private static String PATH = "C:\\Users\\DayeShing\\code\\WorkSpace-2.0\\apiface\\apiface-core\\src\\test\\java";
 
 
     /**

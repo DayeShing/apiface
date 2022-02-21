@@ -44,7 +44,7 @@ public class ActionGroup implements Meta, Api,Anno, Serializable {
     /**
      * 访问地址
      */
-    private Set<String> uri;
+    private List<String> uri;
 
     /**
      * 这里用于继承类-可以递归获取继承对象中的字段
@@ -78,6 +78,11 @@ public class ActionGroup implements Meta, Api,Anno, Serializable {
     private boolean hidden;
 
     private Map<String, Annotation> annos;
+
+    @Override
+    public boolean isExists() {
+        return true;
+    }
 
     @Override
     public boolean isHidden() {
@@ -140,12 +145,12 @@ public class ActionGroup implements Meta, Api,Anno, Serializable {
     }
 
     @Override
-    public Set<String> getUri() {
+    public List<String> getUri() {
         return uri;
     }
 
     @Override
-    public void setUri(Set<String> uri) {
+    public void setUri(List<String> uri) {
         this.uri = uri;
     }
 

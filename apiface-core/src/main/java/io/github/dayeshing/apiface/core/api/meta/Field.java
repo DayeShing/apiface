@@ -8,6 +8,7 @@
 package io.github.dayeshing.apiface.core.api.meta;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description: <p> 字段类 </p>
@@ -38,6 +39,11 @@ public class Field implements Meta, Serializable {
     private boolean required;
 
     /**
+     * 需要组
+     */
+    private List<String> groups;
+
+    /**
      * 关联对象 - 这里将指向一个FeildGroup
      */
     private String ref;
@@ -52,7 +58,7 @@ public class Field implements Meta, Serializable {
     private String format;
 
     /**
-     * 忽视
+     * 隐藏
      */
     private boolean ignore;
 
@@ -81,6 +87,16 @@ public class Field implements Meta, Serializable {
      */
     private boolean array;
 
+    private boolean exists;
+
+    @Override
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
+    }
     public boolean isBase() {
         return base;
     }
@@ -198,5 +214,13 @@ public class Field implements Meta, Serializable {
 
     public void setGeneric(boolean generic) {
         this.generic = generic;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 }

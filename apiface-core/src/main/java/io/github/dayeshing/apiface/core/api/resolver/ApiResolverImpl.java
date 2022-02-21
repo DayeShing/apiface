@@ -137,9 +137,7 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
             List<String> value = entry.getValue();
             switch (tag) {
                 case URI:
-                    HashSet<String> url = new HashSet<>();
-                    url.addAll((List<String>) tag.resolver(value));
-                    action.setUri(url);
+                    action.setUri((List<String>) tag.resolver(value));
                     break;
                 case METHOD:
                     action.setMethods((List<String>) tag.resolver(value));
@@ -159,6 +157,11 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
                 case EXCLUDE:
                     if (action instanceof Action) {
                         ((Action) action).setExclude((List<String>) tag.resolver(value));
+                    }
+                    break;
+                case GROUP:
+                    if (action instanceof Action) {
+                        ((Action) action).setGroup((List<String>) tag.resolver(value));
                     }
                     break;
                 case SUMMARY:
@@ -446,6 +449,7 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
                     break;
                 case REQUIRED:
                     field.setRequired(true);
+                    field.setGroups((List<String>) tag.resolver(value));
                     break;
                 case FORMAT:
                     field.setFormat((String) tag.resolver(value));
@@ -455,6 +459,7 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
                     break;
             }
         }
+        field.setExists(true);
         return field;
     }
 
@@ -549,7 +554,7 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
             return getField(field, mark);
 
         } catch (Exception e) {
-            log.error("反射获取方法失败", e);
+            log.error("反射获取方法失败:{}:{}",clazz.getName(),method.getName(), e);
         }
         Field field = new Field();
         field.setName(realName(method));
@@ -628,7 +633,7 @@ public class ApiResolverImpl implements ApiResolver, GetFieldGroupResolver {
                 return getField(field, mark);
             }
         } catch (Exception e) {
-            log.error("反射获取属性失败", e);
+            log.error("反射获取属性失败:{}:{}",clazz.getName(),mark.getName(), e);
         }
         Field field = new Field();
         field.setName(mark.getName());

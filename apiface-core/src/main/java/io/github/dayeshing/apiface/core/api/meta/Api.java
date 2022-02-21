@@ -23,9 +23,9 @@ public interface Api {
 
     void setProduces(List<String> produces);
 
-    Set<String> getUri();
+    List<String> getUri();
 
-    void setUri(Set<String> uri);
+    void setUri(List<String> uri);
 
     Author getAuthor();
 

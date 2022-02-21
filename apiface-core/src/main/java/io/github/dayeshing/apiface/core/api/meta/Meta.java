@@ -16,4 +16,9 @@ public interface Meta {
     boolean isDeprecated();
 
     boolean isHidden();
+
+    /**
+     * 存在注释文档
+     */
+    boolean isExists();
 }

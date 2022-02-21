@@ -52,6 +52,11 @@ public class Path implements JsonApi {
 
     private List<String> tags;
 
+    /**
+     * 需要组
+     */
+    private List<String> groups;
+
     private String summary;
 
     private String description;
@@ -186,6 +191,7 @@ public class Path implements JsonApi {
             path.put("operationId", UUID.randomUUID().toString());
             path.put("unpack", unpack);
             path.put("body", body);
+            path.put("groups",groups);
             path.put("requiredContent", requiredBody);
             path.put("deprecated", deprecated);
             path.put("description",description);
@@ -302,5 +308,13 @@ public class Path implements JsonApi {
 
     public void setPack(String pack) {
         this.pack = pack;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 }
